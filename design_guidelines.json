@@ -1,0 +1,110 @@
+{
+  "project_name": "EquiMind by Biglyp",
+  "archetype": "ORGANIC & EARTHY / CALM MINT SERIF",
+  "emotional_tone": "Calming, supportive, academic-mindful, non-diagnostic, trustworthy, soft & organic",
+  "theme_strategy": "Light mode primary with soft mint (#f0fbf9), rich teal (#2a7a72 / #3d998d) accents, deep indigo (#1e1b4b) report covers, warm coral (#f97316 / #fb923c) activity highlights, mint theory blocks (#e6f4f1), and soft lavender (#f3e8ff) calm pills.",
+  "typography": {
+    "heading_font": "Playfair Display, Merriweather, or Cormorant Garamond (Serif Display with italic accent words for editorial warmth)",
+    "body_font": "Plus Jakarta Sans, Manrope, or Inter (Clean, highly legible Humanist/Geometric Sans)",
+    "mono_font": "JetBrains Mono (For quantitative scores, scales, data badges)",
+    "hierarchy": {
+      "hero_h1": "text-4xl sm:text-5xl lg:text-6xl font-serif tracking-tight text-slate-900 leading-tight",
+      "hero_subtitle": "text-lg sm:text-xl font-sans text-slate-600 max-w-2xl leading-relaxed",
+      "section_h2": "text-2xl sm:text-3xl lg:text-4xl font-serif text-slate-900 tracking-tight",
+      "card_title": "text-lg sm:text-xl font-semibold text-slate-800",
+      "caption_label": "text-xs font-mono uppercase tracking-widest text-teal-800"
+    }
+  },
+  "colors": {
+    "background_page": "#f0fbf9",
+    "background_card": "#ffffff",
+    "background_mint_subtle": "#e6f4f1",
+    "background_indigo_cover": "#1b1e3d",
+    "primary_teal": "#2d8a7c",
+    "primary_teal_hover": "#226b60",
+    "accent_coral": "#f07167",
+    "accent_coral_light": "#fff0ee",
+    "accent_amber": "#f59e0b",
+    "accent_amber_light": "#fef3c7",
+    "accent_lavender": "#8b5cf6",
+    "accent_lavender_light": "#f3e8ff",
+    "text_dark": "#1e293b",
+    "text_muted": "#64748b",
+    "border_subtle": "rgba(45, 138, 124, 0.15)",
+    "focus_ring": "#2d8a7c"
+  },
+  "spacing_and_layout": {
+    "container_padding": "px-4 sm:px-8 lg:px-12 py-8 sm:py-12",
+    "grid_gap": "gap-6 sm:gap-8",
+    "card_padding": "p-6 sm:p-8",
+    "border_radius": "rounded-2xl for cards & overlays, rounded-full for pills & badges",
+    "shadows": "shadow-sm border border-teal-900/10 hover:shadow-md transition-shadow duration-200"
+  },
+  "component_design_rules": {
+    "landing_page": {
+      "hero_section": "Soft gradient tint bg (#f0fbf9 to #e6f4f1), floating chat-bubble card showcasing a sample check-in insight, stats row with active student check-in count & 6 wellness domains, serif display headline with italicized keyword 'balanced'.",
+      "domain_cards": "6 domain tiles (Academic & Workload, Body & Sleep, Emotional Load & Coping, Social & Belonging, Identity & Self-worth, Family Money & Future) with custom mint/teal icons, hover elevation, and brief descriptions.",
+      "how_it_works": "3-step visual sequence: 1. 24 Quick Questions (10 mins) -> 2. Instant 11-Page AI Report -> 3. 14-Day Actionable Plan.",
+      "call_to_action": "Prominent 'Start 2-Week Stress Check-in' CTA button in deep teal with gentle pulse effect."
+    },
+    "assessment_flow": {
+      "question_card": "Centered floating card (max-w-2xl), 1 question visible at a time, smooth slide/fade transition between questions.",
+      "progress_bar": "Top sticky smooth progress bar with fraction indicator (e.g., 'Question 7 of 24' & 'Domain: Body & Sleep').",
+      "rating_scale": "5-point scale (0 = Never / Very Rarely, 1 = Seldom, 2 = Sometimes, 3 = Frequently, 4 = Almost Always / Constantly) presented as interactive pill buttons with clear active state and keyboard shortcut support (1-5 keys).",
+      "back_next_controls": "Clear 'Previous' (ghost button) and 'Next / Save' buttons."
+    },
+    "report_viewer_11_sections": {
+      "page_1_cover": "Deep Indigo background (#1b1e3d), white & gold serif text, At-a-Glance summary pill, report generation timestamp, student ID badge.",
+      "page_2_snapshot": "Radar Chart showing scores across 6 domains + 4 quick metric tiles (Overall Stress Index, Dominant Stressor, Resiliency Score, Immediate Focus Area).",
+      "page_3_narrative": "AI-generated narrative summary block in warm serif formatting, highlighting stress feedback loops.",
+      "pages_4_5_6_priority_areas": "Top 3 stress domain deep-dives. Features Mint Theory Block (psychological grounding) paired with Coral Activity Cards (concrete actionable steps).",
+      "page_7_starter_plan": "Interactive 14-Day Starter Plan Grid (5 daily micro-activities x 14 days) with checkable status.",
+      "page_8_track_reflect": "5-band mood strip (calm to overwhelmed), weekly tracking table, and Sunday guided reflection prompt.",
+      "page_9_who_can_help": "4-tier support ecosystem (Self-care, Campus Counseling, Peer Support, Professional Crisis Helplines like Tele-MANAS 14416) with copyable script snippets.",
+      "page_10_worth_ruling_out": "Body & physical symptom checklist (sleep apnea, thyroid, vitamin deficiency, burnout signals).",
+      "page_11_declaration": "About EquiMind, non-diagnostic disclaimer, privacy commitment, and export as PDF trigger button."
+    },
+    "student_dashboard": {
+      "header_greeting": "Warm personal greeting with last check-in date indicator and retake recommendation timer.",
+      "quick_actions": "Buttons for 'New Check-in', 'View Latest Report (PDF)', 'My 14-Day Plan Progress'.",
+      "past_reports_list": "Table/Cards of past 2-week check-in history with trend lines and key domain shifts.",
+      "mood_strip_widget": "Daily 1-click mood check-in logger with 5 emoji/icon options."
+    },
+    "admin_portal": {
+      "question_bank": "Searchable and filterable question repository (180 item pool across 6 domains, target stress weights).",
+      "activity_library": "Manageable library of activity cards tagged by domain, difficulty, and duration.",
+      "aggregate_analytics": "Anonymous macro stats across university departments (e.g., peak stress months, most common domain triggers)."
+    }
+  },
+  "interactive_states_and_testing": {
+    "mandatory_data_testid": "ALL interactive elements (buttons, inputs, select options, tab buttons, quiz choices, checkboxes, PDF export triggers) MUST have explicit data-testid attributes formatted in lower kebab-case (e.g. data-testid='start-assessment-button', data-testid='option-scale-2', data-testid='download-pdf-report-btn').",
+    "contrast_rules": "Always explicitly define text color on hover/focus states to prevent text invisibility. Use text-slate-900 on mint backgrounds and text-white on teal/indigo backgrounds."
+  },
+  "media_assets": {
+    "image_urls": [
+      {
+        "category": "hero_student",
+        "url": "https://images.unsplash.com/photo-1595111633191-7a8c1b0f7f98?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHxfYXJjaGl2ZXwxfHx1bml2ZXJzaXR5JTIwc3R1ZGVudCUyMHN0dWR5aW5nJTIwY2FsbSUyMG1pbmQlMjBtaW5kZnVsbmVzc3xlbnwwfHx8fDE3OTM3MzA0Mzh8MA&ixlib=rb-4.1.0&q=85",
+        "alt": "University student calmly reading and reflecting in campus environment"
+      },
+      {
+        "category": "mint_nature",
+        "url": "https://images.unsplash.com/photo-1627586140648-963d590fab3c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwyfHxwZWFjZWZ1bCUyMG5hdHVyZSUyMHBsYW50JTIwbGVhZiUyMG1pbnQlMjBhZXN0aGV0aWN8ZW58MHx8fHwxNzk3MzMwNDM5fDA&ixlib=rb-4.1.0&q=85",
+        "alt": "Calm mint green leaves with peaceful natural aura"
+      },
+      {
+        "category": "student_focus",
+        "url": "https://images.unsplash.com/photo-1514369118554-e20d93546b30?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwzfHx1bml2ZXJzaXR5JTIwc3R1ZGVudCUyMHN0dWR5aW5nJTIwY2FsbSUyMG1pbmQlMjBtaW5kZnVsbmVzc3xlbnwwfHx8fDE3OTM3MzA0Mzh8MA&ixlib=rb-4.1.0&q=85",
+        "alt": "Student writing in journal for mindful tracking"
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Use plain React JavaScript (.js / .jsx) components as per project setup.",
+    "Implement Lenis or smooth scrolling for the landing page.",
+    "Ensure the PDF report generation (via html2pdf, jspdf, or html2canvas) faithfully renders the 11 report sections including cover, radar chart, theory/activity blocks, and 14-day grid.",
+    "Include mock users for quick switching (e.g. Student 1: Ananya Sharma - UG Eng, Student 2: Rohan Verma - PG Mgmt, Admin: Dr. Mehra).",
+    "Keep Tele-MANAS helpline 14416 prominently visible in emergency support sections.",
+    "Verify that every button, tab, link, input, option button, and checkbox has a unique data-testid attribute."
+  ]
+}

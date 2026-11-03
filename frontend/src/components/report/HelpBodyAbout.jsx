@@ -1,0 +1,75 @@
+import { Copy, Phone } from "lucide-react";
+import { toast } from "sonner";
+import { PageShell } from "@/components/report/PageShell";
+import { fmtDate } from "@/lib/api";
+
+const tiers = (r) => [
+  { t: "1. Yourself", c: "bg-[#e6f4f1] text-[#226b60]", d: `Your 14-day plan: ${r.plan.map((a) => a.short.toLowerCase()).join(", ")}. Start today.` },
+  { t: "2. One trusted person", c: "bg-[#fef3c7] text-[#92400e]", d: "Family or a close friend. For money worry, homesickness, or feeling alone with it. A call home that includes one real thing — not just 'all fine'." },
+  { t: "3. Campus counsellor", c: r.path === 2 ? "bg-[#f07167] text-white" : "bg-[#fff0ee] text-[#c2410c]", strong: r.path === 2,
+    d: r.path === 2 ? `Book this week. Free, confidential. Your score pattern (overall ${r.overall}, lowest ${Math.min(...r.areas.map((a) => a.score))}) makes this strongly suggested.` : "Free and confidential. For sleep that won't budge, worry that interferes with life, or feeling you've been carrying it too long alone." },
+  { t: "4. Professional help", c: "bg-[#f3e8ff] text-[#6d28d9]", d: "Psychologist, psychiatrist or doctor — usually reached through your counsellor. Needed when low mood or loss of interest lasts most days for 2 weeks+, panic attacks, using substances to cope, or the plan makes no difference after 4 weeks." },
+];
+
+export const HelpPage = ({ r, n, total }) => {
+  const copy = (t) => navigator.clipboard?.writeText(t).then(() => toast.success("Copied"));
+  return (
+    <PageShell n={n} total={total} eyebrow="Page 9" title="Who Can Help & When to Ask" id="help" testid="report-page-help">
+      <div className="grid md:grid-cols-2 gap-4">
+        {tiers(r).map((x, i) => (
+          <div key={x.t} data-testid={`help-tier-${i + 1}`} className={`rounded-2xl p-5 ${x.c}`}>
+            <div className="flex items-center justify-between"><h3 className="font-semibold">{x.t}</h3>{x.strong && <span className="text-[10px] font-mono uppercase bg-white/25 rounded-full px-2 py-0.5">Strongly suggested</span>}</div>
+            <p className="mt-2 text-sm opacity-90 leading-relaxed">{x.d}</p>
+          </div>
+        ))}
+      </div>
+      <h3 className="mt-8 font-mono text-[11px] uppercase tracking-widest text-slate-500">Ready-to-copy scripts</h3>
+      <div className="mt-3 grid md:grid-cols-3 gap-3">
+        {r.scripts.map((s, i) => (
+          <div key={s.to} className="rounded-2xl border border-slate-100 p-4 flex flex-col">
+            <div className="text-xs font-semibold text-slate-500">{s.to}</div>
+            <p className="mt-2 text-sm text-slate-700 italic flex-1">&ldquo;{s.text}&rdquo;</p>
+            <button data-testid={`copy-script-${i}`} onClick={() => copy(s.text)} className="mt-3 self-start text-xs text-[#2d8a7c] hover:text-[#226b60] flex items-center gap-1"><Copy className="h-3.5 w-3.5" /> Copy</button>
+          </div>
+        ))}
+      </div>
+      <div data-testid="get-help-today" className="mt-8 rounded-2xl bg-[#1b1e3d] text-white p-5 flex gap-4">
+        <Phone className="h-5 w-5 text-[#f07167] shrink-0 mt-0.5" />
+        <p className="text-sm leading-relaxed"><b className="text-[#f07167]">GET HELP TODAY IF:</b> you have thoughts of harming yourself or of not wanting to be alive, or you feel unsafe. Call <b>Tele-MANAS 14416</b> or <b>1800-891-4416</b> (24/7, toll-free, confidential), or <b>112</b> in an emergency, or go to campus health. Tell someone physically near you.</p>
+      </div>
+    </PageShell>
+  );
+};
+
+export const BodyPage = ({ r, n, total }) => (
+  <PageShell n={n} total={total} eyebrow="A soft suggestion, not an alarm" title="Worth Ruling Out: Your Body" id="body" testid="report-page-body">
+    <p className="text-slate-700 leading-relaxed -mt-2">Low mood, tiredness, fog and poor sleep can be influenced by common physical causes that are easy to miss. Your pattern ({r.body_pattern}) makes it worth asking: is anything else going on in your body?</p>
+    <div className="mt-6 overflow-x-auto">
+      <table className="w-full text-sm min-w-[520px]" data-testid="body-table">
+        <thead><tr className="text-left font-mono text-[11px] uppercase text-slate-400"><th className="py-2 font-normal">Worth ruling out</th><th className="font-normal">Can show up as</th><th className="font-normal">What to ask about</th></tr></thead>
+        <tbody>{r.body_table.map((b) => <tr key={b.cause} className="border-t border-slate-100 align-top"><td className="py-3 pr-3 font-semibold text-slate-800">{b.cause}</td><td className="py-3 pr-3 text-slate-600">{b.signs}</td><td className="py-3 text-slate-600">{b.check}</td></tr>)}</tbody>
+      </table>
+    </div>
+    <div className="mt-6 grid md:grid-cols-2 gap-4 text-sm">
+      <div className="rounded-2xl bg-[#e6f4f1] p-5"><h4 className="font-semibold text-[#226b60]">What a basic health check-up looks like</h4>
+        <ul className="mt-2 space-y-1.5 text-slate-700"><li>A 15-minute visit to your campus health centre or a GP. Tell them: &lsquo;I&apos;ve been tired, sleeping poorly and finding it hard to focus for weeks.&rsquo;</li><li>A common basic panel: CBC, ferritin / iron studies, Vitamin D (25-OH), Vitamin B12, thyroid (TSH). The doctor decides which tests fit.</li></ul></div>
+      <div className="rounded-2xl bg-[#fef3c7] p-5"><h4 className="font-semibold text-[#92400e]">Both can be true</h4><p className="mt-2 text-slate-700">Stress is real AND a physical shortfall can make it harder to cope. Rule out the physical, keep going with the plan{r.path === 2 ? ", and keep your counsellor appointment" : ""}. This report never prescribes supplements or doses.</p></div>
+    </div>
+  </PageShell>
+);
+
+export const AboutPage = ({ r, n, total }) => (
+  <PageShell n={n} total={total} dark eyebrow="About" title="About This Report & Declaration" id="about" testid="report-page-about">
+    <div className="grid md:grid-cols-2 gap-6 text-sm text-white/80 leading-relaxed">
+      <div><h4 className="font-semibold text-[#fbbf24]">What this report is</h4><p className="mt-2">EquiMind is a self-reflection and action tool. It helps students notice stress patterns in six areas of life, understand what may be driving them, and act on them with small, concrete steps over 14 days. It is a wellbeing report — not a diagnosis, not an evaluation of your ability, and not a prediction of your results.</p></div>
+      <div><h4 className="font-semibold text-[#fbbf24]">How scores are built</h4><p className="mt-2">Based on your 24 answers (4 per area), over a two-week recall. Each area is scored 0–100 — higher means less stress and more capacity. Levels: below 35 needs care first; 35–49 watch; 50–64 steady; 65+ a resource. Overall is the average of the six areas.</p></div>
+      <div><h4 className="font-semibold text-[#fbbf24]">Privacy</h4><p className="mt-2">Your responses and this report are private to you. Nothing is shared with faculty, parents, recruiters or peers without your explicit consent. You decide if and when to share it with a counsellor or doctor.</p></div>
+      <div><h4 className="font-semibold text-[#fbbf24]">If something feels urgent</h4><p className="mt-2">This report measures everyday stress; it does not monitor safety. If you feel unsafe or are thinking of harming yourself, please seek help now: Tele-MANAS 14416 or 1800-891-4416 (24/7, toll-free, confidential), 112 for emergencies, or your campus health centre.</p></div>
+    </div>
+    {r.path === 2 && <p data-testid="counsellor-handover" className="mt-6 rounded-xl bg-white/10 p-4 text-sm text-white/90"><b>For your counsellor:</b> overall {r.overall}; priority areas {r.priority_pages.map((p) => `${p.name} (${p.score})`).join(", ")}. Shared only if you choose to.</p>}
+    <div data-testid="declaration" className="mt-8 rounded-2xl border border-[#fbbf24]/30 p-5 text-sm text-white/80">
+      <div className="font-mono text-[11px] uppercase tracking-widest text-[#fbbf24]">Declaration</div>
+      <p className="mt-2">This report was generated by Biglyp {r.version} on {fmtDate(r.created_at)} for {r.student.name}. Content, bands and activity library are reviewed by Biglyp&apos;s wellbeing advisory committee.</p>
+    </div>
+  </PageShell>
+);
