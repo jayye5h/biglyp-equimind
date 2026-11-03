@@ -34,7 +34,7 @@ def score_responses(item_ids: list, responses: dict) -> dict:
     overall = round(sum(a["score"] for a in areas) / 6)
     ranked = sorted(areas, key=lambda a: (a["score"], -a["high_count"]))
     priorities = [a["key"] for a in ranked[:3]]
-    resources = [a["key"] for a in sorted(areas, key=lambda a: -a["score"]) if a["key"] not in priorities][:2]
+    resources = [a["key"] for a in sorted(areas, key=lambda a: -a["score"]) if a["key"] not in priorities and a["score"] >= 50][:2]
     path = 2 if (any(a["score"] < 35 for a in areas) or overall < 45) else 1
     by = {a["key"]: a for a in areas}
     fatigue_high = sum(1 for i in item_ids if i in FATIGUE_ITEMS and responses[i] >= 3)

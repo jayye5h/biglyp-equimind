@@ -69,7 +69,7 @@ const MoodStrip = ({ r, onSave }) => {
         {Array.from({ length: 14 }, (_, d) => (
           <button key={d} data-testid={`mood-day-${d}`} onClick={() => setDay(d)} title={`Day ${d + 1}`}
             className={`h-9 rounded-lg text-[10px] font-mono transition-shadow ${d === day ? "ring-2 ring-slate-800" : ""}`}
-            style={{ background: moods[d] !== undefined ? BANDS[moods[d]].c : "#ffffff", color: moods[d] !== undefined ? "#fff" : "#94a3b8" }}>{d + 1}</button>
+            style={{ background: BANDS[moods[d]] ? BANDS[moods[d]].c : "#ffffff", color: BANDS[moods[d]] ? "#fff" : "#475569" }}>{d + 1}</button>
         ))}
       </div>
     </div>

@@ -1,0 +1,30 @@
+# EquiMind — PRD
+
+## Original problem statement
+"This is the document with the product details of equimind. Also attached are screenshots of few page design for reference. Develop the Equimind platform for university undergraduates and post graduates."
+(Attachments: Biglyp_EquiMind_DesignDoc_v10.pdf, Biglyp_EquiMind_Vibrant_Report.pdf, Mindly + Luma screenshots)
+
+User choices: mocked login (3 students + admin), Student role, AI-written narrative within safe wording, PDF download, calm mint look (Luma).
+
+## Architecture
+- FastAPI + MongoDB backend: content.py (180-item bank, 6 areas × 4 sub-themes, activity library, theory), scoring.py (stratified pick, scoring, levels, priorities, path, body trigger, 14-day plan), narrative.py (Claude claude-sonnet-5-5 via Emergent LLM key, guardrail regex, template fallback), server.py (routes, demo auth via bearer session tokens).
+- React frontend: Landing, Login (demo cards), Dashboard, Assessment, ReportView (11 sections + PDF via html2canvas/jsPDF), Admin (overview/question bank/activities).
+
+## User personas
+- UG/PG student in India doing a private stress check-in
+- Platform admin viewing content and anonymous cohort numbers
+
+## Core requirements (static)
+- 24 items (one per sub-theme), 0-4 scale, two-week recall
+- Area score = round(100 − raw/16×100); overall = mean; bands <35/35-49/50-64/65+
+- 3 lowest = priorities; Path 2 if any area <35 or overall <45
+- Retake: Day 28-35 = same items; <7 days = exclude previous items; else fresh
+- Body page trigger; Tele-MANAS 14416 safety floor everywhere; non-diagnostic wording; private by default
+
+## Implemented (2026-11-03)
+- Full MVP above; tested by testing agent (backend 17/17, frontend all flows); fixed radar responsiveness, submit race, progress validation, resources rule, per-student admin stats
+
+## Backlog
+- P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
+- P1: Admin editing of items/activities (content governance)
+- P2: Real login (email/Google), Day-30 reminder emails, item-level Day-30 comparison view

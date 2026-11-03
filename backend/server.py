@@ -168,6 +168,9 @@ async def submit_assessment(aid: str, body: SubmitIn, user: dict = Depends(stude
     resp = body.responses
     if set(resp.keys()) != set(a["items"]) or any(v not in (0, 1, 2, 3, 4) for v in resp.values()):
         raise HTTPException(422, "Please answer all 24 questions with a value from 0 to 4")
+    locked = await db.assessments.find_one_and_update({"id": aid, "status": "in_progress"}, {"$set": {"status": "submitting"}})
+    if not locked:
+        raise HTTPException(400, "Already submitted")
     result = score_responses(a["items"], resp)
     pages = priority_pages(result, a["items"], resp)
     first = user["name"].split()[0]
@@ -207,6 +210,12 @@ async def get_report(rid: str, user: dict = Depends(student_user)):
 @api.patch("/reports/{rid}/progress")
 async def update_progress(rid: str, body: ProgressIn, user: dict = Depends(student_user)):
     upd = body.model_dump(exclude_none=True)
+    if body.moods is not None and any(v not in (0, 1, 2, 3, 4) or not k.isdigit() or not 0 <= int(k) <= 13 for k, v in body.moods.items()):
+        raise HTTPException(422, "Mood must be 0-4 for days 0-13")
+    if body.ticks is not None and len(body.ticks) > 70:
+        raise HTTPException(422, "Too many ticks")
+    if len(str(body.tracker or "")) + len(str(body.reflections or "")) > 20000:
+        raise HTTPException(422, "Entries are too long")
     if not upd:
         raise HTTPException(400, "Nothing to update")
     res = await db.reports.update_one({"id": rid, "user_id": user["id"]}, {"$set": upd})
@@ -217,15 +226,19 @@ async def update_progress(rid: str, body: ProgressIn, user: dict = Depends(stude
 
 @api.get("/admin/stats")
 async def admin_stats(_: dict = Depends(admin_user)):
-    reports = await db.reports.find({}, {"_id": 0, "areas": 1, "overall": 1, "path": 1, "user_id": 1, "priorities": 1}).to_list(5000)
-    n = len(reports)
-    students = len({r["user_id"] for r in reports})
+    rows = await db.reports.find({}, {"_id": 0, "areas": 1, "overall": 1, "path": 1, "user_id": 1, "priorities": 1}).sort("created_at", -1).to_list(5000)
+    total = len(rows)
+    latest = {}
+    for r in rows:
+        latest.setdefault(r["user_id"], r)
+    reports = list(latest.values())
+    n = students = len(reports)
     min_cohort = 3
     if students < min_cohort:
-        return {"total_checkins": n, "students": students, "min_cohort": min_cohort, "suppressed": True}
+        return {"total_checkins": None, "students": None, "min_cohort": min_cohort, "suppressed": True}
     avg = {a["key"]: round(sum(next(x["score"] for x in r["areas"] if x["key"] == a["key"]) for r in reports) / n) for a in AREAS}
     pri = {a["key"]: sum(1 for r in reports if a["key"] in r["priorities"]) for a in AREAS}
-    return {"total_checkins": n, "students": students, "min_cohort": min_cohort, "suppressed": False,
+    return {"total_checkins": total, "students": students, "min_cohort": min_cohort, "suppressed": False,
             "avg_overall": round(sum(r["overall"] for r in reports) / n),
             "path_split": {"strengthening": sum(1 for r in reports if r["path"] == 1), "counsellor": sum(1 for r in reports if r["path"] == 2)},
             "areas": [{"key": a["key"], "name": a["name"], "short": a["short"], "avg": avg[a["key"]], "priority_count": pri[a["key"]]} for a in AREAS]}

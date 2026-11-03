@@ -1,0 +1,43 @@
+{
+  "summary": "First full run. Backend: 17/17 pytest pass (auth, authz, start/submit, 422 validation, exact scoring formula/levels/overall/path/body_page vs independent calc, priorities=3 lowest, retake_excluding_previous with zero overlap and 24 unique sub-themes, cross-student isolation 404, progress PATCH persistence, admin items/activities/stats incl. suppression). AI narrative returned source='ai' (Claude) on all submissions. Frontend: landing->login, 4 demo cards, role guards (student /admin -> /dashboard, admin /dashboard -> /admin), full 24-question UI check-in (clicks + keys 1-5 + prev + submit -> report-generating -> /report/:id), all 11 report sections, ticks/mood/tracker/reflections persist after reload, copy-script copies to clipboard, PDF download (11 pages, 3.3MB), dashboard cards/history/day30, admin overview (suppressed with 1 student, chart once 3 students), items tab search/filter/count, activities tab, path-2 report shows counsellor-handover + body page. Mobile 390: no page-level horizontal scroll, but snapshot tiles overflow their card.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/assessments/{aid}/submit", "issue": "Race: status is checked before a 10-20s AI call and only set to completed after report insert, so two concurrent submits (double click / retry) can create two reports for one assessment. Atomically flip status (find_one_and_update in_progress->submitting) before calling the LLM."},
+      {"endpoint": "PATCH /api/reports/{id}/progress", "issue": "No validation: moods values not range-checked (0-4), tracker/reflections are Any with no size limit. A mood value like 9 makes frontend BANDS[moods[d]].c throw and break the Track page."},
+      {"endpoint": "GET /api/admin/stats", "issue": "Averages/path split are per check-in, not per student, so a student with many retakes dominates the cohort numbers; suppressed response still exposes exact check-in/student counts."},
+      {"endpoint": "scoring.score_responses", "issue": "'resources' = top-2 non-priority areas even when they score 0 (Rohan all-0 report shows 'Your resources: Social, Identity'). Consider requiring a minimum score (e.g. >=50) or wording fallback."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "CoverSnapshot radar chart", "issue": "RadarChart has fixed width 340 (non-responsive). On desktop the left label is clipped ('amily & Future'); on 390px mobile the 340px chart forces the grid column wider than the card so the 4 snapshot tiles overflow past the card's right edge.", "selector": "[data-testid='radar-chart'], [data-testid='report-page-snapshot']", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Report > Track mood strip", "issues": ["Unset day numbers (#94a3b8 on white, 10px) are very low contrast"]},
+      {"screen": "Report > Snapshot area cards (mobile)", "issues": ["'Needs care first' badge wraps to 2 lines and crowds the score in 2-col layout"]},
+      {"screen": "Admin > Question bank", "issues": ["Area filter is a native <select>, not the shadcn Select used elsewhere (cosmetic)"]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_equimind_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Make radar chart responsive (ResponsiveContainer or width bound to container, add margin so outer labels aren't clipped) and add min-w-0 to snapshot grid columns so tiles don't overflow on mobile",
+    "Guard submit against concurrent double submission (atomic status transition)",
+    "Validate ProgressIn (moods 0-4 with keys 0-13, ticks pattern r-d, string length caps) and guard frontend BANDS lookup",
+    "Optionally: compute admin cohort averages per student (latest report) and avoid labelling 0-score areas as 'resources'"
+  ],
+  "critical_code_review_comments": [
+    "server.py submit: non-atomic in_progress check + long LLM await -> duplicate reports possible",
+    "Sessions never expire and demo-login inserts a new session each call (unbounded sessions collection) - acceptable for mocked auth but note",
+    "Retake exclusion only excludes the most recent sitting; a 3rd sitting within 7 days may repeat items from the 1st (fine per spec, just noting)",
+    "PlanTrack TrackPage saves whole tracker/reflections objects on blur; concurrent PATCHes are last-write-wins but each field is separate so low risk"
+  ],
+  "updated_files": ["/app/backend/tests/test_equimind_api.py"],
+  "success_rate": {"backend": "100% (17/17)", "frontend": "~95% (all flows work; one responsive layout bug)"},
+  "seed_data_creation": "Created check-ins via API/UI: stu-ananya now has 2 completed reports (latest b8a1862d-... via UI with TEST tracker/reflection/tick/mood entries) and no in-progress; stu-rohan has 1 all-'Almost always' report (path 2, overall 0) and an in-progress check-in started by the mobile test. Admin cohort is now unsuppressed (3 students).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run: cd /app/backend && REACT_APP_BACKEND_URL=... pytest tests/test_equimind_api.py -n 0 -v (submits take ~5-15s each with AI). pytest.ini forces xdist; use -n 0 not -p no:xdist. Retake test relies on starting within 7 days of the previous completed sitting. Re-check radar/snapshot layout at 390px and 1920px.",
+  "test_credentials": "From /app/memory/test_credentials.md: demo-login user_ids stu-ananya, stu-rohan, stu-meera, adm-platform (no password)"
+}

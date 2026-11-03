@@ -18,8 +18,8 @@ const Overview = () => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Stat testid="stat-checkins" label="Check-ins" value={s.total_checkins} />
-        <Stat testid="stat-students" label="Students" value={s.students} />
+        <Stat testid="stat-checkins" label="Check-ins" value={s.suppressed ? "—" : s.total_checkins} />
+        <Stat testid="stat-students" label="Students" value={s.suppressed ? "—" : s.students} />
         <Stat testid="stat-avg-overall" label="Avg overall" value={s.suppressed ? "—" : s.avg_overall} />
         <Stat testid="stat-counsellor-path" label="Counsellor path" value={s.suppressed ? "—" : s.path_split.counsellor} />
       </div>
@@ -28,7 +28,7 @@ const Overview = () => {
           <p className="text-slate-600">Aggregate numbers appear only when at least {s.min_cohort} students have checked in, so no individual can be identified. No identified student responses are ever shown here.</p></div>
       ) : (
         <div className="rounded-2xl bg-white border border-[#2d8a7c]/10 p-6">
-          <h3 className="font-serif text-xl font-semibold">Average area scores (anonymous)</h3>
+          <h3 className="font-serif text-xl font-semibold">Average area scores (latest check-in per student, anonymous)</h3>
           <div className="h-72 mt-4" data-testid="admin-area-chart">
             <ResponsiveContainer><BarChart data={s.areas}><XAxis dataKey="short" fontSize={11} /><YAxis domain={[0, 100]} fontSize={11} width={28} /><Tooltip />
               <Bar dataKey="avg" radius={[8, 8, 0, 0]}>{s.areas.map((a) => <Cell key={a.key} fill={AREA_COLORS[a.key]} />)}</Bar></BarChart></ResponsiveContainer>
