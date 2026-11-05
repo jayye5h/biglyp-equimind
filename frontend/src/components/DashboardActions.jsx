@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { CalendarCheck, NotebookPen, ArrowRight, Smile } from "lucide-react";
 import { BANDS } from "@/components/report/PlanTrack";
@@ -78,9 +79,45 @@ const MoodTap = ({ r, onSave }) => {
   );
 };
 
+const MoodWeek = ({ r }) => {
+  const moods = r.moods || {};
+  const elapsed = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 864e5);
+  const [week, setWeek] = useState(elapsed >= 7 ? 1 : 0);
+  const days = Array.from({ length: 7 }, (_, i) => week * 7 + i);
+  const logged = days.filter((d) => BANDS[moods[d]]);
+  const avg = logged.length ? logged.reduce((s, d) => s + moods[d], 0) / logged.length : null;
+  return (
+    <div data-testid="dashboard-mood-week" className="rounded-2xl bg-white border border-eq/10 p-5 sm:p-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div><div className="font-semibold text-slate-800">Your mood this week</div>
+          <div data-testid="mood-week-summary" className="text-xs text-slate-500">{avg === null ? "No moods logged yet this week" : `${logged.length} of 7 days logged · mostly ${BANDS[Math.round(avg)].l}`}</div></div>
+        <div className="flex rounded-full bg-eq-bg p-1">
+          {[0, 1].map((w) => (
+            <button key={w} data-testid={`mood-week-tab-${w + 1}`} onClick={() => setWeek(w)}
+              className={`h-8 px-3 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${week === w ? "bg-eq text-white" : "text-slate-600 hover:text-slate-900"}`}>Week {w + 1}</button>
+          ))}
+        </div>
+      </div>
+      <div className="mt-5 flex items-end gap-2 sm:gap-4 h-32">
+        {days.map((d) => {
+          const b = BANDS[moods[d]];
+          return (
+            <div key={d} data-testid={`mood-week-bar-${d}`} className="flex-1 h-full flex flex-col items-center justify-end gap-1.5" title={b ? b.l : "Not logged"}>
+              <div className="w-full max-w-[44px] rounded-lg transition-[height] duration-500" style={{ height: b ? `${((moods[d] + 1) / 5) * 100}%` : "6px", background: b ? b.c : "#e2e8f0" }} />
+              <span className={`text-[10px] font-mono ${d === elapsed ? "text-slate-900 font-semibold" : "text-slate-400"}`}>D{d + 1}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1">{BANDS.map((b) => <span key={b.v} className="text-[10px] text-slate-500 flex items-center gap-1"><span className="h-2 w-2 rounded-full" style={{ background: b.c }} />{b.l}</span>)}</div>
+    </div>
+  );
+};
+
 export const ActionSections = ({ r, onSave }) => (
   <div className="space-y-6" data-testid="dashboard-action-sections">
     <MoodTap r={r} onSave={onSave} />
+    <MoodWeek r={r} />
     <div className="grid lg:grid-cols-2 gap-6"><PlanSummary r={r} /><TrackSummary r={r} /></div>
     <section data-testid="dashboard-help-section" className="rounded-2xl bg-white border border-eq/10 p-6 sm:p-8" style={toneVars(localStorage.getItem("eq_feature_tone"))}>
       <h3 className="font-serif text-2xl sm:text-3xl font-bold text-slate-900">Who Can Help &amp; When to Ask</h3>

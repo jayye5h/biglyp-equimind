@@ -36,6 +36,9 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 ## Implemented (2026-11-05, iteration 5)
 - Daily Mood Tap on dashboard: "How are you feeling today?" with 5 mood bands; one tap saves today's mood (day index = days since report, Days 1-14) to the latest report's mood strip via PATCH progress; hidden after Day 14.
 
+## Implemented (2026-11-05, iteration 6)
+- Mood Week View on dashboard: 7-day bar chart (height + colour by mood band) with Week 1 / Week 2 tabs, days-logged count and "mostly <mood>" summary; today highlighted.
+
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)
