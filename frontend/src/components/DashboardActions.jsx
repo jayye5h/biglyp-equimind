@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CalendarCheck, NotebookPen, ArrowRight } from "lucide-react";
+import { CalendarCheck, NotebookPen, ArrowRight, Smile } from "lucide-react";
 import { BANDS } from "@/components/report/PlanTrack";
 import { HelpContent } from "@/components/report/HelpBodyAbout";
 import { toneVars } from "@/lib/featureTones";
@@ -56,8 +56,31 @@ const TrackSummary = ({ r }) => {
   );
 };
 
-export const ActionSections = ({ r }) => (
+const MoodTap = ({ r, onSave }) => {
+  const elapsed = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 864e5);
+  const moods = r.moods || {};
+  const today = moods[elapsed];
+  if (elapsed > 13) return null;
+  return (
+    <div data-testid="dashboard-mood-tap" className="rounded-2xl bg-white border border-eq/10 p-5 sm:p-6 flex flex-col md:flex-row md:items-center gap-4">
+      <div className="flex items-center gap-3 md:w-64 shrink-0">
+        <span className="h-10 w-10 rounded-xl grid place-items-center bg-eq-soft text-eq-dark"><Smile className="h-5 w-5" /></span>
+        <div><div className="font-semibold text-slate-800">How are you feeling today?</div><div data-testid="dashboard-mood-status" className="text-xs text-slate-500">Day {elapsed + 1} of 14 · {today !== undefined ? `logged as ${BANDS[today].l}` : "one tap to log"}</div></div>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {BANDS.map((b) => (
+          <button key={b.v} data-testid={`dashboard-mood-${b.v}`} aria-pressed={today === b.v} onClick={() => onSave({ moods: { ...moods, [elapsed]: b.v } })}
+            className={`h-10 px-4 rounded-full text-sm border transition-colors ${today === b.v ? "text-white border-transparent" : "bg-white text-slate-700 border-slate-200 hover:border-slate-400"}`}
+            style={today === b.v ? { background: b.c } : {}}>{b.l}</button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export const ActionSections = ({ r, onSave }) => (
   <div className="space-y-6" data-testid="dashboard-action-sections">
+    <MoodTap r={r} onSave={onSave} />
     <div className="grid lg:grid-cols-2 gap-6"><PlanSummary r={r} /><TrackSummary r={r} /></div>
     <section data-testid="dashboard-help-section" className="rounded-2xl bg-white border border-eq/10 p-6 sm:p-8" style={toneVars(localStorage.getItem("eq_feature_tone"))}>
       <h3 className="font-serif text-2xl sm:text-3xl font-bold text-slate-900">Who Can Help &amp; When to Ask</h3>

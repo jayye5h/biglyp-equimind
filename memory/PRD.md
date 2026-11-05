@@ -33,6 +33,9 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 ## Implemented (2026-11-05, iteration 4)
 - Dashboard (below Past check-ins / Overall trend) now shows: 14-Day Plan summary (day x/14, ticks, per-activity progress) and Track & Reflect summary (mood strip, tracker & reflection counts) — each links to /report/:id#plan or #track; then full "Who Can Help & When to Ask" section (shared HelpContent component).
 
+## Implemented (2026-11-05, iteration 5)
+- Daily Mood Tap on dashboard: "How are you feeling today?" with 5 mood bands; one tap saves today's mood (day index = days since report, Days 1-14) to the latest report's mood strip via PATCH progress; hidden after Day 14.
+
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)

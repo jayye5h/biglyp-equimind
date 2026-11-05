@@ -6,6 +6,7 @@ import { AppHeader, SafetyStrip } from "@/components/Shell";
 import { api, fmtDate, LEVEL_STYLE } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { ActionSections } from "@/components/DashboardActions";
+import { toast } from "sonner";
 import { useTheme } from "@/lib/theme";
 
 const levelOf = (s) => (s < 35 ? "Needs care first" : s < 50 ? "Watch" : s < 65 ? "Steady" : "Strength");
@@ -78,6 +79,11 @@ export default function Dashboard() {
     });
   }, []);
 
+  const saveLatest = (patch) => {
+    setLatest((p) => ({ ...p, ...patch }));
+    api.patch(`/reports/${latest.id}/progress`, patch).then(() => toast.success("Mood logged")).catch(() => toast.error("Could not save. Please try again."));
+  };
+
   return (
     <div data-testid="student-dashboard" className="min-h-screen">
       <AppHeader />
@@ -97,7 +103,7 @@ export default function Dashboard() {
             <h3 className="font-serif text-2xl font-semibold">No check-ins yet</h3>
             <p className="mt-2 text-slate-500">Your first report and 14-day plan will appear here.</p>
           </div>
-        ) : (<><LatestCard r={reports[0]} /><History reports={reports} />{latest && <ActionSections r={latest} />}</>)}
+        ) : (<><LatestCard r={reports[0]} /><History reports={reports} />{latest && <ActionSections r={latest} onSave={saveLatest} />}</>)}
         <SafetyStrip testid="dashboard-safety-strip" />
       </main>
     </div>
