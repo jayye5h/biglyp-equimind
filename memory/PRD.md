@@ -27,6 +27,9 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 ## Implemented (2026-11-03, iteration 2)
 - Colour theme switched to light blue by default; mint green kept as an option via a two-swatch toggle (landing header, login, app header). Saved per browser (localStorage `eq_theme`). Theme colours are CSS variables (`--eq-*`) mapped to Tailwind `eq` colours; charts read hex values from `useTheme().palette`; PDF background follows the active theme.
 
+## Implemented (2026-11-05, iteration 3)
+- Report highlight pages (Cover, About, stress-loop chips, Get-help box) now use a blue tone instead of navy + yellow. 5 selectable tones at top of report: Powder, Cornflower, Azure (default), Cobalt, Midnight; saved per browser (`eq_feature_tone`); applied to PDF export too. Tones via CSS vars `--ft-*` (lib/featureTones.js).
+
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)

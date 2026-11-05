@@ -6,12 +6,32 @@ import { AppHeader } from "@/components/Shell";
 import { ReportPages, reportSections } from "@/components/report/ReportPages";
 import { exportPdf } from "@/components/report/exportPdf";
 import { api, errMsg } from "@/lib/api";
+import { FEATURE_TONES, toneVars } from "@/lib/featureTones";
+
+const TonePicker = ({ tone, setTone }) => (
+  <div data-testid="feature-tone-picker" className="mb-6 rounded-2xl bg-white border border-eq/10 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+    <div className="sm:w-56 shrink-0"><div className="text-sm font-semibold text-slate-800">Highlight page colour</div><div className="text-xs text-slate-500">Cover, About, loop chips and the help box</div></div>
+    <div className="flex flex-wrap gap-2">
+      {Object.entries(FEATURE_TONES).map(([k, t]) => (
+        <button key={k} data-testid={`feature-tone-${k}`} onClick={() => setTone(k)} aria-pressed={tone === k}
+          className={`flex items-center gap-2 h-10 pl-1.5 pr-3 rounded-full border text-sm transition-colors ${tone === k ? "border-slate-800 bg-slate-50 text-slate-900" : "border-slate-200 text-slate-600 hover:border-slate-400"}`}>
+          <span className="h-7 w-7 rounded-full" style={{ background: t.bg }} />{t.label}
+        </button>
+      ))}
+    </div>
+  </div>
+);
 
 export default function ReportView() {
   const { id } = useParams();
   const { hash } = useLocation();
   const [r, setR] = useState(null);
   const [exporting, setExporting] = useState(false);
+  const [tone, setTone] = useState(() => (FEATURE_TONES[localStorage.getItem("eq_feature_tone")] ? localStorage.getItem("eq_feature_tone") : "azure"));
+  const chooseTone = (k) => {
+    setTone(k);
+    localStorage.setItem("eq_feature_tone", k);
+  };
   const printRef = useRef(null);
 
   useEffect(() => {
@@ -61,13 +81,14 @@ export default function ReportView() {
             ))}
           </div>
         </aside>
-        <div className="min-w-0">
+        <div className="min-w-0" style={toneVars(tone)}>
           <Link to="/dashboard" className="lg:hidden mb-4 text-sm text-slate-500 inline-flex items-center gap-1.5"><ArrowLeft className="h-4 w-4" /> Dashboard</Link>
+          {r && <TonePicker tone={tone} setTone={chooseTone} />}
           {r ? <ReportPages r={r} onSave={onSave} /> : <div className="h-96 rounded-[2rem] bg-white/60 animate-pulse" />}
         </div>
       </main>
       {exporting && r && (
-        <div ref={printRef} aria-hidden className="fixed top-0 -left-[12000px] w-[900px] p-4 bg-eq-bg">
+        <div ref={printRef} aria-hidden className="fixed top-0 -left-[12000px] w-[900px] p-4 bg-eq-bg" style={toneVars(tone)}>
           <ReportPages r={r} onSave={() => {}} print />
         </div>
       )}

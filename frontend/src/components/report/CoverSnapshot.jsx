@@ -11,21 +11,21 @@ export const CoverPage = ({ r, n, total }) => {
   return (
     <PageShell n={n} total={total} dark eyebrow="Your stress check-in" id="cover" testid="report-page-cover">
       <div className="relative">
-        <div className="absolute -right-24 -top-40 h-80 w-80 rounded-full bg-[#f59e0b]/25 blur-2xl" />
-        <div className="absolute -right-10 -top-20 h-44 w-44 rounded-full bg-[#f07167]/30 blur-xl" />
+        <div className="absolute -right-24 -top-40 h-80 w-80 rounded-full bg-white/25 blur-2xl" />
+        <div className="absolute -right-10 -top-20 h-44 w-44 rounded-full bg-white/20 blur-xl" />
         <h1 className="relative font-serif text-5xl sm:text-6xl font-bold">EquiMind</h1>
-        <p className="relative mt-3 font-serif italic text-xl text-[#fbbf24]">Understand it. Act on it.</p>
+        <p className="relative mt-3 font-serif italic text-xl ft-accent">Understand it. Act on it.</p>
         <div className="relative mt-10 grid sm:grid-cols-2 gap-6 text-sm">
-          <div><div className="text-white/50 font-mono text-[11px] uppercase tracking-widest">Prepared for</div><div data-testid="cover-student-name" className="mt-1 text-xl font-semibold">{r.student.name}</div><div className="text-white/70">{r.student.program} · {r.student.year} · {r.student.institution}</div></div>
-          <div><div className="text-white/50 font-mono text-[11px] uppercase tracking-widest">Check-in</div><div className="mt-1 text-xl font-semibold">{fmtDate(r.created_at)}</div><div className="text-white/70">24 items · two-week recall · ID {r.student.student_code}</div></div>
+          <div><div className="ft-faint font-mono text-[11px] uppercase tracking-widest">Prepared for</div><div data-testid="cover-student-name" className="mt-1 text-xl font-semibold">{r.student.name}</div><div className="ft-muted">{r.student.program} · {r.student.year} · {r.student.institution}</div></div>
+          <div><div className="ft-faint font-mono text-[11px] uppercase tracking-widest">Check-in</div><div className="mt-1 text-xl font-semibold">{fmtDate(r.created_at)}</div><div className="ft-muted">24 items · two-week recall · ID {r.student.student_code}</div></div>
         </div>
-        <div className="relative mt-10 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 p-5 grid grid-cols-2 lg:grid-cols-4 gap-5">
-          <div><div className="text-[11px] font-mono uppercase text-white/50">Overall</div><div data-testid="cover-overall" className="font-serif text-3xl font-bold">{r.overall}<span className="text-base text-white/50">/100</span></div></div>
-          <div><div className="text-[11px] font-mono uppercase text-white/50">Needs care first</div><div className="font-semibold mt-1">{low.short} {low.score}</div></div>
-          <div><div className="text-[11px] font-mono uppercase text-white/50">Your resources</div><div className="font-semibold mt-1">{r.resources.length ? r.resources.map((k) => `${nameOf(r, k).short} ${nameOf(r, k).score}`).join(" · ") : "Still building"}</div></div>
-          <div><div className="text-[11px] font-mono uppercase text-white/50">Next step</div><div className="font-semibold mt-1 text-[#fbbf24]">{r.path === 2 ? "Plan + counsellor" : "Start the plan"}</div></div>
+        <div className="relative mt-10 rounded-2xl ft-glass backdrop-blur-md border p-5 grid grid-cols-2 lg:grid-cols-4 gap-5">
+          <div><div className="text-[11px] font-mono uppercase ft-faint">Overall</div><div data-testid="cover-overall" className="font-serif text-3xl font-bold">{r.overall}<span className="text-base ft-faint">/100</span></div></div>
+          <div><div className="text-[11px] font-mono uppercase ft-faint">Needs care first</div><div className="font-semibold mt-1">{low.short} {low.score}</div></div>
+          <div><div className="text-[11px] font-mono uppercase ft-faint">Your resources</div><div className="font-semibold mt-1">{r.resources.length ? r.resources.map((k) => `${nameOf(r, k).short} ${nameOf(r, k).score}`).join(" · ") : "Still building"}</div></div>
+          <div><div className="text-[11px] font-mono uppercase ft-faint">Next step</div><div className="font-semibold mt-1 ft-accent">{r.path === 2 ? "Plan + counsellor" : "Start the plan"}</div></div>
         </div>
-        <p className="relative mt-8 text-sm text-white/60">This is a self-reflection and action report — not a diagnosis.</p>
+        <p className="relative mt-8 text-sm ft-muted">This is a self-reflection and action report — not a diagnosis.</p>
       </div>
     </PageShell>
   );

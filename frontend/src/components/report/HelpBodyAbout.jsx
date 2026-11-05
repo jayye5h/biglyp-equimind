@@ -33,9 +33,9 @@ export const HelpPage = ({ r, n, total }) => {
           </div>
         ))}
       </div>
-      <div data-testid="get-help-today" className="mt-8 rounded-2xl bg-[#1b1e3d] text-white p-5 flex gap-4">
-        <Phone className="h-5 w-5 text-[#f07167] shrink-0 mt-0.5" />
-        <p className="text-sm leading-relaxed"><b className="text-[#f07167]">GET HELP TODAY IF:</b> you have thoughts of harming yourself or of not wanting to be alive, or you feel unsafe. Call <b>Tele-MANAS 14416</b> or <b>1800-891-4416</b> (24/7, toll-free, confidential), or <b>112</b> in an emergency, or go to campus health. Tell someone physically near you.</p>
+      <div data-testid="get-help-today" className="mt-8 rounded-2xl ft-bg p-5 flex gap-4">
+        <Phone className="h-5 w-5 ft-alert shrink-0 mt-0.5" />
+        <p className="text-sm leading-relaxed"><b className="ft-alert">GET HELP TODAY IF:</b> you have thoughts of harming yourself or of not wanting to be alive, or you feel unsafe. Call <b>Tele-MANAS 14416</b> or <b>1800-891-4416</b> (24/7, toll-free, confidential), or <b>112</b> in an emergency, or go to campus health. Tell someone physically near you.</p>
       </div>
     </PageShell>
   );
@@ -60,15 +60,15 @@ export const BodyPage = ({ r, n, total }) => (
 
 export const AboutPage = ({ r, n, total }) => (
   <PageShell n={n} total={total} dark eyebrow="About" title="About This Report & Declaration" id="about" testid="report-page-about">
-    <div className="grid md:grid-cols-2 gap-6 text-sm text-white/80 leading-relaxed">
-      <div><h4 className="font-semibold text-[#fbbf24]">What this report is</h4><p className="mt-2">EquiMind is a self-reflection and action tool. It helps students notice stress patterns in six areas of life, understand what may be driving them, and act on them with small, concrete steps over 14 days. It is a wellbeing report — not a diagnosis, not an evaluation of your ability, and not a prediction of your results.</p></div>
-      <div><h4 className="font-semibold text-[#fbbf24]">How scores are built</h4><p className="mt-2">Based on your 24 answers (4 per area), over a two-week recall. Each area is scored 0–100 — higher means less stress and more capacity. Levels: below 35 needs care first; 35–49 watch; 50–64 steady; 65+ a resource. Overall is the average of the six areas.</p></div>
-      <div><h4 className="font-semibold text-[#fbbf24]">Privacy</h4><p className="mt-2">Your responses and this report are private to you. Nothing is shared with faculty, parents, recruiters or peers without your explicit consent. You decide if and when to share it with a counsellor or doctor.</p></div>
-      <div><h4 className="font-semibold text-[#fbbf24]">If something feels urgent</h4><p className="mt-2">This report measures everyday stress; it does not monitor safety. If you feel unsafe or are thinking of harming yourself, please seek help now: Tele-MANAS 14416 or 1800-891-4416 (24/7, toll-free, confidential), 112 for emergencies, or your campus health centre.</p></div>
+    <div className="grid md:grid-cols-2 gap-6 text-sm ft-muted leading-relaxed">
+      <div><h4 className="font-semibold ft-accent">What this report is</h4><p className="mt-2">EquiMind is a self-reflection and action tool. It helps students notice stress patterns in six areas of life, understand what may be driving them, and act on them with small, concrete steps over 14 days. It is a wellbeing report — not a diagnosis, not an evaluation of your ability, and not a prediction of your results.</p></div>
+      <div><h4 className="font-semibold ft-accent">How scores are built</h4><p className="mt-2">Based on your 24 answers (4 per area), over a two-week recall. Each area is scored 0–100 — higher means less stress and more capacity. Levels: below 35 needs care first; 35–49 watch; 50–64 steady; 65+ a resource. Overall is the average of the six areas.</p></div>
+      <div><h4 className="font-semibold ft-accent">Privacy</h4><p className="mt-2">Your responses and this report are private to you. Nothing is shared with faculty, parents, recruiters or peers without your explicit consent. You decide if and when to share it with a counsellor or doctor.</p></div>
+      <div><h4 className="font-semibold ft-accent">If something feels urgent</h4><p className="mt-2">This report measures everyday stress; it does not monitor safety. If you feel unsafe or are thinking of harming yourself, please seek help now: Tele-MANAS 14416 or 1800-891-4416 (24/7, toll-free, confidential), 112 for emergencies, or your campus health centre.</p></div>
     </div>
-    {r.path === 2 && <p data-testid="counsellor-handover" className="mt-6 rounded-xl bg-white/10 p-4 text-sm text-white/90"><b>For your counsellor:</b> overall {r.overall}; priority areas {r.priority_pages.map((p) => `${p.name} (${p.score})`).join(", ")}. Shared only if you choose to.</p>}
-    <div data-testid="declaration" className="mt-8 rounded-2xl border border-[#fbbf24]/30 p-5 text-sm text-white/80">
-      <div className="font-mono text-[11px] uppercase tracking-widest text-[#fbbf24]">Declaration</div>
+    {r.path === 2 && <p data-testid="counsellor-handover" className="mt-6 rounded-xl ft-glass border p-4 text-sm ft-fg"><b>For your counsellor:</b> overall {r.overall}; priority areas {r.priority_pages.map((p) => `${p.name} (${p.score})`).join(", ")}. Shared only if you choose to.</p>}
+    <div data-testid="declaration" className="mt-8 rounded-2xl border ft-line p-5 text-sm ft-muted">
+      <div className="font-mono text-[11px] uppercase tracking-widest ft-accent">Declaration</div>
       <p className="mt-2">This report was generated by Biglyp {r.version} on {fmtDate(r.created_at)} for {r.student.name}. Content, bands and activity library are reviewed by Biglyp&apos;s wellbeing advisory committee.</p>
     </div>
   </PageShell>

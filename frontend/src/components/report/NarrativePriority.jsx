@@ -19,7 +19,7 @@ export const NarrativePage = ({ r, n, total }) => (
       <div data-testid="stress-loop" className="mt-4 flex flex-wrap items-center gap-2">
         {r.narrative.loop.map((s, i) => (
           <span key={s} className="flex items-center gap-2">
-            <span className="rounded-full bg-[#1b1e3d] text-white px-4 py-2 text-sm">{s}</span>
+            <span className="rounded-full ft-bg px-4 py-2 text-sm">{s}</span>
             {i < r.narrative.loop.length - 1 && <ArrowRight className="h-4 w-4 text-[#f07167]" />}
           </span>
         ))}

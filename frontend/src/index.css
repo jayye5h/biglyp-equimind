@@ -88,6 +88,15 @@ body {
 
 html { scroll-behavior: smooth; }
 
+.ft-bg { background-color: var(--ft-bg); color: var(--ft-fg); }
+.ft-fg { color: var(--ft-fg); }
+.ft-muted { color: var(--ft-muted); }
+.ft-faint { color: var(--ft-faint); }
+.ft-accent { color: var(--ft-accent); }
+.ft-alert { color: var(--ft-alert); }
+.ft-glass { background-color: var(--ft-glass); border-color: var(--ft-line); }
+.ft-line { border-color: var(--ft-line); }
+
 @layer base {
     [data-debug-wrapper="true"] { display: contents !important; }
     [data-debug-wrapper="true"] > * {
