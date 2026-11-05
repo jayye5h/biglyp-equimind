@@ -39,6 +39,9 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 ## Implemented (2026-11-05, iteration 6)
 - Mood Week View on dashboard: 7-day bar chart (height + colour by mood band) with Week 1 / Week 2 tabs, days-logged count and "mostly <mood>" summary; today highlighted.
 
+## Implemented (2026-11-05, iteration 7)
+- PDF export pages now size to their content (210 mm wide, height varies per section) — no blank space on short pages.
+
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)
