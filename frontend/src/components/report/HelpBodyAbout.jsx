@@ -4,7 +4,7 @@ import { PageShell } from "@/components/report/PageShell";
 import { fmtDate } from "@/lib/api";
 
 const tiers = (r) => [
-  { t: "1. Yourself", c: "bg-[#e6f4f1] text-[#226b60]", d: `Your 14-day plan: ${r.plan.map((a) => a.short.toLowerCase()).join(", ")}. Start today.` },
+  { t: "1. Yourself", c: "bg-eq-soft text-eq-dark", d: `Your 14-day plan: ${r.plan.map((a) => a.short.toLowerCase()).join(", ")}. Start today.` },
   { t: "2. One trusted person", c: "bg-[#fef3c7] text-[#92400e]", d: "Family or a close friend. For money worry, homesickness, or feeling alone with it. A call home that includes one real thing — not just 'all fine'." },
   { t: "3. Campus counsellor", c: r.path === 2 ? "bg-[#f07167] text-white" : "bg-[#fff0ee] text-[#c2410c]", strong: r.path === 2,
     d: r.path === 2 ? `Book this week. Free, confidential. Your score pattern (overall ${r.overall}, lowest ${Math.min(...r.areas.map((a) => a.score))}) makes this strongly suggested.` : "Free and confidential. For sleep that won't budge, worry that interferes with life, or feeling you've been carrying it too long alone." },
@@ -29,7 +29,7 @@ export const HelpPage = ({ r, n, total }) => {
           <div key={s.to} className="rounded-2xl border border-slate-100 p-4 flex flex-col">
             <div className="text-xs font-semibold text-slate-500">{s.to}</div>
             <p className="mt-2 text-sm text-slate-700 italic flex-1">&ldquo;{s.text}&rdquo;</p>
-            <button data-testid={`copy-script-${i}`} onClick={() => copy(s.text)} className="mt-3 self-start text-xs text-[#2d8a7c] hover:text-[#226b60] flex items-center gap-1"><Copy className="h-3.5 w-3.5" /> Copy</button>
+            <button data-testid={`copy-script-${i}`} onClick={() => copy(s.text)} className="mt-3 self-start text-xs text-eq hover:text-eq-dark flex items-center gap-1"><Copy className="h-3.5 w-3.5" /> Copy</button>
           </div>
         ))}
       </div>
@@ -51,7 +51,7 @@ export const BodyPage = ({ r, n, total }) => (
       </table>
     </div>
     <div className="mt-6 grid md:grid-cols-2 gap-4 text-sm">
-      <div className="rounded-2xl bg-[#e6f4f1] p-5"><h4 className="font-semibold text-[#226b60]">What a basic health check-up looks like</h4>
+      <div className="rounded-2xl bg-eq-soft p-5"><h4 className="font-semibold text-eq-dark">What a basic health check-up looks like</h4>
         <ul className="mt-2 space-y-1.5 text-slate-700"><li>A 15-minute visit to your campus health centre or a GP. Tell them: &lsquo;I&apos;ve been tired, sleeping poorly and finding it hard to focus for weeks.&rsquo;</li><li>A common basic panel: CBC, ferritin / iron studies, Vitamin D (25-OH), Vitamin B12, thyroid (TSH). The doctor decides which tests fit.</li></ul></div>
       <div className="rounded-2xl bg-[#fef3c7] p-5"><h4 className="font-semibold text-[#92400e]">Both can be true</h4><p className="mt-2 text-slate-700">Stress is real AND a physical shortfall can make it harder to cope. Rule out the physical, keep going with the plan{r.path === 2 ? ", and keep your counsellor appointment" : ""}. This report never prescribes supplements or doses.</p></div>
     </div>

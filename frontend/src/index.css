@@ -9,37 +9,59 @@ body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: #f0fbf9;
+    background: rgb(var(--eq-bg));
     color: #1e293b;
+    transition: background-color .3s ease;
+}
+
+:root, [data-theme="sky"] {
+    --eq-p: 58 134 200; --eq-dark: 43 106 163; --eq-soft: 227 240 251;
+    --eq-softer: 208 229 247; --eq-bg: 240 247 253; --eq-mid: 127 182 227;
+}
+[data-theme="mint"] {
+    --eq-p: 45 138 124; --eq-dark: 34 107 96; --eq-soft: 230 244 241;
+    --eq-softer: 214 239 233; --eq-bg: 240 251 249; --eq-mid: 94 184 169;
 }
 
 .font-serif { font-family: 'Playfair Display', Georgia, serif; }
 .font-mono { font-family: 'JetBrains Mono', monospace; }
 .font-sans { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-::selection { background: #2d8a7c; color: #fff; }
+::selection { background: rgb(var(--eq-p)); color: #fff; }
 
 @layer base {
-    :root {
+    :root, [data-theme="sky"] {
+        --background: 207 76% 97%;
+        --primary: 208 56% 51%;
+        --ring: 208 56% 51%;
+        --secondary: 208 70% 94%;
+        --muted: 208 50% 94%;
+        --accent: 208 70% 94%;
+        --border: 208 40% 88%;
+        --input: 208 40% 88%;
+    }
+    [data-theme="mint"] {
         --background: 168 60% 96%;
+        --primary: 171 51% 36%;
+        --ring: 171 51% 36%;
+        --secondary: 168 40% 92%;
+        --muted: 168 30% 93%;
+        --accent: 168 40% 92%;
+        --border: 170 25% 86%;
+        --input: 170 25% 86%;
+    }
+    :root {
         --foreground: 222 30% 17%;
         --card: 0 0% 100%;
         --card-foreground: 222 30% 17%;
         --popover: 0 0% 100%;
         --popover-foreground: 222 30% 17%;
-        --primary: 171 51% 36%;
         --primary-foreground: 0 0% 100%;
-        --secondary: 168 40% 92%;
         --secondary-foreground: 222 30% 17%;
-        --muted: 168 30% 93%;
         --muted-foreground: 215 16% 47%;
-        --accent: 168 40% 92%;
         --accent-foreground: 222 30% 17%;
         --destructive: 0 72% 51%;
         --destructive-foreground: 0 0% 98%;
-        --border: 170 25% 86%;
-        --input: 170 25% 86%;
-        --ring: 171 51% 36%;
         --radius: 1rem;
     }
 }
@@ -50,7 +72,7 @@ body {
 }
 
 .eq-grain {
-    background-image: radial-gradient(rgba(45,138,124,0.08) 1px, transparent 1px);
+    background-image: radial-gradient(rgb(var(--eq-p) / 0.08) 1px, transparent 1px);
     background-size: 22px 22px;
 }
 

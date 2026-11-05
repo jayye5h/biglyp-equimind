@@ -15,7 +15,7 @@ export const AREA_COLORS = {
 export const LEVEL_STYLE = {
   "Needs care first": "bg-[#fff0ee] text-[#c2410c] border-[#f07167]/40",
   Watch: "bg-[#fef3c7] text-[#92400e] border-[#f59e0b]/40",
-  Steady: "bg-[#e6f4f1] text-[#226b60] border-[#2d8a7c]/30",
+  Steady: "bg-eq-soft text-eq-dark border-eq/30",
   Strength: "bg-[#f3e8ff] text-[#6d28d9] border-[#8b5cf6]/30",
 };
 

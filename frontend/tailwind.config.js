@@ -15,6 +15,14 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)'
       },
       colors: {
+        eq: {
+          DEFAULT: 'rgb(var(--eq-p) / <alpha-value>)',
+          dark: 'rgb(var(--eq-dark) / <alpha-value>)',
+          soft: 'rgb(var(--eq-soft) / <alpha-value>)',
+          softer: 'rgb(var(--eq-softer) / <alpha-value>)',
+          bg: 'rgb(var(--eq-bg) / <alpha-value>)',
+          mid: 'rgb(var(--eq-mid) / <alpha-value>)'
+        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

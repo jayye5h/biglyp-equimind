@@ -1,6 +1,7 @@
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
 import { PageShell, Pill } from "@/components/report/PageShell";
 import { fmtDate, LEVEL_STYLE } from "@/lib/api";
+import { useTheme } from "@/lib/theme";
 
 const nameOf = (r, k) => r.areas.find((a) => a.key === k);
 export const nextStep = (r) => (r.path === 2 ? "Start the 14-day plan today and book a campus counsellor this week" : "Start the 14-day plan today and protect your strengths");
@@ -35,6 +36,7 @@ const Tile = ({ label, value, tone, testid }) => (
 );
 
 export const SnapshotPage = ({ r, n, total, print }) => {
+  const { palette } = useTheme();
   const data = r.areas.map((a) => ({ area: a.short, score: a.score }));
   const prev = r.previous ? Object.fromEntries(r.previous.areas.map((a) => [a.key, a.score])) : null;
   return (
@@ -43,15 +45,15 @@ export const SnapshotPage = ({ r, n, total, print }) => {
         <div className="w-full min-w-0 h-[300px]" data-testid="radar-chart">
           <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={data} outerRadius={print ? "70%" : "62%"} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
-            <PolarGrid stroke="#cfe7e2" />
+            <PolarGrid stroke={palette.grid} />
             <PolarAngleAxis dataKey="area" tick={{ fontSize: 11, fill: "#475569" }} />
             <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-            <Radar dataKey="score" stroke="#2d8a7c" fill="#2d8a7c" fillOpacity={0.3} strokeWidth={2} isAnimationActive={false} />
+            <Radar dataKey="score" stroke={palette.p} fill={palette.p} fillOpacity={0.3} strokeWidth={2} isAnimationActive={false} />
           </RadarChart>
           </ResponsiveContainer>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <Tile testid="tile-overall" label="Overall feel" value={`${r.overall}/100`} tone="bg-[#e6f4f1] text-[#226b60]" />
+          <Tile testid="tile-overall" label="Overall feel" value={`${r.overall}/100`} tone="bg-eq-soft text-eq-dark" />
           <Tile testid="tile-priorities" label="Three to work on first" value={r.priorities.map((k) => nameOf(r, k).short).join(", ")} tone="bg-[#fff0ee] text-[#c2410c]" />
           <Tile testid="tile-resources" label="Your resources" value={r.resources.length ? r.resources.map((k) => nameOf(r, k).short).join(", ") : "Still building — every area needs some care right now"} tone="bg-[#f3e8ff] text-[#6d28d9]" />
           <Tile testid="tile-next-step" label="Next step" value={nextStep(r)} tone="bg-[#fef3c7] text-[#92400e]" />
@@ -62,7 +64,7 @@ export const SnapshotPage = ({ r, n, total, print }) => {
           <div key={a.key} data-testid={`area-score-${a.key}`} className="rounded-xl border border-slate-100 p-3 sm:p-4 flex items-center justify-between gap-2">
             <div><div className="text-sm font-medium text-slate-700">{a.name}</div><Pill className={`mt-1.5 whitespace-nowrap text-[11px] ${LEVEL_STYLE[a.level]}`}>{a.level}</Pill></div>
             <div className="text-right"><div className="font-mono text-2xl font-semibold text-slate-900">{a.score}</div>
-              {prev && prev[a.key] !== undefined && <div className={`text-[11px] font-mono ${a.score - prev[a.key] >= 0 ? "text-[#2d8a7c]" : "text-[#c2410c]"}`}>{a.score - prev[a.key] >= 0 ? "+" : ""}{a.score - prev[a.key]} vs last</div>}
+              {prev && prev[a.key] !== undefined && <div className={`text-[11px] font-mono ${a.score - prev[a.key] >= 0 ? "text-eq" : "text-[#c2410c]"}`}>{a.score - prev[a.key] >= 0 ? "+" : ""}{a.score - prev[a.key]} vs last</div>}
             </div>
           </div>
         ))}

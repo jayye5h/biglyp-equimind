@@ -25,7 +25,7 @@ export const PlanPage = ({ r, n, total, onSave }) => {
                   const on = ticks.has(key);
                   return (
                     <td key={d}><button data-testid={`plan-tick-${i}-${d}`} onClick={() => toggle(key)} aria-pressed={on}
-                      className={`h-8 w-full min-w-[28px] rounded-lg grid place-items-center transition-colors ${on ? "bg-[#2d8a7c] text-white" : "bg-[#f0fbf9] hover:bg-[#d6efe9]"}`}>{on && <Check className="h-4 w-4" />}</button></td>
+                      className={`h-8 w-full min-w-[28px] rounded-lg grid place-items-center transition-colors ${on ? "bg-eq text-white" : "bg-eq-bg hover:bg-eq-softer"}`}>{on && <Check className="h-4 w-4" />}</button></td>
                   );
                 })}
               </tr>
@@ -35,7 +35,7 @@ export const PlanPage = ({ r, n, total, onSave }) => {
       </div>
       <p data-testid="plan-tick-count" className="mt-3 text-xs font-mono text-slate-500">{ticks.size} / 70 ticks</p>
       <div className="mt-6 grid md:grid-cols-3 gap-4 text-sm">
-        <div className="rounded-2xl bg-[#e6f4f1] p-5"><h4 className="font-semibold text-[#226b60]">What counts as a good day</h4><ul className="mt-2 space-y-1.5 text-slate-700"><li>3 or more ticks.</li><li>1 or 2 ticks and you still showed up — count that too.</li><li>Zero ticks? Tomorrow is the restart, not next Monday.</li></ul></div>
+        <div className="rounded-2xl bg-eq-soft p-5"><h4 className="font-semibold text-eq-dark">What counts as a good day</h4><ul className="mt-2 space-y-1.5 text-slate-700"><li>3 or more ticks.</li><li>1 or 2 ticks and you still showed up — count that too.</li><li>Zero ticks? Tomorrow is the restart, not next Monday.</li></ul></div>
         <div className="rounded-2xl bg-[#fef3c7] p-5"><h4 className="font-semibold text-[#92400e]">Minimum version</h4><p className="mt-2 text-slate-700">Just do activity 1 ({r.plan[0]?.short}) and activity 2 ({r.plan[1]?.short}). That still counts, and it protects everything else.</p></div>
         <div className="rounded-2xl bg-[#f3e8ff] p-5"><h4 className="font-semibold text-[#6d28d9]">Why so few</h4><p className="mt-2 text-slate-700">Because &apos;add 15 habits&apos; is how plans fail. These five are chosen so that even if you only do two, you&apos;re still working on your biggest areas.</p></div>
       </div>
@@ -45,7 +45,7 @@ export const PlanPage = ({ r, n, total, onSave }) => {
 
 const BANDS = [
   { v: 0, l: "Struggling", c: "#f07167" }, { v: 1, l: "Rough", c: "#fb923c" }, { v: 2, l: "Mixed", c: "#fbbf24" },
-  { v: 3, l: "Steady", c: "#5eb8a9" }, { v: 4, l: "Strong", c: "#2d8a7c" },
+  { v: 3, l: "Steady", c: "rgb(var(--eq-mid))" }, { v: 4, l: "Strong", c: "rgb(var(--eq-p))" },
 ];
 const ROWS = ["Overall feel (1-10)", "Nights of good sleep", "10-minute starts", "Honest sentences"];
 const COLS = ["Day 1", "Week 1", "Week 2", "Target"];
@@ -56,7 +56,7 @@ const MoodStrip = ({ r, onSave }) => {
   const [day, setDay] = useState(Math.min(elapsed, 13));
   const moods = r.moods || {};
   return (
-    <div className="rounded-2xl bg-[#f0fbf9] p-6">
+    <div className="rounded-2xl bg-eq-bg p-6">
       <h3 className="font-semibold text-slate-800">Mood strip — Day {day + 1}</h3>
       <div className="mt-4 flex flex-wrap gap-2">
         {BANDS.map((b) => (
@@ -91,7 +91,7 @@ export const TrackPage = ({ r, n, total, onSave }) => {
                 <td className="py-2 pr-3 text-slate-700">{row}</td>
                 {COLS.map((c, j) => (
                   <td key={c} className="px-1"><input data-testid={`tracker-${i}-${j}`} value={tracker[`${i}-${j}`] || ""} onChange={(e) => setTracker({ ...tracker, [`${i}-${j}`]: e.target.value })}
-                    onBlur={() => onSave({ tracker })} className="w-full h-9 rounded-lg bg-[#f0fbf9] text-center outline-none focus:ring-2 focus:ring-[#2d8a7c]" /></td>
+                    onBlur={() => onSave({ tracker })} className="w-full h-9 rounded-lg bg-eq-bg text-center outline-none focus:ring-2 focus:ring-eq" /></td>
                 ))}
               </tr>
             ))}
@@ -103,7 +103,7 @@ export const TrackPage = ({ r, n, total, onSave }) => {
           <label key={q} className="rounded-2xl border border-slate-100 p-4 block">
             <span className="text-sm font-medium text-slate-800">Sunday · {q}</span>
             <textarea data-testid={`reflection-${i}`} value={refl[i] || ""} onChange={(e) => setRefl({ ...refl, [i]: e.target.value })} onBlur={() => onSave({ reflections: refl })}
-              rows={3} className="mt-2 w-full rounded-lg bg-[#f0fbf9] p-2 text-sm outline-none focus:ring-2 focus:ring-[#2d8a7c] resize-none" placeholder="Write a line…" />
+              rows={3} className="mt-2 w-full rounded-lg bg-eq-bg p-2 text-sm outline-none focus:ring-2 focus:ring-eq resize-none" placeholder="Write a line…" />
           </label>
         ))}
       </div>

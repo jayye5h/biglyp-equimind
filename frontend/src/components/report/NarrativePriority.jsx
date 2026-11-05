@@ -7,7 +7,7 @@ export const NarrativePage = ({ r, n, total }) => (
     <p data-testid="narrative-text" className="font-serif text-lg sm:text-xl leading-relaxed text-slate-800">{r.narrative.narrative}</p>
     {r.narrative.source === "ai" && <p className="mt-3 text-[11px] text-slate-400 flex items-center gap-1"><Sparkles className="h-3 w-3" /> Written with AI from your own answers, within EquiMind&apos;s safe-wording rules.</p>}
     {r.high_items.length > 0 && (
-      <div className="mt-8 rounded-2xl bg-[#f0fbf9] p-6">
+      <div className="mt-8 rounded-2xl bg-eq-bg p-6">
         <h3 className="font-semibold text-slate-800">You said these are happening often or almost always</h3>
         <ul className="mt-4 space-y-2" data-testid="high-items-list">
           {r.high_items.map((t) => <li key={t} className="flex gap-3 text-slate-700"><span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#f07167] shrink-0" />{t}</li>)}
@@ -46,8 +46,8 @@ export const PriorityPage = ({ p, idx, n, total }) => (
       <span className="font-mono text-3xl font-semibold text-slate-900">{p.score}<span className="text-base text-slate-400">/100</span></span>
       <Pill className={LEVEL_STYLE[p.level]}>{p.level}</Pill>
     </div>
-    <div className="mt-6 rounded-2xl bg-[#e6f4f1] p-6">
-      <h3 className="font-mono text-[11px] uppercase tracking-widest text-[#226b60]">Why this matters</h3>
+    <div className="mt-6 rounded-2xl bg-eq-soft p-6">
+      <h3 className="font-mono text-[11px] uppercase tracking-widest text-eq-dark">Why this matters</h3>
       <p className="mt-3 text-slate-800 leading-relaxed">{p.theory}</p>
     </div>
     <h3 className="mt-8 font-mono text-[11px] uppercase tracking-widest text-[#c2410c]">Do this</h3>

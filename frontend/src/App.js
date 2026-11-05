@@ -2,6 +2,7 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider, useAuth } from "@/lib/auth";
+import { ThemeProvider } from "@/lib/theme";
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
@@ -20,6 +21,7 @@ const Guard = ({ role, children }) => {
 function App() {
   return (
     <div className="App">
+      <ThemeProvider>
       <AuthProvider>
         <BrowserRouter>
           <Routes>
@@ -34,6 +36,7 @@ function App() {
         </BrowserRouter>
         <Toaster position="top-center" />
       </AuthProvider>
+      </ThemeProvider>
     </div>
   );
 }

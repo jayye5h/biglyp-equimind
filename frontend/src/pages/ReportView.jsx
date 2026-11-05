@@ -44,7 +44,7 @@ export default function ReportView() {
 
   const download = (
     <button data-testid="download-pdf-report-btn" onClick={() => setExporting(true)} disabled={!r || exporting}
-      className="h-9 px-4 rounded-full bg-[#2d8a7c] text-white text-sm inline-flex items-center gap-1.5 hover:bg-[#226b60] transition-colors disabled:opacity-60">
+      className="h-9 px-4 rounded-full bg-eq text-white text-sm inline-flex items-center gap-1.5 hover:bg-eq-dark transition-colors disabled:opacity-60">
       {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />} <span className="hidden sm:inline">{exporting ? "Preparing PDF…" : "Download PDF"}</span>
     </button>
   );
@@ -67,7 +67,7 @@ export default function ReportView() {
         </div>
       </main>
       {exporting && r && (
-        <div ref={printRef} aria-hidden className="fixed top-0 -left-[12000px] w-[900px] p-4 bg-[#f0fbf9]">
+        <div ref={printRef} aria-hidden className="fixed top-0 -left-[12000px] w-[900px] p-4 bg-eq-bg">
           <ReportPages r={r} onSave={() => {}} print />
         </div>
       )}
