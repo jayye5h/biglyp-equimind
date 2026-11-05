@@ -11,10 +11,16 @@ const tiers = (r) => [
   { t: "4. Professional help", c: "bg-[#f3e8ff] text-[#6d28d9]", d: "Psychologist, psychiatrist or doctor — usually reached through your counsellor. Needed when low mood or loss of interest lasts most days for 2 weeks+, panic attacks, using substances to cope, or the plan makes no difference after 4 weeks." },
 ];
 
-export const HelpPage = ({ r, n, total }) => {
+export const HelpPage = ({ r, n, total }) => (
+  <PageShell n={n} total={total} eyebrow="Page 9" title="Who Can Help & When to Ask" id="help" testid="report-page-help">
+    <HelpContent r={r} />
+  </PageShell>
+);
+
+export const HelpContent = ({ r }) => {
   const copy = (t) => navigator.clipboard?.writeText(t).then(() => toast.success("Copied"));
   return (
-    <PageShell n={n} total={total} eyebrow="Page 9" title="Who Can Help & When to Ask" id="help" testid="report-page-help">
+    <>
       <div className="grid md:grid-cols-2 gap-4">
         {tiers(r).map((x, i) => (
           <div key={x.t} data-testid={`help-tier-${i + 1}`} className={`rounded-2xl p-5 ${x.c}`}>
@@ -37,7 +43,7 @@ export const HelpPage = ({ r, n, total }) => {
         <Phone className="h-5 w-5 ft-alert shrink-0 mt-0.5" />
         <p className="text-sm leading-relaxed"><b className="ft-alert">GET HELP TODAY IF:</b> you have thoughts of harming yourself or of not wanting to be alive, or you feel unsafe. Call <b>Tele-MANAS 14416</b> or <b>1800-891-4416</b> (24/7, toll-free, confidential), or <b>112</b> in an emergency, or go to campus health. Tell someone physically near you.</p>
       </div>
-    </PageShell>
+    </>
   );
 };
 

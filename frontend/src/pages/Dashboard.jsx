@@ -5,6 +5,7 @@ import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "rec
 import { AppHeader, SafetyStrip } from "@/components/Shell";
 import { api, fmtDate, LEVEL_STYLE } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { ActionSections } from "@/components/DashboardActions";
 import { useTheme } from "@/lib/theme";
 
 const levelOf = (s) => (s < 35 ? "Needs care first" : s < 50 ? "Watch" : s < 65 ? "Steady" : "Strength");
@@ -68,9 +69,13 @@ const History = ({ reports }) => {
 export default function Dashboard() {
   const { user } = useAuth();
   const [reports, setReports] = useState(null);
+  const [latest, setLatest] = useState(null);
 
   useEffect(() => {
-    api.get("/reports").then((r) => setReports(r.data));
+    api.get("/reports").then((r) => {
+      setReports(r.data);
+      if (r.data[0]) api.get(`/reports/${r.data[0].id}`).then((x) => setLatest(x.data));
+    });
   }, []);
 
   return (
@@ -92,7 +97,7 @@ export default function Dashboard() {
             <h3 className="font-serif text-2xl font-semibold">No check-ins yet</h3>
             <p className="mt-2 text-slate-500">Your first report and 14-day plan will appear here.</p>
           </div>
-        ) : (<><LatestCard r={reports[0]} /><History reports={reports} /></>)}
+        ) : (<><LatestCard r={reports[0]} /><History reports={reports} />{latest && <ActionSections r={latest} />}</>)}
         <SafetyStrip testid="dashboard-safety-strip" />
       </main>
     </div>

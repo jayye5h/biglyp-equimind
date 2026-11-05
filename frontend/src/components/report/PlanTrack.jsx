@@ -43,7 +43,7 @@ export const PlanPage = ({ r, n, total, onSave }) => {
   );
 };
 
-const BANDS = [
+export const BANDS = [
   { v: 0, l: "Struggling", c: "#f07167" }, { v: 1, l: "Rough", c: "#fb923c" }, { v: 2, l: "Mixed", c: "#fbbf24" },
   { v: 3, l: "Steady", c: "rgb(var(--eq-mid))" }, { v: 4, l: "Strong", c: "rgb(var(--eq-p))" },
 ];
