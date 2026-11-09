@@ -40,7 +40,7 @@ export const DailyCheckin = ({ r, day, open, onClose, onSave }) => {
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent data-testid="daily-checkin-dialog" className="max-w-md rounded-[2rem] p-7 sm:p-8 overflow-hidden">
+      <DialogContent data-testid="daily-checkin-dialog" className="w-[calc(100%-2rem)] max-w-md rounded-[2rem] p-6 sm:p-8 overflow-hidden">
         <DialogTitle className="font-serif text-2xl text-center">{done ? "Day " + (day + 1) + " logged" : step < 0 ? `How did Day ${day + 1} go?` : `Activity ${step + 1} of ${r.plan.length}`}</DialogTitle>
         <DialogDescription className="text-center text-sm text-slate-500 -mt-1">{step < 0 ? "Five quick taps on yesterday's plan. Watch your student light up." : done ? `You did ${yes} of ${r.plan.length} activities.` : act.name}</DialogDescription>
         <div className="relative mt-2">

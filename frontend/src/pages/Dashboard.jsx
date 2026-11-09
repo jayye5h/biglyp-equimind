@@ -112,7 +112,7 @@ export default function Dashboard() {
             <h3 className="font-serif text-2xl font-semibold">No check-ins yet</h3>
             <p className="mt-2 text-slate-500">Your first report and 14-day plan will appear here.</p>
           </div>
-        ) : (<><LatestCard r={reports[0]} /><History reports={reports} />{latest && <ActionSections r={latest} onSave={saveLatest} />}</>)}
+        ) : (<><LatestCard r={latest ? { ...reports[0], ticks: latest.ticks } : reports[0]} /><History reports={reports} />{latest && <ActionSections r={latest} onSave={saveLatest} />}</>)}
         {showDaily && <DailyCheckin r={latest} day={day} open onClose={closeDaily} onSave={saveLatest} />}
         <SafetyStrip testid="dashboard-safety-strip" />
       </main>

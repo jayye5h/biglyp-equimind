@@ -19,10 +19,11 @@ export const week1Writeup = (r, s) => {
   const first = r.student.name.split(" ")[0];
   const phrase = s.pct >= 70 ? "a strong start" : s.pct >= 40 ? "a real start you can build on" : "a slow start — and that is information, not failure";
   const parts = [`${first}, in your first week you completed ${s.total} of 35 planned activities (${s.pct}%) — ${phrase}.`];
-  if (s.best.done > s.hardest.done) parts.push(`${s.best.short} was your most consistent habit (${s.best.done}/7 days), while ${s.hardest.short} was the hardest to keep (${s.hardest.done}/7).`);
+  if (s.total === 0) parts.push("None of the five activities were ticked this week — that usually means the week got busy, not that you failed.");
+  else if (s.best.done > s.hardest.done) parts.push(`${s.best.name} was your most consistent habit (${s.best.done}/7 days), while ${s.hardest.name} was the hardest to keep (${s.hardest.done}/7).`);
   else parts.push(`You kept all five activities at a similar rhythm (${s.best.done}/7 days each).`);
   parts.push(s.moodDays ? `You logged your mood on ${s.moodDays} of 7 days, and it was mostly ${bandName(s.avgMood)}.` : "You didn't log your mood this week — one tap a day on the dashboard helps you see your patterns.");
-  parts.push(s.hardest.done <= 2 ? `For Week 2, try just the minimum version of ${s.hardest.short} — even two days counts.` : "For Week 2, keep the same rhythm — consistency matters more than intensity.");
+  parts.push(s.hardest.done <= 2 ? `For Week 2, try just the minimum version of ${s.hardest.name} — even two days counts.` : "For Week 2, keep the same rhythm — consistency matters more than intensity.");
   return parts.join(" ");
 };
 
@@ -36,8 +37,8 @@ export const trendInsights = (r, s1, s2) => {
   const out = [];
   const diff = s2.total - s1.total;
   out.push(diff > 0 ? `Your consistency grew: ${s2.total} activities in Week 2 vs ${s1.total} in Week 1 (+${diff}).` : diff < 0 ? `Week 2 was harder to keep up: ${s2.total} activities vs ${s1.total} in Week 1. Busy weeks happen — notice what got in the way.` : `You held a steady rhythm: ${s2.total} activities in each week.`);
-  if (improved.length) out.push(`Habits that grew: ${improved.map((a) => a.short).join(", ")}.`);
-  if (dropped.length) out.push(`Habits that slipped: ${dropped.map((a) => a.short).join(", ")} — these are the ones to make smaller, not drop.`);
+  if (improved.length) out.push(`Habits that grew: ${improved.map((a) => a.name).join(", ")}.`);
+  if (dropped.length) out.push(`Habits that slipped: ${dropped.map((a) => a.name).join(", ")} — these are the ones to make smaller, not drop.`);
   let moodDown = false;
   if (s1.avgMood !== null && s2.avgMood !== null) {
     const m = s2.avgMood - s1.avgMood;

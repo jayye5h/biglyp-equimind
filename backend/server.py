@@ -2,6 +2,7 @@ import asyncio
 import os
 import logging
 import random
+import re
 import secrets
 import uuid
 from contextlib import suppress
@@ -51,6 +52,7 @@ async def ensure_indexes() -> None:
 
 app = FastAPI()
 api = APIRouter(prefix="/api")
+TICK_RE = re.compile(r"^[0-4]-([0-9]|1[0-3])$")
 
 
 def now():
@@ -215,6 +217,12 @@ async def update_progress(rid: str, body: ProgressIn, user: dict = Depends(stude
         raise HTTPException(422, "Mood must be 0-4 for days 0-13")
     if body.logged_days is not None and any(d < 0 or d > 13 for d in body.logged_days):
         raise HTTPException(422, "Logged days must be 0-13")
+    if body.logged_days is not None:
+        upd["logged_days"] = sorted(set(body.logged_days))
+    if body.ticks is not None and any(not TICK_RE.match(t) for t in body.ticks):
+        raise HTTPException(422, "Invalid tick")
+    if body.ticks is not None:
+        upd["ticks"] = list(dict.fromkeys(body.ticks))
     if body.ticks is not None and len(body.ticks) > 70:
         raise HTTPException(422, "Too many ticks")
     if len(str(body.tracker or "")) + len(str(body.reflections or "")) > 20000:

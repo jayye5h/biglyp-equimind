@@ -45,6 +45,12 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 ## Implemented (2026-11-09, iteration 8)
 - Report-writing wait screen shows 20 rotating zen statements/mini exercises (random start, changes every 6 s, never repeats back-to-back).
 
+## Implemented (2026-11-09, iteration 9)
+- PDF excludes 14-Day Plan & Track pages. Week 1 Progress page (stats + template write-up) unlocks at Day 7; 14-Day Trend page (W1 vs W2 table + inferences + next step) at Day 14 — both in-app and PDF (lib/progress.js, ProgressPages.jsx).
+- Dashboard daily check-in popup (>=24h after report, once per day, `logged_days`): 5 animated activity questions with SVG student (sleeping scene for wake-up, animated props), mood meter improves on Yes, dips on No; saves ticks.
+- Track & Reflect: explainer of the weekly tracker objective, clearer rows/columns with hints, auto rows from plan ticks.
+- Backend validates tick format and dedupes logged_days.
+
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)
