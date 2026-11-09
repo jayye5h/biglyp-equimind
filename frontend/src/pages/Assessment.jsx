@@ -34,13 +34,46 @@ const Question = ({ item, idx, total, scale, value, onPick }) => (
   </div>
 );
 
-const Writing = () => (
-  <div data-testid="report-generating" className="max-w-xl mx-auto text-center py-16">
-    <span className="mx-auto h-20 w-20 rounded-full bg-eq-soft grid place-items-center eq-breathe"><Loader2 className="h-8 w-8 text-eq animate-spin" /></span>
-    <h2 className="mt-8 font-serif text-3xl font-semibold">Writing your report…</h2>
-    <p className="mt-3 text-slate-500">Breathe in for 4, hold for 7, out for 8. This takes about 20 seconds.</p>
-  </div>
-);
+const ZEN = [
+  "Breathe in for 4, hold for 7, out for 8.",
+  "Drop your shoulders away from your ears. Notice how much lighter they feel.",
+  "Unclench your jaw and let your tongue rest softly in your mouth.",
+  "Name five things you can see around you, slowly, one at a time.",
+  "Press your feet into the floor. Feel the ground holding you up.",
+  "Breathe in through your nose, and let it out slowly as if through a straw.",
+  "Look at the farthest point you can see. Let your eyes rest there for a moment.",
+  "Roll your neck gently — left, back to centre, then right.",
+  "Place a hand on your chest. Feel it rise and fall three times.",
+  "Squeeze your fists tight for five seconds, then let them go completely.",
+  "Notice one sound near you and one sound far away.",
+  "Breathe in for 4, hold for 4, out for 4, hold for 4. Repeat once more.",
+  "You don't have to solve everything today. Just the next small step.",
+  "Soften your forehead and the space between your eyebrows.",
+  "Think of one person who makes you feel at ease. Hold that thought for a breath.",
+  "Stretch your arms overhead, reach high, then let them float down.",
+  "Let your next breath out be longer than the one before it.",
+  "Name one small thing that went okay today, however tiny.",
+  "Sip some water if you have it nearby. Notice it as you swallow.",
+  "Close your eyes for three slow breaths. Everything will still be here.",
+];
+
+const Writing = () => {
+  const [i, setI] = useState(() => Math.floor(Math.random() * ZEN.length));
+  useEffect(() => {
+    const t = setInterval(() => {
+      setI((cur) => (cur + 1 + Math.floor(Math.random() * (ZEN.length - 1))) % ZEN.length);
+    }, 6000);
+    return () => { clearInterval(t); };
+  }, []);
+  return (
+    <div data-testid="report-generating" className="max-w-xl mx-auto text-center py-16">
+      <span className="mx-auto h-20 w-20 rounded-full bg-eq-soft grid place-items-center eq-breathe"><Loader2 className="h-8 w-8 text-eq animate-spin" /></span>
+      <h2 className="mt-8 font-serif text-3xl font-semibold">Writing your report…</h2>
+      <p key={i} data-testid="zen-statement" className="eq-rise mt-4 min-h-[3.5rem] font-serif italic text-lg text-slate-700">{ZEN[i]}</p>
+      <p className="mt-2 text-sm text-slate-400">This takes about 20 seconds.</p>
+    </div>
+  );
+};
 
 export default function Assessment() {
   const [a, setA] = useState(null);

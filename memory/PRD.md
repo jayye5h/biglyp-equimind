@@ -42,6 +42,9 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 ## Implemented (2026-11-05, iteration 7)
 - PDF export pages now size to their content (210 mm wide, height varies per section) — no blank space on short pages.
 
+## Implemented (2026-11-09, iteration 8)
+- Report-writing wait screen shows 20 rotating zen statements/mini exercises (random start, changes every 6 s, never repeats back-to-back).
+
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)
