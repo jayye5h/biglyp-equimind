@@ -7,6 +7,7 @@ import { api, fmtDate, LEVEL_STYLE } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { ActionSections } from "@/components/DashboardActions";
 import { toast } from "sonner";
+import { DailyCheckin, pendingDay } from "@/components/DailyCheckin";
 import { useTheme } from "@/lib/theme";
 
 const levelOf = (s) => (s < 35 ? "Needs care first" : s < 50 ? "Watch" : s < 65 ? "Steady" : "Strength");
@@ -81,7 +82,15 @@ export default function Dashboard() {
 
   const saveLatest = (patch) => {
     setLatest((p) => ({ ...p, ...patch }));
-    api.patch(`/reports/${latest.id}/progress`, patch).then(() => toast.success("Mood logged")).catch(() => toast.error("Could not save. Please try again."));
+    api.patch(`/reports/${latest.id}/progress`, patch).then(() => toast.success(patch.logged_days ? "Saved to your plan" : "Mood logged")).catch(() => toast.error("Could not save. Please try again."));
+  };
+
+  const day = latest ? pendingDay(latest) : null;
+  const [dismissed, setDismissed] = useState(false);
+  const showDaily = day !== null && !dismissed && !sessionStorage.getItem(`eq-daily-${latest?.id}-${day}`);
+  const closeDaily = () => {
+    sessionStorage.setItem(`eq-daily-${latest.id}-${day}`, "1");
+    setDismissed(true);
   };
 
   return (
@@ -104,6 +113,7 @@ export default function Dashboard() {
             <p className="mt-2 text-slate-500">Your first report and 14-day plan will appear here.</p>
           </div>
         ) : (<><LatestCard r={reports[0]} /><History reports={reports} />{latest && <ActionSections r={latest} onSave={saveLatest} />}</>)}
+        {showDaily && <DailyCheckin r={latest} day={day} open onClose={closeDaily} onSave={saveLatest} />}
         <SafetyStrip testid="dashboard-safety-strip" />
       </main>
     </div>

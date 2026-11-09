@@ -10,7 +10,7 @@ export const PlanPage = ({ r, n, total, onSave }) => {
     onSave({ ticks: [...next] });
   };
   return (
-    <PageShell n={n} total={total} eyebrow="Page 7" title="Your 14-Day Starter Plan" id="plan" testid="report-page-plan">
+    <PageShell n={n} total={total} eyebrow="Action · fill in as you go" title="Your 14-Day Starter Plan" id="plan" testid="report-page-plan">
       <p className="text-slate-600 -mt-2">Five tiny activities, under 30 minutes of new effort a day. Tick each one as you do it.</p>
       <div className="mt-6 overflow-x-auto">
         <table className="w-full border-separate border-spacing-1 min-w-[640px]" data-testid="plan-grid">
@@ -47,8 +47,16 @@ export const BANDS = [
   { v: 0, l: "Struggling", c: "#f07167" }, { v: 1, l: "Rough", c: "#fb923c" }, { v: 2, l: "Mixed", c: "#fbbf24" },
   { v: 3, l: "Steady", c: "rgb(var(--eq-mid))" }, { v: 4, l: "Strong", c: "rgb(var(--eq-p))" },
 ];
-const ROWS = ["Overall feel (1-10)", "Nights of good sleep", "10-minute starts", "Honest sentences"];
-const COLS = ["Day 1", "Week 1", "Week 2", "Target"];
+const ROWS = [
+  { label: "How do I feel overall?", hint: "Score 1–10 (10 = great)" },
+  { label: "Nights I slept well", hint: "Count out of 7" },
+];
+const COLS = [
+  { label: "Day 1", hint: "Your starting point (the week before you began)" },
+  { label: "Week 1", hint: "Fill on Day 7" },
+  { label: "Week 2", hint: "Fill on Day 14" },
+  { label: "Target", hint: "Where you'd like to be by Day 14" },
+];
 const QUESTIONS = ["What was one thing that helped this week?", "What was one thing that got in the way?", "What's one small change I'll try next week?"];
 
 const MoodStrip = ({ r, onSave }) => {
@@ -79,20 +87,37 @@ const MoodStrip = ({ r, onSave }) => {
 export const TrackPage = ({ r, n, total, onSave }) => {
   const [tracker, setTracker] = useState(r.tracker || {});
   const [refl, setRefl] = useState(r.reflections || {});
+  const ticks = new Set(r.ticks || []);
+  const doneIn = (i, w) => Array.from({ length: 7 }, (_, d) => w * 7 + d).filter((d) => ticks.has(`${i}-${d}`)).length;
   return (
-    <PageShell n={n} total={total} eyebrow="Page 8" title="Track & Reflect" id="track" testid="report-page-track">
+    <PageShell n={n} total={total} eyebrow="Action · fill in as you go" title="Track & Reflect" id="track" testid="report-page-track">
       <MoodStrip r={r} onSave={onSave} />
-      <div className="mt-6 overflow-x-auto">
-        <table className="w-full text-sm min-w-[520px]" data-testid="weekly-tracker">
-          <thead><tr><th className="text-left font-mono text-[11px] uppercase text-slate-400 font-normal py-2">Weekly tracker</th>{COLS.map((c) => <th key={c} className="font-mono text-[11px] uppercase text-slate-400 font-normal">{c}</th>)}</tr></thead>
+      <div data-testid="tracker-explainer" className="mt-6 rounded-2xl bg-[#fef3c7] p-5 text-sm text-slate-800">
+        <h3 className="font-semibold text-[#92400e]">What is the weekly tracker for?</h3>
+        <p className="mt-1.5">It answers one question: <b>is the plan actually helping?</b> You write down where you are on Day 1, check in again at the end of Week 1 and Week 2, and compare. If the numbers move towards your target, keep going. If they don&apos;t move, that&apos;s a signal to get more support.</p>
+        <p className="mt-1.5 text-slate-600">Example: overall feel 4 on Day 1, 5 at Week 1, 6 at Week 2, target 7 — you&apos;re on your way.</p>
+      </div>
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full text-sm min-w-[560px]" data-testid="weekly-tracker">
+          <thead><tr><th className="text-left font-mono text-[11px] uppercase text-slate-400 font-normal py-2 w-[34%]">What you track</th>{COLS.map((c) => <th key={c.label} className="font-normal align-bottom px-1"><div className="font-mono text-[11px] uppercase text-slate-500">{c.label}</div><div className="text-[10px] text-slate-400 leading-tight">{c.hint}</div></th>)}</tr></thead>
           <tbody>
             {ROWS.map((row, i) => (
-              <tr key={row} className="border-t border-slate-100">
-                <td className="py-2 pr-3 text-slate-700">{row}</td>
+              <tr key={row.label} className="border-t border-slate-100">
+                <td className="py-2 pr-3"><div className="text-slate-800">{row.label}</div><div className="text-[11px] text-slate-400">{row.hint}</div></td>
                 {COLS.map((c, j) => (
-                  <td key={c} className="px-1"><input data-testid={`tracker-${i}-${j}`} value={tracker[`${i}-${j}`] || ""} onChange={(e) => setTracker({ ...tracker, [`${i}-${j}`]: e.target.value })}
+                  <td key={c.label} className="px-1"><input data-testid={`tracker-${i}-${j}`} inputMode="numeric" placeholder="–" value={tracker[`${i}-${j}`] || ""} onChange={(e) => setTracker({ ...tracker, [`${i}-${j}`]: e.target.value })}
                     onBlur={() => onSave({ tracker })} className="w-full h-9 rounded-lg bg-eq-bg text-center outline-none focus:ring-2 focus:ring-eq" /></td>
                 ))}
+              </tr>
+            ))}
+            <tr><td colSpan={5} className="pt-4 pb-1 font-mono text-[11px] uppercase text-slate-400">Filled in automatically from your plan ticks (days done out of 7)</td></tr>
+            {r.plan.map((a, i) => (
+              <tr key={a.id} className="border-t border-slate-100" data-testid={`tracker-auto-${i}`}>
+                <td className="py-2 pr-3 text-slate-700">{a.name}</td>
+                <td className="text-center text-slate-300">—</td>
+                <td className="text-center font-mono">{doneIn(i, 0)}/7</td>
+                <td className="text-center font-mono">{doneIn(i, 1)}/7</td>
+                <td className="text-center text-slate-400 text-xs">5+/7</td>
               </tr>
             ))}
           </tbody>

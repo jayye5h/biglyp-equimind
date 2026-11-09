@@ -12,7 +12,7 @@ const tiers = (r) => [
 ];
 
 export const HelpPage = ({ r, n, total }) => (
-  <PageShell n={n} total={total} eyebrow="Page 9" title="Who Can Help & When to Ask" id="help" testid="report-page-help">
+  <PageShell n={n} total={total} eyebrow="Support" title="Who Can Help & When to Ask" id="help" testid="report-page-help">
     <HelpContent r={r} />
   </PageShell>
 );

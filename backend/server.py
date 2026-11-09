@@ -94,6 +94,7 @@ class ProgressIn(BaseModel):
     moods: Optional[Dict[str, int]] = None
     tracker: Optional[Dict[str, Any]] = None
     reflections: Optional[Dict[str, Any]] = None
+    logged_days: Optional[List[int]] = None
 
 
 @api.get("/")
@@ -212,6 +213,8 @@ async def update_progress(rid: str, body: ProgressIn, user: dict = Depends(stude
     upd = body.model_dump(exclude_none=True)
     if body.moods is not None and any(v not in (0, 1, 2, 3, 4) or not k.isdigit() or not 0 <= int(k) <= 13 for k, v in body.moods.items()):
         raise HTTPException(422, "Mood must be 0-4 for days 0-13")
+    if body.logged_days is not None and any(d < 0 or d > 13 for d in body.logged_days):
+        raise HTTPException(422, "Logged days must be 0-13")
     if body.ticks is not None and len(body.ticks) > 70:
         raise HTTPException(422, "Too many ticks")
     if len(str(body.tracker or "")) + len(str(body.reflections or "")) > 20000:
