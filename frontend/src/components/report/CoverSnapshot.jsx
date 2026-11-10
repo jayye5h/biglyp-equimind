@@ -1,3 +1,4 @@
+import { elapsedDays } from "@/lib/progress";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
 import { PageShell, Pill } from "@/components/report/PageShell";
 import { fmtDate, LEVEL_STYLE } from "@/lib/api";
@@ -23,7 +24,7 @@ export const CoverPage = ({ r, n, total }) => {
           <div><div className="text-[11px] font-mono uppercase ft-faint">Overall</div><div data-testid="cover-overall" className="font-serif text-3xl font-bold">{r.overall}<span className="text-base ft-faint">/100</span></div></div>
           <div><div className="text-[11px] font-mono uppercase ft-faint">Needs care first</div><div className="font-semibold mt-1">{low.short} {low.score}</div></div>
           <div><div className="text-[11px] font-mono uppercase ft-faint">Your resources</div><div className="font-semibold mt-1">{r.resources.length ? r.resources.map((k) => `${nameOf(r, k).short} ${nameOf(r, k).score}`).join(" · ") : "Still building"}</div></div>
-          <div><div className="text-[11px] font-mono uppercase ft-faint">Next step</div><div className="font-semibold mt-1 ft-accent">{r.path === 2 ? "Plan + counsellor" : "Start the plan"}</div></div>
+          <div><div className="text-[11px] font-mono uppercase ft-faint">Next step</div><div className="font-semibold mt-1 ft-accent">{elapsedDays(r) >= 14 ? "See your next steps" : r.path === 2 ? "Plan + counsellor" : "Start the plan"}</div></div>
         </div>
         <p className="relative mt-8 text-sm ft-muted">This is a self-reflection and action report — not a diagnosis.</p>
       </div>

@@ -41,4 +41,8 @@ def next_activities(report: dict, limit: int = 3) -> list:
             if a["id"] not in taken and a["id"] not in {x["id"] for x in out}:
                 out.append({**a, "why": WHY.get(a["id"], "")})
                 break
+    for area in report.get("priorities", []):
+        for a in ACTIVITIES.get(area, []):
+            if len(out) < limit and a["id"] not in taken and a["id"] not in {x["id"] for x in out}:
+                out.append({**a, "why": WHY.get(a["id"], "")})
     return out[:limit]

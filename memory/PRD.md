@@ -69,6 +69,10 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 ## Implemented (2026-11-10, iteration 13)
 - Progress avatars: user-supplied 14 growth-stage images (public/avatars/stages/stage1-14.webp, cropped from Avatar.png) replace the old mood avatars everywhere (journey card, day strip, daily log popup, streak badges). Stage = 1 + number of daily check-ins (lib/stages.js), never goes back; future days show projected stage dimmed. 4 phases (1-3, 4-8, 9-12, 13-14) shown as phase chip on journey card and phase pills above streak badges; streak card shows "stage X/14"; toast "New stage unlocked".
 
+## Implemented (2026-11-10, iteration 14)
+- Dashboard header: "New Assessment" (renamed) + "Open 14-day plan" (moved out of journey card). My Journey: single combined "Your 14-Day Plan" progress section (DashboardActions.PlanProgress).
+- Report: Plan + Track & Reflect merged into one theory-only "Your 14-Day Plan" section (activity time/when, "Why it helps" from backend/plan_theory.py WHY, steps); now included in PDF. Day 7+: Week 1 Progress; Day 14+: Week 2 Progress (days 8-14 vs week 1) + Your Next Steps (recommends same 5 / focus on 3 / take up new activities via lib/progress.nextStepsPlan; new activities from GET report `next_activities`).
+
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)

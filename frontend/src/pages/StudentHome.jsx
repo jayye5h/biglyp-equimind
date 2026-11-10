@@ -28,9 +28,9 @@ const Greeting = ({ name, reportId }) => (
   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 eq-rise">
     <h1 data-testid="dashboard-greeting" className="font-serif text-3xl sm:text-4xl font-bold text-slate-900">{greet()}, {name}!</h1>
     {reportId && (
-      <div className="self-start sm:self-auto flex flex-wrap gap-2">
-        <Link to="/check-in" data-testid="start-checkin-btn" className="h-11 px-5 rounded-xl bg-white border border-eq/20 text-sm font-medium text-slate-700 hover:border-eq/50 inline-flex items-center gap-2 transition-colors">New Assessment <ArrowRight className="h-4 w-4" /></Link>
-        <Link to={`/report/${reportId}#plan`} data-testid="journey-open-plan-btn" className="h-11 px-5 rounded-xl bg-eq-soft text-eq-dark text-sm font-medium inline-flex items-center gap-2 hover:bg-eq-softer transition-colors"><CalendarCheck className="h-4 w-4" /> Open 14-day plan</Link>
+      <div className="self-start sm:self-auto grid grid-cols-2 sm:flex gap-2 w-full sm:w-auto">
+        <Link to="/check-in" data-testid="start-checkin-btn" className="h-11 px-3 sm:px-5 rounded-xl bg-white border border-eq/20 text-sm font-medium text-slate-700 hover:border-eq/50 inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors">New Assessment <ArrowRight className="h-4 w-4" /></Link>
+        <Link to={`/report/${reportId}#plan`} data-testid="journey-open-plan-btn" className="h-11 px-3 sm:px-5 rounded-xl bg-eq-soft text-eq-dark text-sm font-medium inline-flex items-center justify-center gap-2 whitespace-nowrap hover:bg-eq-softer transition-colors"><CalendarCheck className="h-4 w-4" /> Open 14-day plan</Link>
       </div>
     )}
   </div>

@@ -49,7 +49,7 @@ const SideCard = ({ r, d, today, side }) => {
 const MainCard = ({ r, d, today, onSave, pending, onOpenDaily }) => {
   const info = dayInfo(r, d, today);
   const moods = r.moods || {};
-  const isToday = d === today && today <= 13;
+  const isToday = d === today && elapsedDays(r) <= 13;
   return (
     <div data-testid="journey-main-card" className="rounded-3xl bg-white border-2 border-eq/20 shadow-[0_20px_60px_-30px_rgb(var(--eq-p)/0.5)] p-5 sm:p-6">
       <div className="grid sm:grid-cols-[auto_1fr] gap-5 items-center">
