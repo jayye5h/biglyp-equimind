@@ -4,6 +4,7 @@ import { Check, ArrowLeft, ArrowRight, CalendarDays, Sun, Sprout, Clock, Leaf, A
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Student } from "@/components/Avatar";
 import { elapsedDays } from "@/lib/progress";
+import { currentStage, STAGES, phaseOf } from "@/lib/stages";
 
 const MOODS = [
   { v: 0, l: "Struggling", icon: Frown }, { v: 1, l: "Rough", icon: Annoyed }, { v: 2, l: "Mixed", icon: Meh },
@@ -35,12 +36,12 @@ const Decor = () => (
   </>
 );
 
-const AvatarRing = ({ mood, bounce, sparkle, children }) => (
+const AvatarRing = ({ stage, bounce, sparkle, children }) => (
   <div className="relative mx-auto w-fit">
     <Leaf className="absolute -left-5 bottom-3 h-9 w-9 text-emerald-400/70 -rotate-45" />
     <Leaf className="absolute -right-5 bottom-3 h-9 w-9 text-emerald-400/70 rotate-45 scale-x-[-1]" />
     {sparkle && <motion.div className="absolute -right-2 top-1 text-eq font-bold" animate={{ opacity: [0.3, 1, 0.3], rotate: [0, 8, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>✦</motion.div>}
-    <Student key={bounce} mood={mood} bounce={bounce > 0} size="h-32 w-32 sm:h-36 sm:w-36" />
+    <Student key={bounce} stage={stage} bounce={bounce > 0} size="h-32 w-32 sm:h-36 sm:w-36" testid="daily-log-avatar" />
     {children}
   </div>
 );
@@ -51,11 +52,12 @@ const Dots = ({ n, total }) => (
   </div>
 );
 
-const MoodStep = ({ todayNo, mood, glow, setMood, onNext, onLater }) => (
+const MoodStep = ({ todayNo, mood, glow, stage, setMood, onNext, onLater }) => (
   <div className="text-center">
     <h2 className="font-serif text-2xl sm:text-3xl font-bold text-slate-900">Good to see you again!</h2>
     <p className="mt-1 text-sm text-slate-500">Let&apos;s take another small step together.</p>
-    <div className="mt-5"><AvatarRing mood={glow} /></div>
+    <div className="mt-5"><AvatarRing stage={stage} /></div>
+    <p data-testid="daily-log-stage" className="mt-3 text-xs text-slate-500">Phase {phaseOf(stage).n} · {phaseOf(stage).name} — <span className="font-medium text-eq-dark">{STAGES[stage - 1].caption}</span></p>
     <div data-testid="daily-log-glow" className="mt-5 mx-auto max-w-sm rounded-full bg-white shadow-sm px-4 py-2 flex items-center gap-3 text-xs text-slate-600">
       <Sun className="h-4 w-4 text-amber-500" /> Your Glow
       <div className="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden"><motion.div className="h-full bg-eq rounded-full" animate={{ width: `${glow * 100}%` }} /></div>
@@ -77,14 +79,14 @@ const MoodStep = ({ todayNo, mood, glow, setMood, onNext, onLater }) => (
   </div>
 );
 
-const ActivityStep = ({ a, idx, total, answer, glow, bounce, onAnswer, onBack, onNext, note, setNote }) => {
+const ActivityStep = ({ a, idx, total, answer, stage, bounce, onAnswer, onBack, onNext, note, setNote }) => {
   const [head, sub, q, desc] = copyFor(a);
   const last = idx === total - 1;
   return (
     <div className="text-center">
       <h2 data-testid="daily-log-heading" className="font-serif text-2xl sm:text-3xl font-bold text-slate-900">{head}</h2>
       <p className="mt-1 text-sm text-slate-500">{sub}</p>
-      <div className="mt-5"><AvatarRing mood={glow} bounce={bounce} sparkle><Dots n={idx + 1} total={total} /></AvatarRing></div>
+      <div className="mt-5"><AvatarRing stage={stage} bounce={bounce} sparkle><Dots n={idx + 1} total={total} /></AvatarRing></div>
       <div className="relative mt-8 rounded-3xl bg-white/90 shadow-sm border border-eq/10 p-5 sm:p-6">
         <p data-testid="daily-checkin-question" className="font-serif text-xl sm:text-2xl font-bold text-slate-900 leading-snug">{q}</p>
         <p className="mt-2 text-sm text-slate-500">{desc}</p>
@@ -122,6 +124,7 @@ export const DailyLog = ({ r, day, open, onClose, onSave }) => {
   const no = Object.values(answers).length - yes;
   const glow = Math.max(0.1, Math.min(1, (mood === null ? 0.45 : BASE[mood]) + yes * 0.06 - no * 0.04));
   const total = r.plan.length;
+  const stage = currentStage(r);
 
   const answer = (v) => {
     setAnswers({ ...answers, [step]: v });
@@ -147,9 +150,9 @@ export const DailyLog = ({ r, day, open, onClose, onSave }) => {
           <AnimatePresence mode="wait">
             <motion.div key={step} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.25 }} className="mt-4">
               {step < 0 ? (
-                <MoodStep todayNo={todayIdx + 1} mood={mood} glow={glow} setMood={setMood} onNext={() => setStep(0)} onLater={onClose} />
+                <MoodStep todayNo={todayIdx + 1} mood={mood} glow={glow} stage={stage} setMood={setMood} onNext={() => setStep(0)} onLater={onClose} />
               ) : (
-                <ActivityStep a={r.plan[step]} idx={step} total={total} answer={answers[step]} glow={glow} bounce={bounce} onAnswer={answer}
+                <ActivityStep a={r.plan[step]} idx={step} total={total} answer={answers[step]} stage={stage} bounce={bounce} onAnswer={answer}
                   onBack={() => setStep(step - 1)} onNext={step === total - 1 ? submit : () => setStep(step + 1)} note={note} setNote={setNote} />
               )}
             </motion.div>

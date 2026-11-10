@@ -12,6 +12,7 @@ import { CalmShorts, Audiobooks, usePlayer } from "@/components/home/MediaSectio
 import { ActivityOfDay, MoreGames } from "@/components/home/ActivityOfDay";
 import { WellnessReads, AllReads } from "@/components/home/WellnessReads";
 import { StreakCard, streakInfo, BADGES } from "@/components/home/CalmStreak";
+import { STAGES } from "@/lib/stages";
 import { PlanSummary, TrackSummary, MoodWeek } from "@/components/DashboardActions";
 import { HelpContent } from "@/components/report/HelpBodyAbout";
 import { pendingDay } from "@/components/DailyCheckin";
@@ -67,14 +68,14 @@ export default function StudentHome() {
   }, [day, latest]);
 
   const save = (patch) => {
-    const before = streakInfo(latest).earned;
+    const before = streakInfo(latest).stage;
     const after = streakInfo({ ...latest, ...patch });
     setLatest((p) => ({ ...p, ...patch }));
     api.patch(`/reports/${latest.id}/progress`, patch).then(() => {
       if (patch.moods) { setPlanTick((t) => t + 1); setAllReads(null); }
-      if (patch.logged_days && after.earned > before) {
-        const b = BADGES[Math.min(after.earned, 14) - 1];
-        toast.success(`New badge: ${b.name}`, { description: after.current > 1 ? `${after.current}-day streak! ${b.msg}` : b.msg });
+      if (patch.logged_days && after.stage > before) {
+        const b = BADGES[after.stage - 1];
+        toast.success(`New stage unlocked: ${b.name}`, { description: `${STAGES[after.stage - 1].caption}. ${after.current > 1 ? `${after.current}-day streak! ` : ""}${b.msg}` });
       } else toast.success(patch.logged_days ? "Saved to your plan" : "Mood logged");
     }).catch(() => toast.error("Could not save. Please try again."));
   };

@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Quote, CalendarCheck, ClipboardCheck } from 
 import { Student } from "@/components/StudentAnimation";
 import { BANDS } from "@/components/report/PlanTrack";
 import { elapsedDays } from "@/lib/progress";
+import { stageAt, projectedStage, STAGES, phaseOf } from "@/lib/stages";
 
 const TITLES = ["Taking It Slow", "Hanging In There", "Finding Your Feet", "Feeling More Calm", "Feeling Bright"];
 const SHORT = ["Struggling", "Rough day", "Settling", "Calmer", "More Open"];
@@ -27,10 +28,11 @@ const QUOTES = [
 const dayInfo = (r, d, today) => {
   const mood = (r.moods || {})[d];
   const done = r.plan.filter((_, i) => (r.ticks || []).includes(`${i}-${d}`)).length;
-  if (d > today) return { future: true, m: 0.68, label: "Upcoming", done };
-  if (BANDS[mood]) return { m: [0.15, 0.33, 0.52, 0.74, 0.94][mood], label: SHORT[mood], mood, done };
-  if (done) return { m: 0.4 + done * 0.1, label: `${done}/5 done`, done };
-  return { m: 0.5, label: d === today ? "Today" : "Not logged", done };
+  if (d > today) return { future: true, stage: projectedStage(r, d), label: "Upcoming", done };
+  const stage = stageAt(r, d);
+  if (BANDS[mood]) return { stage, label: SHORT[mood], mood, done };
+  if (done) return { stage, label: `${done}/5 done`, done };
+  return { stage, label: d === today ? "Today" : "Not logged", done };
 };
 
 const SideCard = ({ r, d, today, side }) => {
@@ -39,8 +41,8 @@ const SideCard = ({ r, d, today, side }) => {
   return (
     <div data-testid={`journey-side-${side}`} className="hidden md:flex flex-col items-center justify-center rounded-3xl bg-white/70 border border-eq/10 p-4 text-center">
       <span className="rounded-full bg-eq-soft text-eq-dark text-xs font-semibold px-3 py-1">Day {d + 1}</span>
-      <Student mood={info.m} size="h-24 w-24" testid={`journey-side-avatar-${side}`} />
-      <div className="mt-2 text-sm text-slate-700">{info.future ? (d === today + 1 ? "Tomorrow is going to be better!" : "Upcoming") : info.label}</div>
+      <Student stage={info.stage} dim={info.future} size="h-24 w-24" testid={`journey-side-avatar-${side}`} />
+      <div className="mt-2 text-sm text-slate-700">{info.future ? (d === today + 1 ? "Tomorrow is going to be better!" : "Keep going to unlock") : STAGES[info.stage - 1].caption}</div>
     </div>
   );
 };
@@ -52,9 +54,12 @@ const MainCard = ({ r, d, today, onSave, pending, onOpenDaily }) => {
   return (
     <div data-testid="journey-main-card" className="rounded-3xl bg-white border-2 border-eq/20 shadow-[0_20px_60px_-30px_rgb(var(--eq-p)/0.5)] p-5 sm:p-6">
       <div className="grid sm:grid-cols-[auto_1fr] gap-5 items-center">
-        <Student mood={info.m} size="h-36 w-36 sm:h-40 sm:w-40" testid="journey-main-avatar" bounce={false} />
+        <div className="text-center">
+          <Student stage={info.stage} dim={info.future} size="h-36 w-36 sm:h-40 sm:w-40" testid="journey-main-avatar" bounce={false} />
+          <p data-testid="journey-main-stage" className="mt-2 text-xs font-medium text-eq-dark max-w-[11rem] mx-auto">{STAGES[info.stage - 1].caption}</p>
+        </div>
         <div className="sm:border-l sm:border-slate-100 sm:pl-5">
-          <span className="rounded-full bg-eq-soft text-eq-dark text-xs font-semibold px-3 py-1">Day {d + 1}</span>
+          <div className="flex flex-wrap gap-2"><span className="rounded-full bg-eq-soft text-eq-dark text-xs font-semibold px-3 py-1">Day {d + 1}</span><span data-testid="journey-main-phase" className="rounded-full bg-violet-50 text-violet-700 text-xs font-semibold px-3 py-1">Phase {phaseOf(info.stage).n}: {phaseOf(info.stage).name}</span></div>
           <h3 data-testid="journey-main-title" className="mt-3 font-serif text-2xl sm:text-3xl font-bold text-slate-900">{info.mood !== undefined ? TITLES[info.mood] : isToday ? "How are you today?" : info.future ? "Coming up" : "No mood logged"}</h3>
           <p className="mt-2 text-sm text-slate-600 leading-relaxed">{info.mood !== undefined ? DESC[info.mood] : isToday ? "One tap to log your mood — your journey card updates instantly." : info.future ? "Keep going with your plan — this day is waiting for you." : "You didn't log a mood this day. That's fine — today is what counts."}</p>
           <p data-testid="journey-main-progress" className="mt-3 text-xs font-mono text-slate-500">{info.done}/5 plan activities done</p>
@@ -90,7 +95,7 @@ const DayStrip = ({ r, sel, setSel, today }) => {
           return (
             <button key={d} data-testid={`journey-day-${d}`} onClick={() => setSel(d)}
               className={`rounded-2xl py-2 px-1 flex flex-col items-center transition-colors ${sel === d ? "bg-eq-soft ring-2 ring-eq" : "hover:bg-eq-bg"}`}>
-              <Student mood={info.m} size="h-9 w-9" testid={`journey-day-avatar-${d}`} />
+              <Student stage={info.stage} dim={info.future} size="h-9 w-9" testid={`journey-day-avatar-${d}`} />
               <span className="mt-1 text-xs font-semibold text-slate-800">Day {d + 1}</span>
               <span className="hidden sm:block text-[10px] text-slate-500 truncate max-w-full">{info.label}</span>
             </button>
