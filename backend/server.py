@@ -24,6 +24,7 @@ from content import SCALE, AREAS, SUBTHEMES, ITEMS, ACTIVITIES, ITEMS as BANK, D
 from scoring import pick_items, score_responses, priority_pages, build_plan, body_pattern  # noqa: E402
 from narrative import write_narrative  # noqa: E402
 from media_seed import SEED_MEDIA  # noqa: E402
+from wellness import today_plan, all_reads  # noqa: E402
 
 YT_RE = re.compile(r"^(?:https?://)?(?:www\.|m\.)?(?:youtube\.com/(?:watch\?(?:.*&)?v=|shorts/|embed/)|youtu\.be/)([A-Za-z0-9_-]{11})|^([A-Za-z0-9_-]{11})$")
 
@@ -237,6 +238,20 @@ async def update_progress(rid: str, body: ProgressIn, user: dict = Depends(stude
     if not res.matched_count:
         raise HTTPException(404, "Report not found")
     return {"ok": True}
+
+
+async def _latest_report(user_id: str):
+    return await db.reports.find_one({"user_id": user_id}, {"_id": 0, "created_at": 1, "moods": 1, "priorities": 1}, sort=[("created_at", -1)])
+
+
+@api.get("/wellness/today")
+async def wellness_today(user: dict = Depends(student_user)):
+    return today_plan(await _latest_report(user["id"]))
+
+
+@api.get("/wellness/reads")
+async def wellness_reads(user: dict = Depends(student_user)):
+    return all_reads(await _latest_report(user["id"]))
 
 
 class MediaIn(BaseModel):

@@ -68,3 +68,7 @@ export const AudioVideo = ({ media, play, onAll, limit = 2 }) => (
     <ListCard title="Videos" icon={MonitorPlay} items={media.filter((m) => m.kind === "video")} play={play} onAll={onAll} limit={limit} testid="videos-section" />
   </div>
 );
+
+export const Audiobooks = ({ media, play, onAll, limit = 3 }) => (
+  <ListCard title="Audiobooks" icon={Headphones} items={media.filter((m) => m.kind === "audiobook")} play={play} onAll={onAll} limit={limit} testid="audiobooks-section" />
+);
