@@ -83,7 +83,7 @@ export const StreakCard = ({ r, onOpenDaily, pending }) => {
           })}
         </div>
       </TooltipProvider>
-      <p className="mt-4 text-xs text-slate-500">Best streak: <span data-testid="streak-best" className="font-semibold text-slate-700">{s.best} {s.best === 1 ? "day" : "days"}</span> · Earn a badge for each day you complete your daily check-in.</p>
+      <p className="mt-4 text-xs text-slate-500">Best streak: <span data-testid="streak-best" className="font-semibold text-slate-700">{s.best} {s.best === 1 ? "day" : "days"}</span> · Each badge marks a journey day you checked in for — collect all 14.</p>
     </section>
   );
 };

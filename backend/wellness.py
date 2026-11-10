@@ -274,7 +274,8 @@ def pick_exercise(pri, mood, day):
         if mood is not None and mood >= 3 and not e["calming"]:
             s += 1
         return s
-    ranked = sorted(EXERCISES, key=lambda e: -score(e))
+    pool = [e for e in EXERCISES if e["calming"]] if mood is not None and mood <= 1 else EXERCISES
+    ranked = sorted(pool, key=lambda e: -score(e))
     top = ranked[:3]
     return top[day % len(top)]
 

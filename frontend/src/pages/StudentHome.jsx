@@ -40,6 +40,7 @@ export default function StudentHome() {
   const [dailyOpen, setDailyOpen] = useState(false);
   const [plan, setPlan] = useState(null);
   const [allReads, setAllReads] = useState(null);
+  const [planTick, setPlanTick] = useState(0);
   const { play, player } = usePlayer();
 
   useEffect(() => {
@@ -51,12 +52,11 @@ export default function StudentHome() {
   }, []);
 
   const day = latest ? pendingDay(latest) : null;
-  const moodKey = latest ? JSON.stringify(latest.moods || {}) : "none";
 
   useEffect(() => {
     if (reports === null || (reports.length && !latest)) return;
     api.get("/wellness/today").then((r) => setPlan(r.data)).catch(() => setPlan(null));
-  }, [reports, latest?.id, moodKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [reports, latest?.id, planTick]);
 
   useEffect(() => {
     if (tab === "toolkit" && !allReads) api.get("/wellness/reads").then((r) => setAllReads(r.data));
@@ -71,6 +71,7 @@ export default function StudentHome() {
     const after = streakInfo({ ...latest, ...patch });
     setLatest((p) => ({ ...p, ...patch }));
     api.patch(`/reports/${latest.id}/progress`, patch).then(() => {
+      if (patch.moods) { setPlanTick((t) => t + 1); setAllReads(null); }
       if (patch.logged_days && after.earned > before) {
         const b = BADGES[Math.min(after.earned, 14) - 1];
         toast.success(`New badge: ${b.name}`, { description: after.current > 1 ? `${after.current}-day streak! ${b.msg}` : b.msg });
@@ -106,7 +107,7 @@ export default function StudentHome() {
             <CalmShorts items={shorts} play={play} onAll={toToolkit} />
             <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-6 [&>*]:min-w-0 items-start">
               <WellnessReads plan={plan} onAll={toToolkit} />
-              <Audiobooks media={media} play={play} onAll={toToolkit} />
+              <Audiobooks media={media} play={play} onAll={toToolkit} limit={4} />
             </div>
           </>)}
           {tab === "journey" && (latest ? (<>

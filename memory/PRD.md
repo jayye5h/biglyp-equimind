@@ -61,6 +61,11 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 - Daily activity log pop-up redesigned per "Daily Activity Log.pdf": 6 steps — (1) Good to see you again + Glow meter + today's mood (5 faces), (2-6) one step per plan activity with tailored heading/subtitle, question, Yes / Not this time, Back / Next, 1/5 dots; 60-second check-in step also captures stress (0-10) and one feeling (`daily_notes`); final "Submit today's check-in" (components/DailyLog.jsx).
 - New illustrated student avatar (headphones + hoodie) in 5 mood expressions (public/avatars/mood0-4.webp, AI-generated) used in popup and journey cards (components/Avatar.jsx).
 
+## Implemented (2026-11-10, iteration 12)
+- Personalised daily wellness (backend/wellness.py; GET /api/wellness/today, /api/wellness/reads): picks a guided exercise from 11 (breath or step-by-step, only calming ones on Struggling/Rough days), a brain game tagged "Hustle for Your Brain", 3 Wellness Reads (18-article built-in library, 3 per area, matched to priorities + today's mood) and a daily mental nudge (mood + weakest area).
+- Home order: Journey → Calm Streak → Activity of the Day (exactly 2 cards) → Calm Shorts → Wellness Reads + Audiobooks (Videos removed). Toolkit: activity, all 3 Brain Games, shorts, all reads (Picked for you / More to explore), audiobooks.
+- Calm Streak: 14 named day badges (logged_days), current/best streak, warm messages, toast on new badge; also on My Journey tab. Exercise player (components/home/ExercisePlayer.jsx) with animated breath circle and timed steps.
+
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)

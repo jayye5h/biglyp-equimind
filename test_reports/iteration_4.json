@@ -1,0 +1,50 @@
+{
+  "summary": "Tested the new EquiMind wellness features: the /api/wellness/today and /api/wellness/reads APIs, the Home tab order, Activity of the Day (exercise player for both steps and breath types, game dialog), Wellness Reads (nudge, 3 reads, article dialog, View All), the Toolkit tab, Calm Streak (14 badges, earned state, badge toast after the daily log) and Journey tab streak. Also checked mobile at 390px. Backend: 7/7 pytest passed. Frontend: almost everything works. Found 1 integration bug: after the daily log is submitted, the plan can show the old mood (race condition). Found 1 minor backend logic issue: on Struggling/Rough days, some priority combinations get an exercise that is not a calming one.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/wellness/today (wellness.pick_exercise)", "issue": "On Struggling/Rough days (mood <= 1), the exercise is not always a calming one. A full check of all 120 priority orders x 2 moods x 3 day slots found 16 cases that return a non-calming exercise, for example priorities A,B,F / A,F,B / B,A,F / B,F,A -> brain_dump, and D,F,B -> connection_ping, when day%3==2. Cause: the +3 calming bonus is not enough; brain_dump gets 3+2+1=6 from area weights and can make the top 3. Fix: when mood <= 1, pick only from calming exercises (or add a much larger bonus)."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Daily log submit -> Activity of the Day / Today's nudge refresh", "issue": "This is a race in StudentHome.save(). setLatest(patch) runs before api.patch() finishes. The moodKey effect then calls GET /wellness/today at the same time as the PATCH, so it can return the old mood. Reproduced: Rohan's report had moods {3:0} (Struggling). He submitted the daily log with Steady. The DB now has moods {3:3}, but the UI still said 'for a struggling day' and 'Be extra gentle with yourself today' until reload. After reload it correctly showed 'steady' and 'You're finding your rhythm'. The same path through journey-mood-0 updated correctly in one run, so the bug is timing-dependent. Fix: fetch /wellness/today again inside the .then() of api.patch (or use a refresh counter that is bumped after the PATCH succeeds) instead of keying on local moods state.", "affected_selectors": ["[data-testid='activity-of-day-section']", "[data-testid='daily-nudge-title']"]}
+    ],
+    "design_issues": [
+      {"screen": "Home desktop", "issues": ["The Wellness Reads card (nudge + 3 rows) is much taller than the Audiobooks card next to it (3 rows), which leaves a large empty space under Audiobooks. This is minor."]},
+      {"screen": "Day naming", "issues": ["The daily log badge says 'Day 4 of 14' (todayIdx+1), but the badge earned is 'Day 3' (pending day = elapsed-1), and the mood is saved to moods[todayIdx]. A student checking in on 'Day 4' gets the 'Day 3' badge, which may be confusing. Consider making the labels match."]}
+    ]
+  },
+  "passed_tests": [
+    "API: /wellness/today returns exercise (kind and why), game tag 'Hustle for Your Brain', nudge {title,text,area_tip}, 3 reads whose areas match the priorities in order, focus_areas, and mood/mood_label; no _id; admin gets 403; no token gets 401",
+    "API: moods {0:0} on a report created today -> Struggling, 'Be extra gentle with yourself today', a calming exercise whose why mentions struggling, and the first read has area priorities[0] and tone calm. A report 50h old with moods {2:4} -> Strong / 'Let this good energy grow'. A bad mood value gets 422",
+    "API: a student with no report (Meera) -> personalised=false, neutral nudge 'A fresh day, a fresh start'",
+    "API: /wellness/reads returns 18 unique articles; for_you is true only for priority areas; the 9 priority articles come first in priority order",
+    "Home order (y positions): journey 160 < streak 861 < activity 1144 < shorts 1604 < reads/audiobooks 1963; no videos-section on Home or Toolkit",
+    "Activity: exactly 2 cards; the game tag reads 'Hustle for Your Brain'. Steps exercise (Worry Window): Next x3 -> Finish -> exercise-done. Breath exercise (4-7-8): phases are 'Breathe in' -> 'Hold gently' -> 'Breathe out slowly' with correct timings. The game dialog opens Mini Sudoku",
+    "Wellness Reads: daily-nudge shows; 3 rows (a1, c2, f3 for A,C,F); the article dialog shows the title, 4 paragraphs and the article-try box; View All goes to ?tab=toolkit",
+    "Toolkit: activity, more-games (3 game-card-*, memory opens), calm shorts, all-reads with 'Picked for you' and 'More to explore' (18 rows), audiobooks",
+    "Calm Streak: 14 badges. With logged [0,1] at elapsed 3: current 2, earned 2/14, best 2, badges 1-2 earned. Submitting the daily log gives the toast 'New badge: Bright Start — 3-day streak!...', current 3, earned 3, badges 1-3 earned, and badge 4 shows as the next badge (dashed). A report created today shows current 0 with the 'unlocks tomorrow' message",
+    "The Journey tab shows calm-streak-section",
+    "Mobile 390px: no horizontal overflow (scrollWidth 390); the streak grid wraps to 7 columns"
+  ],
+  "test_report_links": ["/app/backend/tests/test_wellness_api.py", "/app/test_reports/pytest/pytest_results_iter4.xml"],
+  "action_items": [
+    "StudentHome.jsx: fetch /wellness/today again only after the PATCH in save() succeeds, so the plan and nudge match the newly logged mood",
+    "wellness.pick_exercise: when mood <= 1, choose only from calming exercises",
+    "(Low) Make the day labels match between the daily-log badge, the journey day and the streak badge day"
+  ],
+  "critical_code_review_comments": [
+    "wellness._ctx reads the mood from moods[elapsed], but DailyLog logs logged_days[elapsed-1] and moods[elapsed]. This is consistent, but the 'yesterday' vs 'today' meaning is mixed",
+    "StudentHome.save computes the new badge from local state before the PATCH succeeds. That part is fine because the toast only shows on success, but setLatest is never rolled back if the PATCH fails",
+    "AllReads is fetched once per mount (allReads cache), so its ordering is not refreshed if a new check-in changes the priorities in the same session (minor)"
+  ],
+  "updated_files": ["/app/backend/tests/test_wellness_api.py"],
+  "success_rate": {"backend": "100% (7/7)", "frontend": "~95% (1 race bug)"},
+  "seed_data_creation": "Created temporary rohan reports (2 from pytest and 1 from ui_setup_reports.py, backdated 73h with logged_days [0,1]); all were deleted by id. Ananya's report 6053e41d was not changed (created_at and moods {} are intact). Meera has no report.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Use backend/tests/ui_setup_reports.py <hours> to create a backdated rohan report, then 'set <rid> <json>' to set logged_days/moods, then 'cleanup'. The daily log flow is daily-mood-N -> daily-log-continue-btn -> (daily-checkin-yes-btn + daily-log-next-btn) x4 -> daily-checkin-save-btn. pytest uses xdist (use -n 0 for serial).",
+  "rca of the issue": "Stale plan after the daily log: save() calls setLatest({...moods}) at once, which changes moodKey and starts the GET /wellness/today effect while the PATCH /reports/{id}/progress is still in flight. The backend reads the old moods. Reproduce: report with moods {3:0}, submit the daily log with mood 3, and the nudge stays 'Be extra gentle...'; it is correct after reload. Fix: refetch the plan in the patch .then()."
+}
