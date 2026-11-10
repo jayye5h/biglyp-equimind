@@ -25,7 +25,7 @@ from scoring import pick_items, score_responses, priority_pages, build_plan, bod
 from narrative import write_narrative  # noqa: E402
 from media_seed import SEED_MEDIA  # noqa: E402
 
-YT_RE = re.compile(r"(?:v=|youtu\.be/|shorts/|embed/)([A-Za-z0-9_-]{11})|^([A-Za-z0-9_-]{11})$")
+YT_RE = re.compile(r"^(?:https?://)?(?:www\.|m\.)?(?:youtube\.com/(?:watch\?(?:.*&)?v=|shorts/|embed/)|youtu\.be/)([A-Za-z0-9_-]{11})|^([A-Za-z0-9_-]{11})$")
 
 client = AsyncIOMotorClient(os.environ['MONGO_URL'])
 db = client[os.environ['DB_NAME']]
@@ -263,7 +263,8 @@ async def list_media(_: dict = Depends(current_user)):
 
 @api.post("/admin/media")
 async def add_media(body: MediaIn, _: dict = Depends(admin_user)):
-    doc = {"id": str(uuid.uuid4()), **_media_doc(body), "order": await db.media.count_documents({})}
+    last = await db.media.find_one({}, {"_id": 0, "order": 1}, sort=[("order", -1)])
+    doc = {"id": str(uuid.uuid4()), **_media_doc(body), "order": (last["order"] + 1) if last else 0}
     await db.media.insert_one(doc)
     doc.pop("_id", None)
     return doc

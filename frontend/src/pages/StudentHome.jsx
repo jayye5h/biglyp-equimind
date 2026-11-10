@@ -100,7 +100,7 @@ export default function StudentHome() {
                 <div className="mt-6"><HelpContent r={latest} /></div>
               </section>
             )}
-            <SafetyStrip testid="dashboard-safety-strip" />
+            {!latest && <SafetyStrip testid="dashboard-safety-strip" />}
           </>)}
         </div>
       )}

@@ -51,6 +51,12 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 - Track & Reflect: explainer of the weekly tracker objective, clearer rows/columns with hints, auto rows from plan ticks.
 - Backend validates tick format and dedupes logged_days.
 
+## Implemented (2026-11-10, iteration 10)
+- Student dashboard redesigned (pages/StudentHome.jsx, components/home/*): sidebar (Home, Daily Check-in, My Journey, Insights, Toolkit, Support; mobile pill nav), bell with pending dot, profile menu.
+- 14-Day Wellness Journey card: prev/current/next day cards with animated student, mood title/description, today's one-tap mood, activities done, log-yesterday button, quote; 5-day strip with arrows.
+- Calm Shorts, Audiobooks, Videos: curated free YouTube videos (seeded in `media` collection, played in an in-app youtube-nocookie player); admin Media tab to add/edit/delete links.
+- Activity of the Day: playable Sudoku (4×4, rule-based check), Zero-Kata (tic-tac-toe vs computer), Memory Match.
+
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)

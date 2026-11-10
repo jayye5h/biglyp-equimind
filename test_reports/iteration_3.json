@@ -1,0 +1,59 @@
+{
+  "summary": "Tested the new student dashboard (journey card, mood logging, daily popup/bell/nav, Calm Shorts, Audiobooks/Videos player, Toolkit/Journey/Insights/Support tabs, the 3 games, mobile 390px, logout) and the admin Media manager plus the media APIs. Backend: 13/13 pytest passed. Most frontend flows work. Found 3 real bugs: horizontal overflow on mobile, Sudoku marking correct answers as wrong, and wrong Sudoku numbers never turning orange.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST/PUT /api/admin/media", "issue": "YT_RE only looks for 'v=' and does not check the domain. A link like 'https://evil.example.com/watch?v=abcdefghijk' is accepted as a YouTube link. Only the 11-character id is stored and embedded, so the risk is low, but the check is loose."},
+      {"endpoint": "POST /api/admin/media", "issue": "order is set to count_documents(). After a delete, new items can get the same order as an existing item, so the sort order is unclear."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "AudioVideo (MediaSections.jsx)", "issue": "Horizontal overflow on mobile (390px): document scrollWidth is 461 on the Home and Toolkit tabs. audiobooks-section is wider than the screen. Cause: the wrapper is `grid lg:grid-cols-2` with no explicit column, so the implicit auto track grows to fit the max-content width of the nowrap (`truncate`) titles. Fix: use `grid grid-cols-1 lg:grid-cols-2`, or add `min-w-0` to the ListCard section.", "selector": "[data-testid='audiobooks-section']", "priority": "HIGH"},
+      {"component": "Sudoku.jsx", "issue": "Puzzles with 9 holes often have more than one valid solution. In one test puzzle there were 3 valid solutions; only 1 showed 'Solved!' and the other 2 showed 'Almost — check the orange numbers'. The cause is that `solved` compares against p.sol instead of checking the rules. Fix: check that every row, column and box is {1,2,3,4}, or generate puzzles with a unique solution.", "selector": "[data-testid='sudoku-status']", "priority": "MEDIUM"},
+      {"component": "Sudoku.jsx", "issue": "Wrong numbers never turn orange. Their computed colour stays rgb(58,134,200), because `text-eq` and `text-[#c2410c]` are both on the cell and text-eq wins. The status text still says 'check the orange numbers'. Fix: apply either text-eq or the orange class, not both.", "selector": "[data-testid^='sudoku-cell-']", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Support tab, Who Can Help card 3 'Campus counsellor'", "issues": ["White text on the coral (#f07167) background has low contrast (about 2.9:1)"]},
+      {"screen": "Support tab", "issues": ["The safety message appears twice: the 'GET HELP TODAY IF' box in the help section and the dashboard-safety-strip right under it"]},
+      {"screen": "Journey day strip on mobile", "issues": ["Day labels are cut off ('Not l…', 'Upc…', 'Cal…') in the 5-column strip at 390px"]},
+      {"screen": "Journey side cards", "issues": ["The next-day side card always says 'Tomorrow is going to be better!' even when the day shown is several days ahead"]},
+      {"screen": "Media player dialog", "issues": ["Escape does not close the player once focus is inside the YouTube iframe; the X button works"]}
+    ]
+  },
+  "passed_tests": [
+    "dashboard-greeting 'Good Afternoon, Rohan!'; journey-day-badge 'Day 3 of 14' for a report 50h old; journey-side-prev/next visible on desktop and hidden on mobile",
+    "Day strip shows journey-day-0..4; prev/next buttons change the main card (Day 2 'No mood logged', Day 4 'Coming up', no mood buttons on days other than today) and the strip window shifts",
+    "journey-mood-3 (Steady) changes the title to 'Feeling More Calm' with a 'Mood logged' toast, and it persists after reload",
+    "Daily popup opens on its own ('How did Day 2 go?'); bell-dot shows; bell-btn and nav-checkin open the popup. After saving, bell-dot and journey-log-yesterday-btn disappear, nav-checkin shows the toast \"You're all caught up for today.\", and the Day 2 card shows 3/5",
+    "Calm Shorts shows 5 items; the player iframe src is https://www.youtube-nocookie.com/embed/<id>?autoplay=1&rel=0. All 14 seeded ids return 200 from YouTube oEmbed, so they exist and can be embedded (they show 'unavailable' only in the headless sandbox)",
+    "Audiobooks and Videos show 2 rows each on Home; View All goes to ?tab=toolkit, which shows 5 shorts, 4 audiobooks, 5 videos and 3 games",
+    "Journey tab: latest-report-card + plan/track summaries (the tick count now matches latest). Insights: mood week chart + past check-ins + trend. Support: dashboard-help-section + safety strip",
+    "Zero-Kata: the computer replies with O and takes the centre; computer win is detected; clicks are ignored after the game ends; reset works",
+    "Memory Match: wrong pairs flip back, all 6 pairs can be found, and 'All pairs found in 12 moves!' shows",
+    "Sudoku: given cells cannot be edited, number entry works, New puzzle works, and the solution matching p.sol shows 'Solved!'",
+    "Mobile: 6 mnav pills, sidebar hidden, all tabs switch",
+    "Logout through profile-menu-btn → logout-button goes to /login and clears the token",
+    "Admin Media: an invalid link shows the toast 'Please paste a valid YouTube link'; add works (form clears, kind stays); a bad link on edit is rejected; edit + save persists after reload; delete removes the row",
+    "API: GET /api/media needs auth (401) and has no _id; admin POST/PUT/DELETE succeed; students get 403; validation for kind/title/url returns 422; unknown id returns 404; youtu.be, shorts, watch?v= and a bare id are all parsed"
+  ],
+  "test_report_links": ["/app/backend/tests/test_media_api.py", "/app/test_reports/pytest/pytest_results_iter3.xml"],
+  "action_items": [
+    "Fix the mobile overflow: change the AudioVideo wrapper to `grid grid-cols-1 lg:grid-cols-2` (or add min-w-0 to the ListCard section)",
+    "Sudoku: check the rules for 'solved' (or make sure each puzzle has one solution), and show wrong cells in orange only, without text-eq",
+    "(Low) Make the YouTube link check stricter (require a youtube.com/youtu.be host); improve contrast on the counsellor card; remove the duplicate safety message on the Support tab; shorten the day-strip labels on mobile"
+  ],
+  "critical_code_review_comments": [
+    "JourneyCard: when the journey is complete (e>13), today=13 and isToday is still true, so mood buttons stay on Day 14 forever and can overwrite moods[13]",
+    "JourneyCard `sel` state is set from `today` only once; it will not update if the page stays open past midnight (minor)",
+    "MediaManager: delete has no confirm step; the duration input has no data-testid",
+    "The journey-empty card (NoReportCard) was checked by reading the code only; every demo student has a report"
+  ],
+  "updated_files": ["/app/backend/tests/test_media_api.py"],
+  "success_rate": {"backend": "100% (13/13)", "frontend": "~88% (3 bugs: mobile overflow, Sudoku multiple solutions, Sudoku orange highlight)"},
+  "seed_data_creation": "Created 1 rohan report backdated 50h (7b319309...) with its assessment; it was deleted by id after testing. Admin media test items (TEST_*) were all deleted; media count is back to 14. Protected reports and seeded media were not changed.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Use tests/ui_setup_reports.py <hours> to create a backdated rohan report (rohan's protected report b456a01f is about 4.7 days old on 2026-11-10, so use fewer than 100h), and 'cleanup' to delete it. Close dialogs with the 'Close' button, because Escape does not work once focus is in the YouTube iframe. pytest.ini uses xdist (do not pass -p no:xdist)."
+}

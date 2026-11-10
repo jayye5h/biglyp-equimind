@@ -63,7 +63,7 @@ const ListCard = ({ title, icon, items, play, onAll, limit, testid }) => (
 );
 
 export const AudioVideo = ({ media, play, onAll, limit = 2 }) => (
-  <div className="grid lg:grid-cols-2 gap-6">
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 [&>*]:min-w-0">
     <ListCard title="Audiobooks" icon={Headphones} items={media.filter((m) => m.kind === "audiobook")} play={play} onAll={onAll} limit={limit} testid="audiobooks-section" />
     <ListCard title="Videos" icon={MonitorPlay} items={media.filter((m) => m.kind === "video")} play={play} onAll={onAll} limit={limit} testid="videos-section" />
   </div>

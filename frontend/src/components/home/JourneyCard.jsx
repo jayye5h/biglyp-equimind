@@ -40,7 +40,7 @@ const SideCard = ({ r, d, today, side }) => {
     <div data-testid={`journey-side-${side}`} className="hidden md:flex flex-col items-center justify-center rounded-3xl bg-white/70 border border-eq/10 p-4 text-center">
       <span className="rounded-full bg-eq-soft text-eq-dark text-xs font-semibold px-3 py-1">Day {d + 1}</span>
       <Student mood={info.m} size="h-24 w-24" testid={`journey-side-avatar-${side}`} />
-      <div className="mt-2 text-sm text-slate-700">{info.future ? "Tomorrow is going to be better!" : info.label}</div>
+      <div className="mt-2 text-sm text-slate-700">{info.future ? (d === today + 1 ? "Tomorrow is going to be better!" : "Upcoming") : info.label}</div>
     </div>
   );
 };
@@ -92,7 +92,7 @@ const DayStrip = ({ r, sel, setSel, today }) => {
               className={`rounded-2xl py-2 px-1 flex flex-col items-center transition-colors ${sel === d ? "bg-eq-soft ring-2 ring-eq" : "hover:bg-eq-bg"}`}>
               <Student mood={info.m} size="h-9 w-9" testid={`journey-day-avatar-${d}`} />
               <span className="mt-1 text-xs font-semibold text-slate-800">Day {d + 1}</span>
-              <span className="text-[10px] text-slate-500 truncate max-w-full">{info.label}</span>
+              <span className="hidden sm:block text-[10px] text-slate-500 truncate max-w-full">{info.label}</span>
             </button>
           );
         })}

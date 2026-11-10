@@ -6,7 +6,7 @@ import { fmtDate } from "@/lib/api";
 const tiers = (r) => [
   { t: "1. Yourself", c: "bg-eq-soft text-eq-dark", d: `Your 14-day plan: ${r.plan.map((a) => a.short.toLowerCase()).join(", ")}. Start today.` },
   { t: "2. One trusted person", c: "bg-[#fef3c7] text-[#92400e]", d: "Family or a close friend. For money worry, homesickness, or feeling alone with it. A call home that includes one real thing — not just 'all fine'." },
-  { t: "3. Campus counsellor", c: r.path === 2 ? "bg-[#f07167] text-white" : "bg-[#fff0ee] text-[#c2410c]", strong: r.path === 2,
+  { t: "3. Campus counsellor", c: r.path === 2 ? "bg-[#c2410c] text-white" : "bg-[#fff0ee] text-[#c2410c]", strong: r.path === 2,
     d: r.path === 2 ? `Book this week. Free, confidential. Your score pattern (overall ${r.overall}, lowest ${Math.min(...r.areas.map((a) => a.score))}) makes this strongly suggested.` : "Free and confidential. For sleep that won't budge, worry that interferes with life, or feeling you've been carrying it too long alone." },
   { t: "4. Professional help", c: "bg-[#f3e8ff] text-[#6d28d9]", d: "Psychologist, psychiatrist or doctor — usually reached through your counsellor. Needed when low mood or loss of interest lasts most days for 2 weeks+, panic attacks, using substances to cope, or the plan makes no difference after 4 weeks." },
 ];
