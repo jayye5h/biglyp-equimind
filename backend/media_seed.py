@@ -1,0 +1,16 @@
+SEED_MEDIA = [
+    ("short", "Forest Rain Reset", "Short", "KWxIczLM45w"),
+    ("short", "Autumn Lake Ambience", "0:57", "9SDqHAB1lRo"),
+    ("short", "Coastal Serenity", "0:10", "bd_h4Nk0ocY"),
+    ("short", "Gentle Forest Stream", "0:21", "o_F5Sj524T0"),
+    ("short", "Box Breathing", "Short", "tEmt1Znux58"),
+    ("audiobook", "Mindfulness for Sleep", "10 min", "t40EH2p6rJA"),
+    ("audiobook", "End Your Day Like a Stoic", "10 min", "Yvh6nlDKy68"),
+    ("audiobook", "Deep Relaxation & Stress Relief", "10 min", "C69UI6cYsPk"),
+    ("audiobook", "Zen Guided Meditation", "Audio", "xY0zi-pN-OQ"),
+    ("video", "5-Minute Meditation Anywhere", "5 min", "inpok4MKVLM"),
+    ("video", "Meditation for Anxiety", "10 min", "O-6f5wQXSu8"),
+    ("video", "Meditation for Sleep", "10 min", "aEqlQvczMJQ"),
+    ("video", "Meditation for Stress", "10 min", "z6X5oEIg6Ak"),
+    ("video", "Daily Calm: Be Present", "10 min", "ZToicYcHIOU"),
+]

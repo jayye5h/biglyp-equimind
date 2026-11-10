@@ -23,6 +23,9 @@ load_dotenv(ROOT_DIR / '.env')
 from content import SCALE, AREAS, SUBTHEMES, ITEMS, ACTIVITIES, ITEMS as BANK, DEMO_USERS, BODY_TABLE, SCRIPTS, AREA_BY_KEY  # noqa: E402
 from scoring import pick_items, score_responses, priority_pages, build_plan, body_pattern  # noqa: E402
 from narrative import write_narrative  # noqa: E402
+from media_seed import SEED_MEDIA  # noqa: E402
+
+YT_RE = re.compile(r"(?:v=|youtu\.be/|shorts/|embed/)([A-Za-z0-9_-]{11})|^([A-Za-z0-9_-]{11})$")
 
 client = AsyncIOMotorClient(os.environ['MONGO_URL'])
 db = client[os.environ['DB_NAME']]
@@ -235,6 +238,53 @@ async def update_progress(rid: str, body: ProgressIn, user: dict = Depends(stude
     return {"ok": True}
 
 
+class MediaIn(BaseModel):
+    kind: str
+    title: str
+    duration: str = ""
+    url: str
+
+
+def _media_doc(body: MediaIn) -> dict:
+    if body.kind not in ("short", "audiobook", "video"):
+        raise HTTPException(422, "Kind must be short, audiobook or video")
+    m = YT_RE.search(body.url.strip())
+    if not m:
+        raise HTTPException(422, "Please paste a valid YouTube link")
+    if not body.title.strip():
+        raise HTTPException(422, "Title is required")
+    return {"kind": body.kind, "title": body.title.strip()[:80], "duration": body.duration.strip()[:20], "youtube_id": m.group(1) or m.group(2)}
+
+
+@api.get("/media")
+async def list_media(_: dict = Depends(current_user)):
+    return await db.media.find({}, {"_id": 0}).sort("order", 1).to_list(500)
+
+
+@api.post("/admin/media")
+async def add_media(body: MediaIn, _: dict = Depends(admin_user)):
+    doc = {"id": str(uuid.uuid4()), **_media_doc(body), "order": await db.media.count_documents({})}
+    await db.media.insert_one(doc)
+    doc.pop("_id", None)
+    return doc
+
+
+@api.put("/admin/media/{mid}")
+async def update_media(mid: str, body: MediaIn, _: dict = Depends(admin_user)):
+    res = await db.media.update_one({"id": mid}, {"$set": _media_doc(body)})
+    if not res.matched_count:
+        raise HTTPException(404, "Not found")
+    return await db.media.find_one({"id": mid}, {"_id": 0})
+
+
+@api.delete("/admin/media/{mid}")
+async def delete_media(mid: str, _: dict = Depends(admin_user)):
+    res = await db.media.delete_one({"id": mid})
+    if not res.deleted_count:
+        raise HTTPException(404, "Not found")
+    return {"ok": True}
+
+
 @api.get("/admin/stats")
 async def admin_stats(_: dict = Depends(admin_user)):
     rows = await db.reports.find({}, {"_id": 0, "areas": 1, "overall": 1, "path": 1, "user_id": 1, "priorities": 1}).sort("created_at", -1).to_list(5000)
@@ -281,6 +331,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 async def seed_users():
     for u in DEMO_USERS:
         await db.users.update_one({"id": u["id"]}, {"$set": u}, upsert=True)
+    if not await db.media.count_documents({}):
+        await db.media.insert_many([{"id": str(uuid.uuid4()), "kind": k, "title": t, "duration": d, "youtube_id": y, "order": i}
+                                    for i, (k, t, d, y) in enumerate(SEED_MEDIA)])
 
 
 @app.on_event("startup")

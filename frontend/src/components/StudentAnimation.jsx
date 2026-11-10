@@ -27,14 +27,14 @@ const Zzz = () => (
   </div>
 );
 
-export const Student = ({ mood, sleeping, bounce }) => {
+export const Student = ({ mood, sleeping, bounce, size = "h-44 w-44", testid = "student-avatar" }) => {
   const m = Math.max(0, Math.min(1, mood));
   const mouth = `M46 84 Q60 ${84 + (m - 0.5) * 26} 74 84`;
   const sad = Math.max(0, (0.5 - m) * 9);
   const lift = Math.max(0, (m - 0.5) * 4);
   const bg = `hsl(${200 + m * 20}, ${40 + m * 40}%, ${88 - m * 6}%)`;
   return (
-    <motion.div data-testid="student-avatar" data-mood={m.toFixed(2)} className="relative mx-auto h-44 w-44"
+    <motion.div data-testid={testid} data-mood={m.toFixed(2)} className={`relative mx-auto ${size}`}
       animate={bounce ? { y: [0, -14, 0], scale: [1, 1.05, 1] } : { y: 0 }} transition={{ duration: 0.6 }}>
       <motion.div className="absolute inset-0 rounded-full" animate={{ backgroundColor: bg }} transition={{ duration: 0.6 }} />
       <svg viewBox="0 0 120 120" className="relative h-full w-full">

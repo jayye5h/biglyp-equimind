@@ -5,7 +5,7 @@ import { AuthProvider, useAuth } from "@/lib/auth";
 import { ThemeProvider } from "@/lib/theme";
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
-import Dashboard from "@/pages/Dashboard";
+import StudentHome from "@/pages/StudentHome";
 import Assessment from "@/pages/Assessment";
 import ReportView from "@/pages/ReportView";
 import Admin from "@/pages/Admin";
@@ -27,7 +27,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Guard role="student"><Dashboard /></Guard>} />
+            <Route path="/dashboard" element={<Guard role="student"><StudentHome /></Guard>} />
             <Route path="/check-in" element={<Guard role="student"><Assessment /></Guard>} />
             <Route path="/report/:id" element={<Guard role="student"><ReportView /></Guard>} />
             <Route path="/admin" element={<Guard role="admin"><Admin /></Guard>} />

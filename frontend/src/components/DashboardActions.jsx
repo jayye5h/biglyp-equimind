@@ -15,7 +15,7 @@ const CardShell = ({ to, testid, icon: Icon, title, tone, children }) => (
   </Link>
 );
 
-const PlanSummary = ({ r }) => {
+export const PlanSummary = ({ r }) => {
   const ticks = new Set(r.ticks || []);
   const day = Math.min(Math.floor((Date.now() - new Date(r.created_at).getTime()) / 864e5) + 1, 14);
   return (
@@ -36,7 +36,7 @@ const PlanSummary = ({ r }) => {
   );
 };
 
-const TrackSummary = ({ r }) => {
+export const TrackSummary = ({ r }) => {
   const moods = r.moods || {};
   const trackerFilled = Object.values(r.tracker || {}).filter((v) => String(v).trim()).length;
   const reflFilled = Object.values(r.reflections || {}).filter((v) => String(v).trim()).length;
@@ -79,7 +79,7 @@ const MoodTap = ({ r, onSave }) => {
   );
 };
 
-const MoodWeek = ({ r }) => {
+export const MoodWeek = ({ r }) => {
   const moods = r.moods || {};
   const elapsed = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 864e5);
   const [week, setWeek] = useState(elapsed >= 7 ? 1 : 0);

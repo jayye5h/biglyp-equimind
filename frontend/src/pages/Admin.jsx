@@ -4,6 +4,7 @@ import { Search, Lock, Clock } from "lucide-react";
 import { AppHeader } from "@/components/Shell";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { api, AREA_COLORS } from "@/lib/api";
+import { MediaManager } from "@/components/admin/MediaManager";
 
 const Stat = ({ label, value, testid }) => (
   <div data-testid={testid} className="rounded-2xl bg-white border border-eq/10 p-5"><div className="text-xs font-mono uppercase text-slate-400">{label}</div><div className="mt-2 font-serif text-3xl font-bold text-slate-900">{value}</div></div>
@@ -100,10 +101,12 @@ export default function Admin() {
             <TabsTrigger data-testid="admin-tab-overview" value="overview" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Overview</TabsTrigger>
             <TabsTrigger data-testid="admin-tab-items" value="items" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Question bank</TabsTrigger>
             <TabsTrigger data-testid="admin-tab-activities" value="activities" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Activities</TabsTrigger>
+            <TabsTrigger data-testid="admin-tab-media" value="media" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Media</TabsTrigger>
           </TabsList>
           <TabsContent value="overview" className="mt-6"><Overview /></TabsContent>
           <TabsContent value="items" className="mt-6"><QuestionBank /></TabsContent>
           <TabsContent value="activities" className="mt-6"><Library /></TabsContent>
+          <TabsContent value="media" className="mt-6"><MediaManager /></TabsContent>
         </Tabs>
       </main>
     </div>

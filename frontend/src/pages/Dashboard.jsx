@@ -12,7 +12,7 @@ import { useTheme } from "@/lib/theme";
 
 const levelOf = (s) => (s < 35 ? "Needs care first" : s < 50 ? "Watch" : s < 65 ? "Steady" : "Strength");
 
-const LatestCard = ({ r }) => {
+export const LatestCard = ({ r }) => {
   const done = r.ticks?.length || 0;
   const retake = new Date(new Date(r.created_at).getTime() + 30 * 864e5);
   return (
@@ -40,7 +40,7 @@ const LatestCard = ({ r }) => {
   );
 };
 
-const History = ({ reports }) => {
+export const History = ({ reports }) => {
   const { palette } = useTheme();
   const data = [...reports].reverse().map((r, i) => ({ n: `#${i + 1}`, overall: r.overall }));
   return (
