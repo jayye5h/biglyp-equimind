@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Quote, CalendarCheck, ClipboardCheck } from "lucide-react";
-import { Student } from "@/components/StudentAnimation";
+import { Student } from "@/components/Avatar";
 import { BANDS } from "@/components/report/PlanTrack";
 import { elapsedDays } from "@/lib/progress";
 import { stageAt, projectedStage, STAGES, phaseOf } from "@/lib/stages";

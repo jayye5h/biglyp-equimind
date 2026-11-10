@@ -66,6 +66,9 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 - Home order: Journey → Calm Streak → Activity of the Day (exactly 2 cards) → Calm Shorts → Wellness Reads + Audiobooks (Videos removed). Toolkit: activity, all 3 Brain Games, shorts, all reads (Picked for you / More to explore), audiobooks.
 - Calm Streak: 14 named day badges (logged_days), current/best streak, warm messages, toast on new badge; also on My Journey tab. Exercise player (components/home/ExercisePlayer.jsx) with animated breath circle and timed steps.
 
+## Implemented (2026-11-10, iteration 13)
+- Progress avatars: user-supplied 14 growth-stage images (public/avatars/stages/stage1-14.webp, cropped from Avatar.png) replace the old mood avatars everywhere (journey card, day strip, daily log popup, streak badges). Stage = 1 + number of daily check-ins (lib/stages.js), never goes back; future days show projected stage dimmed. 4 phases (1-3, 4-8, 9-12, 13-14) shown as phase chip on journey card and phase pills above streak badges; streak card shows "stage X/14"; toast "New stage unlocked".
+
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)

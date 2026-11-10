@@ -1,10 +1,10 @@
 import { elapsedDays } from "@/lib/progress";
 
 export const PHASES = [
-  { n: 1, name: "Finding Calm", from: 1, to: 3 },
-  { n: 2, name: "Feeling Happier & More Energetic", from: 4, to: 8 },
-  { n: 3, name: "Connecting, Engaging & Enjoying", from: 9, to: 12 },
-  { n: 4, name: "Confident, Social & Lively", from: 13, to: 14 },
+  { n: 1, name: "Finding Calm", short: "Finding Calm", from: 1, to: 3 },
+  { n: 2, name: "Feeling Happier & More Energetic", short: "Happier & Energetic", from: 4, to: 8 },
+  { n: 3, name: "Connecting, Engaging & Enjoying", short: "Connecting & Enjoying", from: 9, to: 12 },
+  { n: 4, name: "Confident, Social & Lively", short: "Confident & Lively", from: 13, to: 14 },
 ];
 
 export const STAGES = [

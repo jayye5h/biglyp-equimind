@@ -1,0 +1,25 @@
+{
+  "summary": "Frontend-only test of the 14-stage progress avatars (Playwright, desktop 1920 + mobile 390). All features in scope pass. All 14 /avatars/stages/stageN.webp load with no broken images, and src/ and public/ no longer reference /avatars/mood*.webp. Rohan (tmp report, logged_days [0,1,2,4], today = day index 6, which shows as 'Day 7 of 14'): the daily-log popup opened on its own with daily-log-avatar data-stage=5 and the text 'Phase 2 · Feeling Happier & More Energetic — Calmer and more positive'. The journey main card is stage 5 with caption 'Calmer and more positive' and phase chip 'Phase 2: Feeling Happier & More Energetic'. Side cards are 5 (prev) and 6 (next, dimmed). The day strip reads 4,5,5,6(dim),7(dim), so it never goes down. streak-earned shows 5/14, badges 1-5 have data-earned=true and badge 6 has the dashed outline. Hovering badge 6 shows the tooltip 'Energised / More energetic and motivated / Your next stage — just one check-in away.' The desktop row shows 4 phase pills. Daily log run: chose mood 'Struggling', then answered 'Not this time' for all 5 activities. The avatar stayed at stage 5 throughout. After submitting, the toast 'New stage unlocked: Energised — More energetic and motivated. 2-day streak! ...' appeared. The journey card moved to stage 6, streak to 6/14, badges 1-6 lit, strip to 4,5,6,7,8, and the log button disappeared. So low mood plus all-'no' answers still moves forward and never back. Ananya (created today): stage 1, 'Feeling a bit overwhelmed', Phase 1, 1/14, only badge 1 lit, strip projected 1-5. Mobile 390: the 14 badges sit in 2 rows of 7, phase pills are hidden, no horizontal overflow (scrollWidth 390). Regression: Activity of the Day, Wellness Reads and the Toolkit tab (Brain Games, Calm Shorts) all render.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Calm Streak desktop phase header", "issues": ["The Phase 4 pill spans only 2 columns, so its text is cut off as 'Phase 4: Confid...' even at 1920px. Use a shorter label such as 'Phase 4' with the name in a tooltip, or allow 2 lines.", "The Phase 3 pill text is also tight at 1920."]},
+      {"screen": "Journey side card (previous day)", "issues": ["Minor, semantic: a logged past day shows the stage reached at the start of that day (stageAt counts only logged days k<d). For example, Day 6 was logged but still shows 'Calmer and more positive' (stage 5). This matches the spec; it is noted only in case the user expects the logged day to show the unlocked stage."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": ["Optional: stop the Phase 4 (and Phase 3) pill text in the Calm Streak header from being cut off on desktop."],
+  "critical_code_review_comments": [
+    "stages.js is clean and stages are clamped to 1-14. currentStage = 1 + logged_days.length, and it matches stageAt(today) as long as logged_days never contains an index >= today. pendingDay only logs yesterday, so this holds.",
+    "JourneyCard imports Student from StudentAnimation, which re-exports it from Avatar; DailyLog imports it from Avatar directly. Both work, but use one import path for consistency.",
+    "The dimmed style uses the Tailwind arbitrary class grayscale-[60%]. It renders correctly."
+  ],
+  "updated_files": ["/app/test_reports/iteration_5.json"],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100%"},
+  "seed_data_creation": "None created. The temporary report 'tmp-rohan-stage' from the main agent got logged_days 5 added during testing and was then deleted from test_database.reports as requested (deletedCount 1, verified 0 left). Ananya's report from today now has no mood changes from this run.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Stage logic is in frontend/src/lib/stages.js. To test stages, insert a report with created_at N days ago and set logged_days; pendingDay = elapsed-1 if not logged. Useful test IDs: journey-main-avatar[data-stage], journey-day-avatar-<d>, streak-badge-N[data-earned], streak-earned, daily-log-avatar, daily-log-stage. On mobile the sidebar nav is hidden; use the mnav-* test IDs instead."
+}

@@ -61,9 +61,9 @@ export const StreakCard = ({ r, onOpenDaily, pending }) => {
       </div>
       <div className="mt-6 hidden lg:grid grid-cols-[repeat(14,minmax(0,1fr))] gap-3 mb-3">
         {PHASES.map((p) => (
-          <div key={p.n} style={{ gridColumn: `span ${p.to - p.from + 1}` }}
+          <div key={p.n} title={`Phase ${p.n}: ${p.name}`} style={{ gridColumn: `span ${p.to - p.from + 1}` }}
             className={`rounded-full px-3 py-1.5 text-center text-[11px] font-semibold truncate ${p.n % 2 ? "bg-eq-soft text-eq-dark" : "bg-violet-50 text-violet-700"} ${s.stage >= p.from ? "" : "opacity-50"}`}>
-            Phase {p.n}: {p.name}
+            Phase {p.n} · {p.short}
           </div>
         ))}
       </div>
