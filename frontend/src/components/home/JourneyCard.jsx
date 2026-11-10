@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Quote, CalendarCheck, ClipboardCheck } from "lucide-react";
+import { ChevronLeft, ChevronRight, Quote, ClipboardCheck } from "lucide-react";
 import { Student } from "@/components/Avatar";
 import { BANDS } from "@/components/report/PlanTrack";
 import { elapsedDays } from "@/lib/progress";
@@ -76,7 +75,6 @@ const MainCard = ({ r, d, today, onSave, pending, onOpenDaily }) => {
       )}
       <div className="mt-5 flex flex-wrap gap-2">
         {pending !== null && <button data-testid="journey-log-yesterday-btn" onClick={onOpenDaily} className="h-10 px-4 rounded-xl bg-eq text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-eq-dark transition-colors"><ClipboardCheck className="h-4 w-4" /> Log Day {pending + 1} activities</button>}
-        <Link to={`/report/${r.id}#plan`} data-testid="journey-open-plan-btn" className="h-10 px-4 rounded-xl bg-eq-soft text-eq-dark text-sm font-medium inline-flex items-center gap-2 hover:bg-eq-softer transition-colors"><CalendarCheck className="h-4 w-4" /> Open 14-day plan</Link>
       </div>
       <div className="mt-5 rounded-2xl bg-eq-bg px-4 py-3 flex items-center gap-2 text-sm italic text-eq-dark"><Quote className="h-4 w-4 shrink-0" />{QUOTES[d % QUOTES.length]}</div>
     </div>

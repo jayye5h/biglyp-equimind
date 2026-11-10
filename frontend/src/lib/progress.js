@@ -10,7 +10,8 @@ export const weekStats = (r, w) => {
   const moodVals = days.map((d) => (r.moods || {})[d]).filter((v) => BANDS[v]);
   const avgMood = moodVals.length ? moodVals.reduce((s, v) => s + v, 0) / moodVals.length : null;
   const sorted = [...acts].sort((a, b) => b.done - a.done);
-  return { acts, total, pct: Math.round((total / 35) * 100), moodDays: moodVals.length, avgMood, best: sorted[0], hardest: sorted[sorted.length - 1] };
+  const fullDays = days.filter((d) => r.plan.every((_, i) => ticks.has(`${i}-${d}`))).length;
+  return { acts, total, fullDays, pct: Math.round((total / 35) * 100), moodDays: moodVals.length, avgMood, best: sorted[0], hardest: sorted[sorted.length - 1] };
 };
 
 export const bandName = (v) => (v === null ? null : BANDS[Math.round(v)].l);
@@ -52,4 +53,50 @@ export const trendInsights = (r, s1, s2) => {
     ? `The plan isn't moving things enough yet — ${r.path === 2 ? "keep" : "consider booking"} a campus counsellor appointment and bring it forward. A plan not moving is information, not failure.`
     : "Keep the two habits that helped most, and retake the check-in on Day 30 to see how your six areas have moved.";
   return { lines: out, next, feel, notMoving };
+};
+
+export const week2Writeup = (r, s1, s2) => {
+  const first = r.student.name.split(" ")[0];
+  const diff = s2.total - s1.total;
+  const parts = [`${first}, in days 8 to 14 you completed ${s2.total} of 35 activities (${s2.pct}%)${diff > 0 ? ` \u2014 ${diff} more than in your first week. That is real progress.` : diff < 0 ? ` \u2014 a little fewer than Week 1. Busy weeks happen, and you still kept going.` : " \u2014 exactly the same rhythm as Week 1. Steady is strong."}`];
+  if (s2.total && s2.best.done > s2.hardest.done) parts.push(`${s2.best.name} was your strongest habit this week (${s2.best.done}/7), and ${s2.hardest.name} needed the most effort (${s2.hardest.done}/7).`);
+  parts.push(s2.fullDays ? `On ${s2.fullDays} ${s2.fullDays === 1 ? "day" : "days"} you did all five activities.` : "You didn't manage all five on a single day \u2014 that's a sign the plan may be a little too full right now, not that you failed.");
+  return parts.join(" ");
+};
+
+export const nextStepsPlan = (r) => {
+  const s1 = weekStats(r, 0);
+  const s2 = weekStats(r, 1);
+  const t = trendInsights(r, s1, s2);
+  const pct = Math.round(((s1.total + s2.total) / 70) * 100);
+  const ranked = r.plan.map((a, i) => ({ ...a, done: s1.acts[i].done + s2.acts[i].done })).sort((a, b) => b.done - a.done);
+  const first = r.student.name.split(" ")[0];
+  let path = "same";
+  if (s2.pct >= 80 && s2.fullDays >= 4) path = "new";
+  else if (s2.pct < 60 || s2.fullDays < 3) path = "three";
+  let items;
+  let listTitle;
+  if (path === "three") {
+    listTitle = "Your 3 daily activities for the next two weeks";
+    items = ranked.slice(0, 3).map((a) => ({ id: a.id, name: a.name, time: a.time, note: `You managed this on ${a.done} of 14 days \u2014 it already fits your life.` }));
+  } else if (path === "new") {
+    listTitle = "Keep these two, and add something new";
+    const fresh = (r.next_activities || []).slice(0, 2);
+    items = [
+      ...ranked.slice(0, 2).map((a) => ({ id: a.id, name: a.name, time: a.time, note: "Keep going \u2014 this habit is becoming part of you." })),
+      ...fresh.map((a) => ({ id: a.id, name: `New: ${a.name}`, time: a.time, note: a.why })),
+    ];
+  } else {
+    listTitle = "Your same 5 activities \u2014 keep the rhythm";
+    items = ranked.map((a) => ({ id: a.id, name: a.name, time: a.time, note: `${a.done} of 14 days so far.` }));
+  }
+  const intro = path === "three"
+    ? `${first}, you completed ${pct}% of your plan over 14 days. Keeping all five every day was hard \u2014 so for the next two weeks we suggest a lighter plan of three activities a day. Fewer habits done well beat many done sometimes.`
+    : path === "new"
+      ? `${first}, you completed ${pct}% of your plan over 14 days \u2014 that's excellent. You're ready for a fresh challenge, so we suggest adding new activities while keeping your strongest habits.`
+      : `${first}, you completed ${pct}% of your plan over 14 days. Your rhythm is building, so the best next step is to continue with the same five habits for two more weeks.`;
+  const closing = t.notMoving
+    ? `Your mood or progress isn't moving as much as we'd hope yet \u2014 ${r.path === 2 ? "keep" : "consider booking"} a campus counsellor appointment, and bring it forward. A plan not moving is information, not failure.`
+    : "Retake your check-in around Day 30 to see how your six areas have moved. Be proud of what you've built.";
+  return { path, pct, items, listTitle, intro, closing, notMoving: t.notMoving };
 };

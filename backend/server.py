@@ -25,6 +25,7 @@ from scoring import pick_items, score_responses, priority_pages, build_plan, bod
 from narrative import write_narrative  # noqa: E402
 from media_seed import SEED_MEDIA  # noqa: E402
 from wellness import today_plan, all_reads  # noqa: E402
+from plan_theory import enrich_plan, next_activities  # noqa: E402
 
 YT_RE = re.compile(r"^(?:https?://)?(?:www\.|m\.)?(?:youtube\.com/(?:watch\?(?:.*&)?v=|shorts/|embed/)|youtu\.be/)([A-Za-z0-9_-]{11})|^([A-Za-z0-9_-]{11})$")
 
@@ -212,6 +213,8 @@ async def get_report(rid: str, user: dict = Depends(student_user)):
         raise HTTPException(404, "Report not found")
     r["body_table"] = BODY_TABLE
     r["scripts"] = SCRIPTS
+    r["plan"] = enrich_plan(r.get("plan", []))
+    r["next_activities"] = next_activities(r)
     return r
 
 

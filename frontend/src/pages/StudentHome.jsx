@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CalendarCheck } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
@@ -13,7 +13,7 @@ import { ActivityOfDay, MoreGames } from "@/components/home/ActivityOfDay";
 import { WellnessReads, AllReads } from "@/components/home/WellnessReads";
 import { StreakCard, streakInfo, BADGES } from "@/components/home/CalmStreak";
 import { STAGES } from "@/lib/stages";
-import { PlanSummary, TrackSummary, MoodWeek } from "@/components/DashboardActions";
+import { PlanProgress, MoodWeek } from "@/components/DashboardActions";
 import { HelpContent } from "@/components/report/HelpBodyAbout";
 import { pendingDay } from "@/components/DailyCheckin";
 import { DailyLog } from "@/components/DailyLog";
@@ -24,10 +24,15 @@ const greet = () => {
   return h < 12 ? "Good Morning" : h < 17 ? "Good Afternoon" : "Good Evening";
 };
 
-const Greeting = ({ name, hasReport }) => (
+const Greeting = ({ name, reportId }) => (
   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 eq-rise">
     <h1 data-testid="dashboard-greeting" className="font-serif text-3xl sm:text-4xl font-bold text-slate-900">{greet()}, {name}!</h1>
-    {hasReport && <Link to="/check-in" data-testid="start-checkin-btn" className="self-start sm:self-auto h-11 px-5 rounded-xl bg-white border border-eq/20 text-sm font-medium text-slate-700 hover:border-eq/50 inline-flex items-center gap-2 transition-colors">Take a new check-in <ArrowRight className="h-4 w-4" /></Link>}
+    {reportId && (
+      <div className="self-start sm:self-auto flex flex-wrap gap-2">
+        <Link to="/check-in" data-testid="start-checkin-btn" className="h-11 px-5 rounded-xl bg-white border border-eq/20 text-sm font-medium text-slate-700 hover:border-eq/50 inline-flex items-center gap-2 transition-colors">New Assessment <ArrowRight className="h-4 w-4" /></Link>
+        <Link to={`/report/${reportId}#plan`} data-testid="journey-open-plan-btn" className="h-11 px-5 rounded-xl bg-eq-soft text-eq-dark text-sm font-medium inline-flex items-center gap-2 hover:bg-eq-softer transition-colors"><CalendarCheck className="h-4 w-4" /> Open 14-day plan</Link>
+      </div>
+    )}
   </div>
 );
 
@@ -98,7 +103,7 @@ export default function StudentHome() {
 
   return (
     <HomeLayout tab={tab} onNav={nav} pending={day} onBell={openDaily}>
-      <Greeting name={user.name.split(" ")[0]} hasReport={!!reports?.length} />
+      <Greeting name={user.name.split(" ")[0]} reportId={reports?.[0]?.id} />
       {!ready ? <div className="h-80 rounded-[2rem] bg-white/60 animate-pulse" /> : (
         <div data-testid={`dashboard-tab-${tab}`} className="space-y-7">
           {tab === "home" && (<>
@@ -114,7 +119,7 @@ export default function StudentHome() {
           {tab === "journey" && (latest ? (<>
             <LatestCard r={{ ...reports[0], ticks: latest.ticks }} />
             <StreakCard r={latest} pending={day} onOpenDaily={openDaily} />
-            <div className="grid lg:grid-cols-2 gap-6"><PlanSummary r={latest} /><TrackSummary r={latest} /></div>
+            <PlanProgress r={latest} />
           </>) : <NoReportCard />)}
           {tab === "insights" && (latest ? (<><MoodWeek r={latest} /><History reports={reports} /></>) : <NoReportCard />)}
           {tab === "toolkit" && (<>
