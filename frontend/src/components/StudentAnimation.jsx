@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+export { Student } from "@/components/Avatar";
 import { Smartphone, NotebookPen, Timer, MessageCircleHeart, HeartPulse, Sparkles, Sun, Moon, ListChecks, Wallet } from "lucide-react";
 
 export const SCENES = {
@@ -27,7 +28,7 @@ const Zzz = () => (
   </div>
 );
 
-export const Student = ({ mood, sleeping, bounce, size = "h-44 w-44", testid = "student-avatar" }) => {
+const StudentSvgLegacy = ({ mood, sleeping, bounce, size = "h-44 w-44", testid = "student-avatar" }) => {
   const m = Math.max(0, Math.min(1, mood));
   const mouth = `M46 84 Q60 ${84 + (m - 0.5) * 26} 74 84`;
   const sad = Math.max(0, (0.5 - m) * 9);

@@ -12,7 +12,8 @@ import { CalmShorts, AudioVideo, usePlayer } from "@/components/home/MediaSectio
 import { ActivityOfDay } from "@/components/home/ActivityOfDay";
 import { PlanSummary, TrackSummary, MoodWeek } from "@/components/DashboardActions";
 import { HelpContent } from "@/components/report/HelpBodyAbout";
-import { DailyCheckin, pendingDay } from "@/components/DailyCheckin";
+import { pendingDay } from "@/components/DailyCheckin";
+import { DailyLog } from "@/components/DailyLog";
 import { LatestCard, History } from "@/pages/Dashboard";
 
 const greet = () => {
@@ -104,7 +105,7 @@ export default function StudentHome() {
           </>)}
         </div>
       )}
-      {latest && day !== null && dailyOpen && <DailyCheckin r={latest} day={day} open onClose={closeDaily} onSave={save} />}
+      {latest && day !== null && dailyOpen && <DailyLog r={latest} day={day} open onClose={closeDaily} onSave={save} />}
       {player}
     </HomeLayout>
   );

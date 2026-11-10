@@ -57,6 +57,10 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 - Calm Shorts, Audiobooks, Videos: curated free YouTube videos (seeded in `media` collection, played in an in-app youtube-nocookie player); admin Media tab to add/edit/delete links.
 - Activity of the Day: playable Sudoku (4×4, rule-based check), Zero-Kata (tic-tac-toe vs computer), Memory Match.
 
+## Implemented (2026-11-10, iteration 11)
+- Daily activity log pop-up redesigned per "Daily Activity Log.pdf": 6 steps — (1) Good to see you again + Glow meter + today's mood (5 faces), (2-6) one step per plan activity with tailored heading/subtitle, question, Yes / Not this time, Back / Next, 1/5 dots; 60-second check-in step also captures stress (0-10) and one feeling (`daily_notes`); final "Submit today's check-in" (components/DailyLog.jsx).
+- New illustrated student avatar (headphones + hoodie) in 5 mood expressions (public/avatars/mood0-4.webp, AI-generated) used in popup and journey cards (components/Avatar.jsx).
+
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)

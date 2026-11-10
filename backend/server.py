@@ -100,6 +100,7 @@ class ProgressIn(BaseModel):
     tracker: Optional[Dict[str, Any]] = None
     reflections: Optional[Dict[str, Any]] = None
     logged_days: Optional[List[int]] = None
+    daily_notes: Optional[Dict[str, Any]] = None
 
 
 @api.get("/")
@@ -228,7 +229,7 @@ async def update_progress(rid: str, body: ProgressIn, user: dict = Depends(stude
         upd["ticks"] = list(dict.fromkeys(body.ticks))
     if body.ticks is not None and len(body.ticks) > 70:
         raise HTTPException(422, "Too many ticks")
-    if len(str(body.tracker or "")) + len(str(body.reflections or "")) > 20000:
+    if len(str(body.tracker or "")) + len(str(body.reflections or "")) + len(str(body.daily_notes or "")) > 20000:
         raise HTTPException(422, "Entries are too long")
     if not upd:
         raise HTTPException(400, "Nothing to update")
