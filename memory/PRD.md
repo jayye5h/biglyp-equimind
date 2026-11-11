@@ -87,3 +87,7 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)
 - P2: Real login (email/Google), Day-30 reminder emails, item-level Day-30 comparison view
+
+## 2026-11-11 (iteration 16) — environment restore + demo data
+- Recreated backend/frontend .env (new VAPID keys, cron secret), installed deps. Fresh DB seeded: real AI reports for 3 students via API, then `python backend/scripts/seed_demo_progress.py` (Ananya 8 days, Rohan 14 days, Meera 5 low days + booking). Seed ticks "once this fortnight" activities only once.
+- Known gap (not fixed, awaiting user): progress.js treats one-off activities as daily (counts toward full days / "hardest" / "slipped").
