@@ -1,0 +1,29 @@
+{
+  "summary": "Frontend-only check of the seeded demo progress. All 5 requested scenarios passed (5/5). I ran the seed script once at the start so the dates are relative to now. ANANYA: the popup opened by itself showing 'Day 9 of 14'. I closed it with 'Remind me later' and did not submit it. journey-main-avatar data-stage=9, streak-current=8, streak-earned=9/14, badges 1-9 earned and 10-14 not earned. The journey strip shows Days 3-8 with labels Settling/Rough day/Calmer and avatar stages 4-8 rising. Day 9 is labelled Today. My Journey dashboard-plan-progress rows read 8/6/6/2/4 (26/70) after an outside Day-9 log (see below). The mood strip is coloured for the logged days. Ananya's report shows report-page-week-1 with week1-total '20/35 · 57%'. week-2 and next-steps are not shown. The PDF downloaded (11 pages). ROHAN: no popup. Daily Check-in in the nav shows the toast \"You're all caught up for today.\" streak-current=14, streak-earned=14/14, every badge earned, journey-main-avatar data-stage=14, Phase 4: Confident, Social & Lively. The card says 'Journey complete' with Day 14 selected. Nudge: 'Let this good energy grow' (feeling strong). Activity of the Day: 'for a strong day'. Rohan's report: Week 1 is 25/35 · 71%. Week 2 is 33/35 · 94%, +8, 5/7 full days. next-option-new has data-recommended=true and the other two are false. The list holds 2 kept habits plus 'New: The 5-minute brain dump' and 'New: Deadline or plan conversation with faculty'. The PDF downloaded (13 pages, so it includes Week 2 and Next Steps). No page errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home journey strip", "issues": ["The past-day labels are stage words (Settling, Calmer, More Open, Rough day), not the mood labels (Struggling…Strong). For example, Rohan's Day 13 and Day 14 were logged as Strong but show 'More Open'. This may be intended."]},
+      {"screen": "Rohan home journey card (Day 14, 5/5, Strong)", "issues": ["The quote 'Tomorrow is the restart, not next Monday.' does not fit a completed, strong final day.", "The right-hand side card is empty after Day 14."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "DATA NOTE: during my test, an outside session (not my scripts) sent PATCH /api/reports/6053e41d.../progress. It logged Ananya's Day 9: mood 3, ticks 2-8 and 4-8, daily_notes['8']={stress:10, feeling:'Stressed'}. This was probably the user trying the popup. I did NOT overwrite it, because that would erase a real user action. If the demo should start again with the Day 9 popup pending, re-run `cd /app/backend && python scripts/seed_demo_progress.py`.",
+    "Optional: show mood labels in the journey strip, or make the copy clear that these are stage labels",
+    "Optional: give the journey card a final-day quote that fits"
+  ],
+  "critical_code_review_comments": [
+    "The seed script backdates created_at relative to now. The popup and day states therefore drift as real time passes: Ananya gets a new pending day every 24h and Rohan's journey ends after day 15. Re-run the script before each demo.",
+    "nextStepsPlan intro uses the 14-day % (83%) while the Week 2 tile shows 94%. Both are correct, but users may find this confusing. Consider saying 'over the full 14 days'."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100% (5/5 scenarios)"},
+  "seed_data_creation": "Ran seed_demo_progress.py once at the start (idempotent). My scripts did not change any data. Ananya now has Day 9 logged by an outside session (see action_items). Rohan is in the seeded state.",
+  "test_credentials": "/app/memory/test_credentials.md does not exist. Used the demo-login-stu-ananya and demo-login-stu-rohan buttons (mocked, no password).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Report IDs: Ananya 6053e41d-afbf-48a4-a7c8-728d282c5838, Rohan dee67d7a-258a-4c4b-b413-52225ddd3dee. The PDF is images from html2canvas + jspdf, so pdftotext finds no text; count '/Type /Page' to check pages. Test IDs used: daily-checkin-dialog, daily-checkin-later-btn, journey-main-avatar[data-stage], streak-current, streak-earned, streak-badge-N[data-earned], dashboard-plan-progress, week1-total, week2-total, next-option-*[data-recommended], next-steps-list, download-pdf-report-btn, daily-nudge-title, nav-checkin, nav-journey."
+}
