@@ -1,0 +1,36 @@
+{
+  "summary": "Iteration 9: tested report illustrations, daily-checkin feedback step, push reminders/cron, student booking, counsellor portal, role guards, and admin/dashboard regression. Backend: 16/16 pytest pass. Frontend: every requested flow works end to end. Report art: snapshot uses the current stage avatar; narrative, priority 1-3 (area art matches the B/F/D priorities), plan, week-1/2, next-steps, help and body pages all have art that loads (naturalWidth 320/480). Cover and about pages have no art. The PDF downloads (4.8MB). The about page's privacy-counsellor-note text is correct. Feedback flow: as Meera, the last button says 'Continue' when at least one answer is Yes. The save button stays disabled until both choices are picked. On submit a toast shows and the journey card shows the labels and comment. With all answers 'Not this time' the last button submits directly. 'Skip' submits without feedback. Reminders card shows the 'blocked' text in headless (expected); hiding it persists after reload. Booking: 14 slots grouped by day; submit is disabled until a slot is picked; the booking shows 'Confirmed'; a request shows 'Request sent'; the book button is hidden at 2 active bookings; 409 for double-booking and for a 3rd booking. Counsellor: all 4 tabs work. Assigning a slot and confirming works, and marking completed works. Attention tab: Meera 'Needs attention' with flags, Ananya 'Monitor closely'. Adding and deleting a slot works, and booked slots have no delete. The student record shows flags, scores, progress, the day-record table with feedback, and bookings. A counsellor note saves and persists. Open report goes to /report/<id> with a 'Student record' back link. A student visiting /counsellor is redirected to /dashboard. Admin login goes to /admin.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/counselling/bookings", "issue": "The max-2 active check (count_documents, then insert) is not atomic. Two requests at the same moment can create a 3rd active booking. Low risk."},
+      {"endpoint": "PATCH /api/counsellor/bookings/{id}", "issue": "status='completed' is accepted for a pending request that has no slot. Completing a session also leaves its slot booked, which is fine but undocumented."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Counsellor > My availability", "issues": ["Uses the browser's native date/time pickers (input type=date/time), not the shadcn Calendar/Popover"]},
+      {"screen": "Counsellor > Sessions", "issues": ["The action button is labelled 'Completed', which reads like a status. 'Mark completed' would be clearer."]},
+      {"screen": "Daily check-in toast / journey card", "issues": ["On a Rough day with 0/5 activities done, the stage-unlock toast and avatar caption still say 'Feeling good and more confident'. Stage progress follows logged days, not mood, so the message doesn't fit how the student feels (existing behaviour)."]},
+      {"screen": "Counsellor student record", "issues": ["'Taken 6/11/2026' uses a locale-ambiguous date format. Use the same 'Fri, 6 Nov' style as the rest of the app."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_counselling_push.py", "/app/backend/tests/cleanup_iter9.py", "/app/test_reports/pytest/pytest_iter9.xml"],
+  "action_items": [
+    "Optional: make the max-2 active bookings check atomic (e.g. a per-student lock doc or a unique partial index)",
+    "Optional: rename the 'Completed' button to 'Mark completed'; consider using the shadcn date picker on the availability form"
+  ],
+  "critical_code_review_comments": [
+    "push_notify.run_reminders: notification dedup key is user:date:slot, so a second cron run in the same slot window sends no push (intended)",
+    "attention_flags 'Felt worse' looks at all days, not just recent ones, so one bad day stays flagged for the whole journey",
+    "get_report gives counsellors every report with no audit log. Consider logging counsellor access for privacy compliance"
+  ],
+  "updated_files": ["/app/backend/tests/test_counselling_push.py", "/app/backend/tests/cleanup_iter9.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "Test bookings/requests were created and then cancelled. They stay as status=cancelled records for Rohan (the API cannot delete them). Ananya's seeded booking was untouched. A TEST_ slot (2030-01-07) and a UI slot (2027-03-15) were created and then soft-removed. TEST_ cron run ids created notification records for Ananya/Meera. seed_demo_progress.py was re-run at the end to restore progress.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Run pytest tests/test_counselling_push.py -p no:xdist -o addopts=''. It books, requests and cancels with Rohan. Afterwards run tests/cleanup_iter9.py and scripts/seed_demo_progress.py. Meera's Day 6 pending popup auto-opens. PDF export takes ~30-60s headless."
+}

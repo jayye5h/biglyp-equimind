@@ -43,7 +43,7 @@ export const BookingActions = ({ b, slots, onDone }) => {
         </select>
         <button data-testid={`confirm-booking-${b.id}`} disabled={!slot} onClick={() => upd({ slot_id: slot }, "Session confirmed")} className="h-9 px-3 rounded-lg bg-eq text-white text-xs font-medium disabled:opacity-40">Confirm</button>
       </>)}
-      {b.status === "confirmed" && <button data-testid={`complete-booking-${b.id}`} onClick={() => upd({ status: "completed" }, "Marked as completed")} className="h-9 px-3 rounded-lg bg-eq-soft text-eq-dark text-xs font-medium inline-flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5" /> Completed</button>}
+      {b.status === "confirmed" && <button data-testid={`complete-booking-${b.id}`} onClick={() => upd({ status: "completed" }, "Marked as completed")} className="h-9 px-3 rounded-lg bg-eq-soft text-eq-dark text-xs font-medium inline-flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5" /> Mark completed</button>}
       <button data-testid={`cancel-booking-${b.id}`} onClick={() => upd({ status: "cancelled" }, "Booking cancelled")} className="h-9 px-3 rounded-lg border border-slate-200 text-slate-600 text-xs inline-flex items-center gap-1 hover:text-rose-600"><XCircle className="h-3.5 w-3.5" /> Cancel</button>
     </div>
   );

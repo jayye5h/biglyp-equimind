@@ -55,7 +55,8 @@ def attention_flags(r):
             sev = max(sev, 1)
             break
     fb = r.get("feedback") or {}
-    worse = [int(k) + 1 for k, v in fb.items() if (v or {}).get("feel") == "worse"]
+    lo = max(0, min(e, 13) - 2)
+    worse = [int(k) + 1 for k, v in fb.items() if k.isdigit() and int(k) >= lo and (v or {}).get("feel") == "worse"]
     if worse:
         flags.append(f"Felt worse after activities (Day {', '.join(map(str, sorted(worse)))})")
         sev = max(sev, 1)
@@ -240,8 +241,8 @@ def build_router(db, current_user, student_user):
         if body.status:
             if body.status not in STATUSES:
                 raise HTTPException(422, "Invalid status")
-            if body.status == "confirmed" and not (upd.get("slot_id") or b.get("slot_id")):
-                raise HTTPException(422, "Pick a slot to confirm a request")
+            if body.status in ("confirmed", "completed") and not (upd.get("slot_id") or b.get("slot_id")):
+                raise HTTPException(422, "Pick a slot for this request first")
             upd["status"] = body.status
             if body.status == "cancelled" and b.get("slot_id"):
                 await db.slots.update_one({"id": b["slot_id"]}, {"$set": {"booked_by": None, "booking_id": None}})

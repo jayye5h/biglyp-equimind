@@ -88,7 +88,7 @@ export default function CounsellorStudent() {
         {!r ? <Card><p className="text-slate-500">This student hasn&apos;t completed a check-in yet.</p></Card> : (<>
           <div className="grid lg:grid-cols-[1fr_1.2fr] gap-6">
             <Card title={`Assessment · overall ${r.overall}`} testid="student-scores">
-              <p className="-mt-2 mb-3 text-xs text-slate-500">Taken {new Date(r.created_at).toLocaleDateString("en-IN")} · {r.path === 2 ? "Counsellor path recommended" : "Strengthening path"} · higher = less stress</p>
+              <p className="-mt-2 mb-3 text-xs text-slate-500">Taken {fmtDay(r.created_at)} · {r.path === 2 ? "Counsellor path recommended" : "Strengthening path"} · higher = less stress</p>
               <div className="space-y-2.5">{r.areas.map((a) => (
                 <div key={a.key}><div className="flex justify-between text-sm"><span className="text-slate-700">{a.name}</span><span className={`font-mono text-xs ${a.score < 35 ? "text-rose-600 font-semibold" : a.score < 50 ? "text-amber-700" : "text-slate-500"}`}>{a.score} · {a.level}</span></div>
                   <div className="mt-1 h-1.5 rounded-full bg-eq-bg overflow-hidden"><div className={`h-full ${a.score < 35 ? "bg-rose-400" : a.score < 50 ? "bg-amber-400" : "bg-eq"}`} style={{ width: `${a.score}%` }} /></div></div>

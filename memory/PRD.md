@@ -73,6 +73,12 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 - Dashboard header: "New Assessment" (renamed) + "Open 14-day plan" (moved out of journey card). My Journey: single combined "Your 14-Day Plan" progress section (DashboardActions.PlanProgress).
 - Report: Plan + Track & Reflect merged into one theory-only "Your 14-Day Plan" section (activity time/when, "Why it helps" from backend/plan_theory.py WHY, steps); now included in PDF. Day 7+: Week 1 Progress; Day 14+: Week 2 Progress (days 8-14 vs week 1) + Your Next Steps (recommends same 5 / focus on 3 / take up new activities via lib/progress.nextStepsPlan; new activities from GET report `next_activities`).
 
+## Implemented (2026-11-11, iteration 15)
+- Report illustrations (public/report-art/*.webp, PageShell `art` prop): snapshot = current stage avatar; narrative, per-area priority art, plan, week 1/2, next steps, help, body. Cover & About have none. About privacy text: counsellors can review/monitor and act in severe cases.
+- Web push reminders (VAPID, pywebpush; backend/push_notify.py, public/sw.js, lib/push.js, home Reminders card). Platform crons (.emergent/crons.yml) 10:00/16:00/20:00 IST → POST /api/cron/reminders (bearer WEBHOOK_CRON_SECRET) → push + in-app notification record to students whose today's check-in is pending.
+- Daily check-in feedback step (helpful / feel / comment) saved to report.feedback[day]; shown on journey day card and counsellor record.
+- Counsellor role (cou-kavya, Dr. Kavya Menon) — backend/counselling.py: slots (seeded, soft-remove), student bookings (slot) or requests, counsellor portal /counsellor (Sessions & requests, Needs attention flags, All students, My availability) and /counsellor/student/:uid (flags, scores, progress, daily record table, bookings + private notes); counsellor can open any report.
+
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)
