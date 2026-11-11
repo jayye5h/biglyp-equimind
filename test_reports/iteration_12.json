@@ -1,0 +1,28 @@
+{
+  "summary": "Read-only frontend check of the seeded demo progress data. No assessments were taken and nothing was deleted. API state matches seed_demo_progress.py: Ananya report 90da1733 is 8.1 days old with 24 ticks; Rohan report d80e237a is 14.1 days old with 58 ticks; Meera report 7728256e is 5.1 days old with 5 ticks and path 2. ANANYA dashboard: the 'Day 9 of 14' daily-log popup opens automatically. The journey card shows Day 9 in Phase 3, the strip shows Day 7 and Day 8 as 'Calmer' and Day 9 as 'Today', and the Calm Streak shows an 8-day streak, stage 9/14 and best streak 8. ANANYA report: the nav has 11 pages, week-1 is present, and week-2 and next-steps are absent, as expected. Week 1 shows 20/35 (57%), 0/7 full days, mostly Mixed, and per-activity counts 7, 5, 4, 2 and 2; all of these match the seed when worked out by hand. ROHAN dashboard: 'Journey complete' badge, Day 14 card 'Feeling Bright' with 5/5 activities and feedback, 14-day streak and stage 14/14, no popup. ROHAN report: 13 pages, with Week 1, Week 2 and Your Next Steps all present. Week 1 is 25/35 (71%) with 1 full day. Week 2 is 33/35 (94%), +8 vs Week 1, 5/7 full days, and mood 'Mixed to Strong'. Next Steps shows 83% over 14 days and recommends 'Take up new activities' (2 kept habits + 2 new ones). All numbers check out by hand. No NaN, undefined or null text, and no page errors. PDF as Rohan: 'Report downloaded' toast, EquiMind-Report-Rohan-Verma.pdf, 5.2MB, 13 pages (so the progress pages are included). COUNSELLOR Kavya: 'Needs attention (2)' lists Meera (Needs attention, low mood 'Struggling, Struggling', high stress 9/10 on Day 4) and Rohan (Monitor closely, 3 areas on watch). Note: the preview container restarted once during testing and gave a temporary Cloudflare 502. This was an environment issue; the data survived and the retry passed.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Rohan report: Next Steps list", "issues": ["'Fixed wake-up time · 0 min, every morning' shows '0 min', which looks odd. Consider showing 'no extra time' or hiding the duration when it is 0.", "'20-minute money conversation · once this fortnight' is ticked 7/7 in both weeks. The seed ticks every activity daily, so a 'once' activity shows as daily. This is only a content mismatch in the demo data."]},
+      {"screen": "Dashboard Calm Streak", "issues": ["The Phase 4 pill is cut off ('Phase 4 · Confid...') at 1920px."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/check_seed_state.py"],
+  "action_items": [
+    "Optional: hide or reword the '0 min' duration for the Fixed wake-up time activity.",
+    "Optional: in the demo seed, tick 'once'-frequency activities on only 1 or 2 days so the numbers look realistic.",
+    "Optional: the counsellor 'High stress' flag shows the oldest high-stress day in the 3-day window (Day 4). Meera also has 9/10 on Day 5, so showing the latest day may be more useful (counselling.py lines 51-56 break on the first match)."
+  ],
+  "critical_code_review_comments": [
+    "The seed sets tracker to {}, so the 'overall feel Day 1 to Week 2' line in trendInsights never shows for the demo users. This is acceptable because the code handles null correctly.",
+    "seed_demo_progress.py overwrites the latest report of each user every time it runs. It is idempotent, but it changes real user data if run in production, so it should stay a demo-only script."
+  ],
+  "updated_files": ["/app/backend/tests/check_seed_state.py (new, read-only checker)"],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "seed_data_creation": "None. Read-only verification; no data was modified.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Seeded reports: Ananya 90da1733-3f39-4408-a469-803638ed2fba (8 days, Week 1 only, 11 pages), Rohan d80e237a-a80c-452c-90cc-0a658c4d5a94 (14 days, 13 pages, next-steps path 'new'), Meera 7728256e (5 days, path 2). Do not take new assessments as these users. Run python /app/backend/tests/check_seed_state.py for a quick read-only check of the data."
+}

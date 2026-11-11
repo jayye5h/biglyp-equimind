@@ -58,10 +58,16 @@ FEEDBACK = {
 }
 
 
-def build(rows):
+def build(rows, plan=()):
+    # one-off activities ("once this fortnight") are ticked only on the first day they were done
+    once = {i for i, p in enumerate(plan) if "once this" in (p.get("time") or "")}
+    used = set()
     ticks, moods, notes, feedback = [], {}, {}, {}
     for d, (mood, done, stress, feeling) in enumerate(rows):
-        ticks += [f"{i}-{d}" for i, v in enumerate(done) if v]
+        for i, v in enumerate(done):
+            if v and not (i in once and i in used):
+                ticks.append(f"{i}-{d}")
+                used.add(i)
         moods[str(d)] = mood
         notes[str(d)] = {"stress": stress, "feeling": feeling}
         if any(done):
@@ -75,12 +81,12 @@ async def main():
     db = AsyncIOMotorClient(os.environ["MONGO_URL"])[os.environ["DB_NAME"]]
     now = datetime.now(timezone.utc)
     for uid, rows, age in (("stu-ananya", ANANYA, 8), ("stu-rohan", ROHAN, 14), ("stu-meera", MEERA, 5)):
-        r = await db.reports.find_one({"user_id": uid}, {"_id": 0, "id": 1}, sort=[("created_at", -1)])
+        r = await db.reports.find_one({"user_id": uid}, {"_id": 0, "id": 1, "plan": 1}, sort=[("created_at", -1)])
         if not r:
             print(f"{uid}: no report found - take a check-in first")
             continue
         created = (now - timedelta(days=age, hours=2)).isoformat()
-        await db.reports.update_one({"id": r["id"]}, {"$set": {"created_at": created, **build(rows)}})
+        await db.reports.update_one({"id": r["id"]}, {"$set": {"created_at": created, **build(rows, r.get("plan") or [])}})
         print(f"{uid}: report {r['id']} -> {len(rows)} days logged, created_at {created}")
     # Ananya books a counselling slot (if she has no active booking)
     if not await db.bookings.find_one({"student_id": "stu-ananya", "status": {"$in": ["pending", "confirmed"]}}):
