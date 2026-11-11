@@ -50,7 +50,7 @@ export const ActivityOfDay = ({ plan }) => {
   return (
     <section data-testid="activity-of-day-section" className="rounded-[2rem] bg-white border border-eq/10 p-5 sm:p-7">
       <h2 className="font-serif text-2xl font-bold text-slate-900">Activity of the Day</h2>
-      <p className="mt-1 text-sm text-slate-600">{plan.personalised ? <>Two little things picked just for you{plan.mood_label ? <> — for a <span className="font-medium text-slate-800">{plan.mood_label.toLowerCase()}</span> day</> : null}, focused on <span className="font-medium text-slate-800">{plan.focus_areas[0].name}</span>.</> : "Two little things to lift your day. Your check-in will make these even more personal."}</p>
+      <p className="mt-1 text-sm text-slate-600">{plan.personalised ? <>{game ? "Two little things" : "A little something"} picked just for you{plan.mood_label ? <> — for a <span className="font-medium text-slate-800">{plan.mood_label.toLowerCase()}</span> day</> : null}, focused on <span className="font-medium text-slate-800">{plan.focus_areas[0].name}</span>.</> : "Two little things to lift your day. Your check-in will make these even more personal."}</p>
       <div className={`mt-5 grid gap-4 ${game ? "md:grid-cols-2" : ""}`}>
         <Card testid="activity-exercise-card" onClick={() => setEx(plan.exercise)} icon={Wind} eyebrow="Guided exercise" title={plan.exercise.name}
           meta={<><Clock className="h-3.5 w-3.5" /> About {plan.exercise.minutes} min</>} why={plan.exercise.why} cta="Begin now" />

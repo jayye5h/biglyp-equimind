@@ -195,7 +195,7 @@ export const WordSearch = () => {
     const w = cells && cells.map(([y, x]) => GRID[y][x]).join("");
     const hit = w && FIND.find((f) => f === w || f === [...w].reverse().join(""));
     if (hit && !found[hit]) setFound((f) => ({ ...f, [hit]: cells }));
-    else setMsg("No word there — try another line.");
+    else setMsg(hit ? `You already found ${hit}.` : "No word there — try another line.");
   };
   const isFound = (r, c) => Object.values(found).some((cs) => cs.some(([y, x]) => y === r && x === c));
   const n = Object.keys(found).length;

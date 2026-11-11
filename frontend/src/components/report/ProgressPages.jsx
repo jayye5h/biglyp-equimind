@@ -94,7 +94,7 @@ export const NextStepsPage = ({ r, n, total }) => {
           const on = k === ns.path;
           return (
             <div key={k} data-testid={`next-option-${k}`} data-recommended={on} className={`relative rounded-2xl p-5 sm:p-6 border-2 ${o.tint} ${on ? "border-[#6d5ce7]" : "border-transparent"}`}>
-              {on && <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#6d5ce7] text-white text-[11px] font-semibold px-3 py-1">Recommended for you</span>}
+              {on && <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#6d5ce7] text-white text-[11px] leading-4 font-semibold px-3 py-1">Recommended for you</span>}
               <img src={o.art} alt="" draggable={false} className="block mx-auto h-24 w-auto object-contain select-none" />
               <h3 className="mt-4 font-serif text-xl font-bold leading-snug text-slate-900">{o.title}</h3>
               <p className="mt-2 text-[15px] leading-relaxed text-slate-700">{o.body}</p>

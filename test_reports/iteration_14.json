@@ -1,0 +1,43 @@
+{
+  "summary": "Tested the Week 2 and Next Steps report redesign (web at 1920/768/390 and the PDF) and the 26-game admin library (catalogue, filters, playing each game, on/off toggle, effect on students). Backend: 9/9 new pytest tests pass. Report: Week 2 uses week2_hero.webp and week2_clip.webp. Next Steps has the next_head.webp header art, 3 tinted option cards, each with its own image. The recommended card ('three' for Rohan) has a purple border and a centred pill. The list card has next_study.webp floated right (hidden on mobile), and the amber 'Also' box has a calendar icon. No broken images, overlap, horizontal overflow or NaN/undefined text at any viewport. Week 2 content is unchanged: 26/35 · 74%, +6, 0/7, Strong, bars 'prev → now', write-up and 4 trend lines. PDF download works (13 pages). PDF pages 9 and 10 contain the new illustrations. Week 1 (Ananya and Rohan) still uses week.webp and week_clip.webp. Admin Games: summary reads '26 games · 3 live for students · 0 turned off', and there are 26 cards and 3 'Live for students' badges. Type, area and mood filters plus a combined filter give exactly the counts expected from the backend catalogue. All 26 games open in admin-game-dialog with no page errors. Completed: word search (5/5), odd colour (10 rounds; a wrong tap shows a message), quick sums (timer reaches 0), count shapes (4/5), worry clouds, gratitude jar (Add is disabled when empty), guess word plus reset, rps match plus rematch, catch stars, grounding, pattern recall, word scramble, affirmation, steady beat (8/8 with exact timing). The rest were smoke-tested and work. Toggle persists after reload and shows a toast. Memory OFF hides it from the student Toolkit; turning it ON restores it. All 3 OFF hides the Toolkit Brain Games section and leaves only the exercise card on Home and Toolkit, with no errors. All toggles were restored to ON (verified via the API). Two real bugs were found: (1) Bubble Pop often cannot be finished; (2) the Admin page overflows sideways at 390px.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "BubblePop (games/pack/CalmGames.jsx)", "issue": "The game often cannot be completed. A popped bubble stays in the DOM: it is disabled, scaled to 150% and invisible (opacity 0), but it still catches clicks. Unpopped bubbles under it become partly or fully unclickable (elementFromPoint returns the popped, disabled bubble). In 3 of 3 trials, clicking every remaining bubble at its centre over 3 passes stalled at 'Popped 9/14' or '10/14'. Some bubbles had 0 of 25 sample points reachable.", "selector": "[data-testid^='bubble-']", "priority": "HIGH"},
+      {"component": "Admin page TabsList (pages/Admin.jsx ~line 101)", "issue": "At 390px the 5-tab row (Overview, Question bank, Activities, Media, Games) doesn't wrap or scroll. The document becomes 497px wide and the whole page scrolls sideways. After clicking the Games tab, the logo and left content are cut off.", "selector": "[data-testid='admin-tab-games']", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Admin Games cards", "issues": ["Area chips are white text on light colours, with low contrast. This is worst on 'Family, Money & Future' (light sky blue) and 'Social & Belonging' (amber)."]},
+      {"screen": "Admin game dialog", "issues": ["Instructions appear twice: the DialogDescription ('how' from the backend) and the GameFrame hint say nearly the same thing, e.g. Steady Beat and Word Search."]},
+      {"screen": "Steady Beat", "issues": ["The end message always says 'your rhythm is steady', even at '0 of 8 in time'."]},
+      {"screen": "Student Activity of the Day with all games OFF", "issues": ["The subtitle still says 'Two little things picked just for you' when only the exercise card is shown."]},
+      {"screen": "Report PDF (html2canvas)", "issues": ["Small rendering quirks only: the Week 2 bullet dots sit slightly above the text line, and the 'Recommended for you' pill text sits slightly low in the pill. The web view is fine."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_games_library.py", "/app/test_reports/pytest/pytest_games.xml"],
+  "action_items": [
+    "Bubble Pop: add pointer-events-none to popped bubbles, or remove them from the DOM after the pop animation, so the bubbles underneath can be clicked.",
+    "Admin TabsList: add flex-wrap, or overflow-x-auto plus max-w-full, so the 5 tabs fit at 390px without page-wide horizontal scroll.",
+    "Optional: improve area-chip contrast (darker text or darker backgrounds), drop the duplicate hint in the admin dialog, make the Steady Beat end message depend on the score, and change the Activity of the Day subtitle when there is no game."
+  ],
+  "critical_code_review_comments": [
+    "CalmGames.jsx BubblePop: popped bubbles are disabled, but disabled buttons still take part in hit-testing. This is the root cause of bug 1.",
+    "GamesLibrary.jsx: api.get('/admin/games') has no .catch. On failure the skeleton spins forever with no error state.",
+    "GamesLibrary toggle is optimistic and reverts on error. Good.",
+    "MoreGames only fetches /games/enabled on mount. Fine for now.",
+    "games.py: GET /games/enabled and the today_plan filtering are correct. Disabling non-student games correctly doesn't affect students. Unknown id → 404, missing body → 422, student or counsellor → 403, no auth → 401/403.",
+    "WordSearch: tapping an already-found word again shows 'No word there' (misleading but harmless)."
+  ],
+  "updated_files": ["/app/backend/tests/test_games_library.py"],
+  "success_rate": {"backend": "100% (9/9)", "frontend": "~93% (Bubble Pop can't reliably be finished; admin page overflows at 390px; everything else passes)"},
+  "test_credentials": "Demo login cards (no password): stu-rohan, stu-ananya, adm-platform, cou-kavya; see /app/memory/test_credentials.md",
+  "seed_data_creation": "None. Gratitude Jar entries are only in client state. No assessments or reports were created or deleted. Every game toggle that was changed was restored to ON (API check: off = []). check_seed_state.py: Rohan 46 ticks, Ananya 24 ticks, unchanged.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run the games backend tests with '-n 0' because they share toggle state: pytest tests/test_games_library.py -n 0. The module fixture restores all toggles to ON. To check Bubble Pop, click each unpopped bubble at its centre with page.mouse.click; the status should reach 'All popped'. Playwright's normal click() times out on bubbles because of the infinite eqfloat animation, so use the mouse or force=True. The report redesign is verified on web and PDF. Pull JPEG pages out of the PDF by scanning for DCTDecode streams. The Admin page at 390px should have scrollWidth == 390 after the fix.",
+  "rca of the issue": "Bubble Pop: each popped bubble gets 'scale-150 opacity-0' and disabled, but keeps pointer events. Bubbles are absolutely positioned and overlap, and later ones in the DOM sit on top. So an invisible, enlarged, disabled bubble swallows clicks meant for the bubble underneath. Reproduce: Admin > Games > Bubble Pop > click every bubble you can see; it usually stalls at 9–12/14. Fix: add pointer-events-none to the popped class. Admin overflow: the shadcn TabsList is inline-flex with 5 triggers, about 480px wide, and has no wrap or scroll, so at 390px it stretches the page."
+}

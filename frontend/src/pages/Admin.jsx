@@ -98,7 +98,7 @@ export default function Admin() {
         <p className="font-mono text-xs uppercase tracking-[0.25em] text-eq">Platform admin</p>
         <h1 className="mt-2 font-serif text-4xl font-bold text-slate-900">Content &amp; <em className="text-eq">cohort view</em></h1>
         <Tabs defaultValue="overview" className="mt-8">
-          <TabsList className="bg-white border border-eq/10 rounded-full p-1 h-auto">
+          <TabsList className="bg-white border border-eq/10 rounded-3xl sm:rounded-full p-1 h-auto flex flex-wrap justify-start max-w-full">
             <TabsTrigger data-testid="admin-tab-overview" value="overview" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Overview</TabsTrigger>
             <TabsTrigger data-testid="admin-tab-items" value="items" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Question bank</TabsTrigger>
             <TabsTrigger data-testid="admin-tab-activities" value="activities" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Activities</TabsTrigger>

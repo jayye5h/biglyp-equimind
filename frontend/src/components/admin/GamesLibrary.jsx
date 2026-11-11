@@ -21,8 +21,9 @@ export const GamesLibrary = () => {
   const [area, setArea] = useState("all");
   const [mood, setMood] = useState("all");
   const [play, setPlay] = useState(null);
+  const [err, setErr] = useState(false);
   useEffect(() => {
-    api.get("/admin/games").then((r) => setGames(r.data));
+    api.get("/admin/games").then((r) => setGames(r.data)).catch(() => setErr(true));
   }, []);
   const list = useMemo(() => (games || []).filter((g) => (type === "All" || g.type === type) && (area === "all" || g.areas.includes(area)) && (mood === "all" || g.moods.includes(Number(mood)))), [games, type, area, mood]);
   const toggle = async (g, enabled) => {
@@ -35,6 +36,7 @@ export const GamesLibrary = () => {
       toast.error("Couldn't save — please try again");
     }
   };
+  if (err) return <p data-testid="games-error" className="rounded-2xl bg-white border border-eq/10 p-6 text-sm text-slate-600">Couldn't load the games. Please refresh the page.</p>;
   if (!games) return <div className="h-60 rounded-2xl bg-white/60 animate-pulse" />;
   const Game = play && GAME_COMPONENTS[play.id];
   const off = games.filter((g) => !g.enabled).length;
@@ -70,7 +72,7 @@ export const GamesLibrary = () => {
             {g.student && <span data-testid={`game-live-${g.id}`} className="mt-2 self-start inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2 py-0.5 text-[10px] font-semibold"><Users className="h-3 w-3" /> Live for students</span>}
             <p className="mt-3 text-sm text-slate-600 flex-1">{g.why}</p>
             <div className="mt-3 flex flex-wrap gap-1">
-              {g.areas.map((a) => <span key={a} className="rounded-full px-2 py-0.5 text-[10px] font-medium text-white" style={{ background: AREA_COLORS[a] }}>{AREAS[a]}</span>)}
+              {g.areas.map((a) => <span key={a} className="rounded-full px-2 py-0.5 text-[10px] font-semibold border" style={{ color: AREA_COLORS[a], borderColor: `${AREA_COLORS[a]}55`, background: `${AREA_COLORS[a]}12`, filter: "brightness(0.8)" }}>{AREAS[a]}</span>)}
             </div>
             <p className="mt-2 text-[11px] text-slate-500">Good on: {g.moods.map((m) => MOODS[m]).join(", ")} days</p>
             <button data-testid={`game-play-${g.id}`} onClick={() => setPlay(g)} className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-eq text-white text-sm font-semibold py-2 hover:bg-eq-dark">
@@ -82,7 +84,7 @@ export const GamesLibrary = () => {
       <Dialog open={!!play} onOpenChange={(o) => { if (!o) setPlay(null); }}>
         <DialogContent data-testid="admin-game-dialog" className="w-[calc(100%-2rem)] max-w-md rounded-3xl p-6 max-h-[92vh] overflow-y-auto">
           <DialogTitle className="font-serif text-2xl text-center">{play?.name}</DialogTitle>
-          <DialogDescription className="text-center text-xs text-slate-500">{play?.how}</DialogDescription>
+          <DialogDescription className="sr-only">{play?.how}</DialogDescription>
           {Game && <Game key={play.id} />}
         </DialogContent>
       </Dialog>

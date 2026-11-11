@@ -18,7 +18,7 @@ export const BubblePop = () => {
           return (
             <button key={x.i} data-testid={`bubble-${x.i}`} disabled={p} onClick={() => setPopped((v) => [...v, x.i])}
               style={{ left: `${x.x}%`, top: `${x.y}%`, width: x.s, height: x.s, animation: `eqfloat 3s ease-in-out ${x.d}s infinite` }}
-              className={`absolute rounded-full border-2 border-eq/40 bg-white/60 shadow-inner transition-[transform,opacity] duration-300 ${p ? "scale-150 opacity-0" : "hover:bg-eq-soft"}`} />
+              className={`absolute rounded-full border-2 border-eq/40 bg-white/60 shadow-inner transition-[transform,opacity] duration-300 ${p ? "scale-150 opacity-0 pointer-events-none" : "hover:bg-eq-soft"}`} />
           );
         })}
       </div>
@@ -158,7 +158,7 @@ export const SteadyBeat = () => {
   const good = taps.filter(Boolean).length;
   return (
     <GameFrame id="steady-beat" hint="Tap the circle in time with the slow pulse. Eight taps."
-      status={done ? `${good} of 8 in time — your rhythm is steady.` : t0 ? `Taps ${taps.length}/8 · in time ${good}` : "Press start, then follow the pulse."}
+      status={done ? `${good} of 8 in time — ${good >= 6 ? "your rhythm is steady." : good >= 3 ? "nice and settling. Try again to get even steadier." : "slow down and let the pulse lead you. Try again."}` : t0 ? `Taps ${taps.length}/8 · in time ${good}` : "Press start, then follow the pulse."}
       onReset={() => { setT0(null); setTaps([]); }}>
       <button data-testid="beat-circle" onClick={tap} className={`mx-auto h-36 w-36 rounded-full grid place-items-center text-white font-semibold transition-transform duration-200 ${pulse ? "scale-110 bg-eq-dark" : "bg-eq"}`}>
         {t0 ? (done ? "Done" : "Tap") : "…"}
