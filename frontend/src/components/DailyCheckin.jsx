@@ -8,8 +8,8 @@ import { currentStage } from "@/lib/stages";
 
 export const pendingDay = (r) => {
   const e = elapsedDays(r);
-  if (e < 1 || e > 15) return null;
-  const d = Math.min(e - 1, 13);
+  if (e < 0 || e > 15) return null;
+  const d = Math.min(e, 13);
   return (r.logged_days || []).includes(d) ? null : d;
 };
 
@@ -43,7 +43,7 @@ export const DailyCheckin = ({ r, day, open, onClose, onSave }) => {
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
       <DialogContent data-testid="daily-checkin-dialog" className="w-[calc(100%-2rem)] max-w-md rounded-[2rem] p-6 sm:p-8 overflow-hidden">
         <DialogTitle className="font-serif text-2xl text-center">{done ? "Day " + (day + 1) + " logged" : step < 0 ? `How did Day ${day + 1} go?` : `Activity ${step + 1} of ${r.plan.length}`}</DialogTitle>
-        <DialogDescription className="text-center text-sm text-slate-500 -mt-1">{step < 0 ? "Five quick taps on yesterday's plan. Watch your student light up." : done ? `You did ${yes} of ${r.plan.length} activities.` : act.name}</DialogDescription>
+        <DialogDescription className="text-center text-sm text-slate-500 -mt-1">{step < 0 ? "Five quick taps on today's plan. Watch your student light up." : done ? `You did ${yes} of ${r.plan.length} activities.` : act.name}</DialogDescription>
         <div className="relative mt-2">
           <Student key={bounce} stage={currentStage(r)} bounce={bounce > 0} />
           {scene && !done && <SceneProp scene={scene} />}

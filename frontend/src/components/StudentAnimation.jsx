@@ -3,7 +3,7 @@ export { Student } from "@/components/Avatar";
 import { Smartphone, NotebookPen, Timer, MessageCircleHeart, HeartPulse, Sparkles, Sun, Moon, ListChecks, Wallet } from "lucide-react";
 
 export const SCENES = {
-  "b-wake": { q: "Did you wake up at your fixed time yesterday?", icon: Sun, sleep: true },
+  "b-wake": { q: "Did you wake up at your fixed time today?", icon: Sun, sleep: true },
   "b-phone": { q: "Did your phone sleep across the room last night?", icon: Smartphone, anim: { x: [0, 26, 0], rotate: [0, 12, 0] } },
   "b-dump": { q: "Did you write a 5-minute brain dump before bed?", icon: NotebookPen, anim: { rotate: [-8, 8, -8] } },
   "b-daylight": { q: "Did you get some daylight within 30 minutes of waking?", icon: Sun, anim: { scale: [1, 1.2, 1] } },
@@ -17,7 +17,7 @@ export const SCENES = {
   "f-money": { q: "Did you take a step towards your money conversation?", icon: Wallet, anim: { y: [0, -6, 0] } },
 };
 
-export const sceneFor = (a) => SCENES[a.id] || { q: `Did you do "${a.name}" yesterday?`, icon: Sparkles, anim: { y: [0, -6, 0] } };
+export const sceneFor = (a) => SCENES[a.id] || { q: `Did you do "${a.name}" today?`, icon: Sparkles, anim: { y: [0, -6, 0] } };
 
 const Zzz = () => (
   <div className="absolute -top-2 right-2 pointer-events-none">

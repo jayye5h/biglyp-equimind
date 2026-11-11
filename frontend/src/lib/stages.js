@@ -19,7 +19,7 @@ export const phaseOf = (stage) => PHASES.find((p) => stage >= p.from && stage <=
 const clamp = (n) => Math.max(1, Math.min(14, n));
 
 /** Progress stage reached by journey day d (0-based). Grows only with completed daily check-ins, never goes back. */
-export const stageAt = (r, d) => clamp(1 + (r?.logged_days || []).filter((k) => k < d).length);
+export const stageAt = (r, d) => clamp(1 + (r?.logged_days || []).filter((k) => k <= d).length);
 
 export const todayIndex = (r) => Math.min(Math.max(elapsedDays(r), 0), 13);
 

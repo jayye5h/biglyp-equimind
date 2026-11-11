@@ -13,18 +13,18 @@ const MOODS = [
 const BASE = [0.18, 0.32, 0.48, 0.62, 0.74];
 
 const COPY = {
-  "b-wake": ["Let's keep going together.", "A small, consistent routine can make a big difference.", "Did you wake up at your fixed time yesterday?", "A consistent routine can help you feel more focused and less stressed."],
+  "b-wake": ["Let's keep going together.", "A small, consistent routine can make a big difference.", "Did you wake up at your fixed time today?", "A consistent routine can help you feel more focused and less stressed."],
   "b-phone": ["Sleep is where you recharge.", "Putting the phone away protects the rest you need.", "Did your phone sleep across the room last night?", "Less late-night scrolling usually means deeper, longer sleep."],
   "b-dump": ["Let's clear the mind.", "Putting thoughts on paper makes space to rest.", "Did you write a 5-minute brain dump before bed?", "Getting worries out of your head helps you switch off."],
   "a-10min": ["Small starts, big wins.", "The hardest part is usually just beginning.", "Did you do a 10-minute start on a task you were avoiding?", "Ten minutes is enough to break the avoidance loop."],
-  "a-top3": ["Focus on what matters.", "Three clear tasks beat a vague pile of everything.", "Did you write your morning top-3 yesterday?", "A short list keeps the day doable."],
-  "d-honest": ["A little connection goes a long way.", "Sharing even one honest thought can feel lighter and more supportive.", "Did you share one honest sentence with someone yesterday?", "It could be how you felt, something on your mind, or just a real thought."],
-  "c-breath": ["Let's take a moment to slow down.", "A simple breathing exercise can help you feel calmer and more in control.", "Did you try the 4-7-8 breathing when things got tense yesterday?", "It's a simple exercise that can help you feel calmer, more relaxed and think more clearly."],
-  "e-three": ["Every small effort deserves recognition.", "Noticing what you did, even the small things, can build a more positive mind.", "Did you write your three-things-I-did list yesterday?", "It's a simple way to notice your efforts, feel more positive and end the day on a good note."],
-  "c-checkin": ["Let's pause and check in with ourselves.", "A quick check-in can help you understand your stress levels and how you're feeling.", "Did you do your 60-second pause yesterday?", "It's a short check-in to understand your stress and name one feeling, which can help you feel more balanced."],
-  "f-money": ["One conversation at a time.", "Talking it through usually shrinks the worry to its real size.", "Did you take a step towards your money conversation yesterday?", "Even planning when to talk counts as a step."],
+  "a-top3": ["Focus on what matters.", "Three clear tasks beat a vague pile of everything.", "Did you write your morning top-3 today?", "A short list keeps the day doable."],
+  "d-honest": ["A little connection goes a long way.", "Sharing even one honest thought can feel lighter and more supportive.", "Did you share one honest sentence with someone today?", "It could be how you felt, something on your mind, or just a real thought."],
+  "c-breath": ["Let's take a moment to slow down.", "A simple breathing exercise can help you feel calmer and more in control.", "Did you try the 4-7-8 breathing when things got tense today?", "It's a simple exercise that can help you feel calmer, more relaxed and think more clearly."],
+  "e-three": ["Every small effort deserves recognition.", "Noticing what you did, even the small things, can build a more positive mind.", "Did you write your three-things-I-did list today?", "It's a simple way to notice your efforts, feel more positive and end the day on a good note."],
+  "c-checkin": ["Let's pause and check in with ourselves.", "A quick check-in can help you understand your stress levels and how you're feeling.", "Did you do your 60-second pause today?", "It's a short check-in to understand your stress and name one feeling, which can help you feel more balanced."],
+  "f-money": ["One conversation at a time.", "Talking it through usually shrinks the worry to its real size.", "Did you take a step towards your money conversation today?", "Even planning when to talk counts as a step."],
 };
-const copyFor = (a) => COPY[a.id] || ["Keep going.", "Every small step counts.", `Did you do "${a.name}" yesterday?`, a.when || ""];
+const copyFor = (a) => COPY[a.id] || ["Keep going.", "Every small step counts.", `Did you do "${a.name}" today?`, a.when || ""];
 
 const partOfDay = () => { const h = new Date().getHours(); return h < 12 ? "Morning" : h < 17 ? "Afternoon" : "Evening"; };
 
@@ -144,7 +144,7 @@ export const DailyLog = ({ r, day, open, onClose, onSave }) => {
       <DialogContent data-testid="daily-checkin-dialog" className="w-[calc(100%-1.5rem)] max-w-lg max-h-[94vh] overflow-y-auto rounded-[2rem] p-5 sm:p-8 bg-gradient-to-b from-white to-eq-bg border-eq/10">
         <Decor />
         <DialogTitle className="sr-only">Daily activity log</DialogTitle>
-        <DialogDescription className="sr-only">Log your mood and yesterday&apos;s plan activities</DialogDescription>
+        <DialogDescription className="sr-only">Log your mood and today&apos;s plan activities</DialogDescription>
         <div className="relative">
           <div className="flex justify-center"><span data-testid="daily-log-day-badge" className="rounded-full bg-eq-soft text-eq-dark text-xs font-semibold px-3 py-1 inline-flex items-center gap-1.5"><CalendarDays className="h-3.5 w-3.5" /> Day {todayIdx + 1} of 14</span></div>
           <AnimatePresence mode="wait">

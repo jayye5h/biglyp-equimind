@@ -23,7 +23,7 @@ export const BADGES = [
 export const streakInfo = (r) => {
   const logged = new Set(r?.logged_days || []);
   const e = r ? elapsedDays(r) : 0;
-  const cur = Math.min(e - 1, 13);
+  const cur = r ? Math.min(e, 13) : -1;
   let current = 0;
   for (let d = logged.has(cur) ? cur : cur - 1; d >= 0 && logged.has(d); d--) current++;
   let best = 0, run = 0;
