@@ -8,7 +8,7 @@ export const PageShell = ({ n, total, title, eyebrow, id, children, dark, testid
     <section id={id} data-pdf-page data-testid={testid}
       className={`relative overflow-hidden rounded-[2rem] p-7 sm:p-10 border scroll-mt-24 ${dark ? "ft-bg border-transparent" : "bg-white border-eq/10"}`}>
       {!art && !inline && <Motif className={`absolute top-7 right-7 h-10 w-10 ${dark ? "ft-faint opacity-40" : "text-eq/15"}`} strokeWidth={1.2} />}
-      <div className={art ? "flex items-center justify-between gap-5" : side ? "grid md:grid-cols-[1fr_1.1fr] gap-4 items-end" : ""}>
+      <div className={art ? "flex items-center justify-between gap-5" : side ? "grid md:grid-cols-[1.3fr_1fr] gap-4 items-end" : ""}>
         <div className="min-w-0">
           <div className="flex items-center gap-3">
             <span className={`font-mono text-[11px] uppercase tracking-[0.2em] ${dark ? "ft-accent" : "text-eq"}`}>{eyebrow}</span>

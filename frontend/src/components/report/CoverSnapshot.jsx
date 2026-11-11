@@ -37,6 +37,16 @@ const Tile = ({ label, value, tone, testid }) => (
   <div data-testid={testid} className={`rounded-2xl p-5 ${tone}`}><div className="text-[11px] font-mono uppercase tracking-wider opacity-70">{label}</div><div className="mt-2 font-semibold leading-snug">{value}</div></div>
 );
 
+const RadarTick = ({ x, y, payload, textAnchor }) => {
+  const words = String(payload.value).split(" ");
+  const lines = words.length > 2 ? [words.slice(0, 2).join(" "), words.slice(2).join(" ")] : words.length === 2 && payload.value.length > 9 ? words : [payload.value];
+  return (
+    <text x={x} y={y - (lines.length - 1) * 6} textAnchor={textAnchor} fontSize={11} fill="#475569">
+      {lines.map((l, i) => <tspan key={l} x={x} dy={i ? 12 : 0}>{l}</tspan>)}
+    </text>
+  );
+};
+
 const AREA_ICON = { A: GraduationCap, B: BedDouble, C: Heart, D: Users, E: Flower2, F: Coins };
 
 export const SnapshotPage = ({ r, n, total, print }) => {
@@ -50,9 +60,9 @@ export const SnapshotPage = ({ r, n, total, print }) => {
           <Art src="/report-art/snapshot.webp" alt="Student studying calmly" testid="report-page-snapshot-art" className="max-w-[260px] mx-auto" />
           <div className="w-full min-w-0 h-[280px] sm:h-[300px]" data-testid="radar-chart">
             <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={data} outerRadius={print ? "64%" : "62%"} margin={{ top: 10, right: 44, bottom: 10, left: 44 }}>
+            <RadarChart data={data} outerRadius={print ? "64%" : "62%"} margin={{ top: 14, right: 34, bottom: 14, left: 34 }}>
               <PolarGrid stroke={palette.grid} />
-              <PolarAngleAxis dataKey="area" tick={{ fontSize: 11, fill: "#475569" }} />
+              <PolarAngleAxis dataKey="area" tick={RadarTick} />
               <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
               <Radar dataKey="score" stroke={palette.p} fill={palette.p} fillOpacity={0.3} strokeWidth={2} isAnimationActive={false} />
             </RadarChart>

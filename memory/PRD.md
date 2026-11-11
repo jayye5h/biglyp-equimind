@@ -79,6 +79,9 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 - Daily check-in feedback step (helpful / feel / comment) saved to report.feedback[day]; shown on journey day card and counsellor record.
 - Counsellor role (cou-kavya, Dr. Kavya Menon) — backend/counselling.py: slots (seeded, soft-remove), student bookings (slot) or requests, counsellor portal /counsellor (Sessions & requests, Needs attention flags, All students, My availability) and /counsellor/student/:uid (flags, scores, progress, daily record table, bookings + private notes); counsellor can open any report.
 
+## Implemented (2026-11-11, iteration 16)
+- Report pages 2-6 restructured to user mockups (app + PDF): PageShell `inline` (accent underline, no motif), `side`/`headExtra`; Snapshot (art + radar | tiles, icon area cards, purple honest line), Narrative (art left/text right), Priority 1 (art beside title), Priority 2/3 (art left, score + why right). Art cropped from mockups (snapshot, narrative, area_a/c/f) + generated matching area_b/d/e. Pages 7-10 mockups pending from user.
+
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters
 - P1: Admin editing of items/activities (content governance)

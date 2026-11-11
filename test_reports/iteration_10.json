@@ -1,0 +1,30 @@
+{
+  "summary": "Frontend-only visual test of report pages 2-6 restructure. I opened 3 reports: Ananya (A/C/F), Rohan (B/F/D) and Meera (A/C/E). I logged in as the counsellor and also as Ananya to check the PDF. All 5 illustrations load (naturalWidth>0) on every report, and each one matches its priority area. All 6 areas a-f have their art, plus snapshot and narrative. All previous content is still there: 4 tiles, area-score-A..F with pills and scores, honest-line, narrative-text, high-items-list, stress-loop, and priority-N-activity-1/2 with 3 steps, time and 'When it helps'. No page title overlaps its image at 390, 768, 1280 or 1920. PDF download works: the file is EquiMind-Report-Ananya-Rao.pdf, the toast reads 'Report downloaded' and there are no console errors. The print container has 11 [data-pdf-page] sections and all images load in it. Mobile at 390px stacks art above text with no horizontal scroll. One real defect: on desktop (lg, 1024px and wider) and in the PDF, the radar chart is squeezed to about 250px wide and the 'Family & Future' axis label is cut off on the left, so it shows as 'amily & Future'.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "SnapshotPage radar (CoverSnapshot.jsx)", "issue": "At lg and wider (1280 and 1920) and in the print/PDF container (900px), the radar column is only about 250-262px wide. The 'Family & Future' PolarAngleAxis label runs past the SVG's left edge and is cut off, showing as 'amily & Future'. The chart is also small. It is fine at 390 and 768, where the radar is 300-353px wide.", "selector": "[data-testid='radar-chart'] .recharts-polar-angle-axis-tick text", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Snapshot page desktop", "issues": ["The left half (art 185px + radar 250px) feels cramped next to the 2x2 tiles. The 'Three to work on first' tile wraps into a tall narrow column. Consider grid lg:grid-cols-[1.8fr_1fr], stacking the art above the radar at lg, or a smaller label font plus a larger left/right chart margin (e.g. 60).", "The snapshot illustration still has a faint crop artefact: a small circle or ring near its top-right corner, left over from the mockup crop."]},
+      {"screen": "Narrative page desktop", "issues": ["The narrative text (serif, xl) is much taller than the art, leaving large empty space above and below the illustration. This is acceptable."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix the radar label clipping on the Snapshot page at lg and in the PDF: widen the radar column or increase the RadarChart margin left/right (e.g. 60+). Another option is to shorten the outerRadius or make the label font smaller, then check that 'Family & Future' is fully visible at 1280, 1920 and in the 900px print container.",
+    "Optional: clean up the small circle artefact on snapshot.webp."
+  ],
+  "critical_code_review_comments": [
+    "In the print container, ReportPages renders a second time with the same data-testids while the export runs, so there are duplicate testids for about 1-2s. This is harmless, but tests should scope their selectors.",
+    "In PageShell, the `art` prop path and the `side` prop path are separate layouts. That is fine, but the `art` mode is now used only on pages 7+."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "95% (1 layout defect)"},
+  "seed_data_creation": "None. Read-only viewing; no data changed.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Report IDs: Ananya 6053e41d-afbf-48a4-a7c8-728d282c5838 (A,C,F), Rohan dee67d7a-258a-4c4b-b413-52225ddd3dee (B,F,D), Meera 7be0dd35-1107-4618-9912-bdca366160f6 (A,C,E). Log in with demo-login-cou-kavya to view any report. Art is in /report-art/area_{a..f}.webp. To check the radar clipping, compare each tick text's bounding box against the [data-testid=radar-chart] rect.",
+  "rca of the issue": "The grid is lg:grid-cols-[1.55fr_1fr], and the left half is split again sm:grid-cols-[0.85fr_1.15fr] between the art and the radar. At max-w-6xl with a sidebar, that leaves about 250px for the radar. The margin of 44px on each side is not enough for the longest label, 'Family & Future' (about 80px), at the left axis position, so recharts draws it past the SVG's left edge and the SVG clips it."
+}
