@@ -280,9 +280,12 @@ def pick_exercise(pri, mood, day):
     return top[day % len(top)]
 
 
-def pick_game(pri, day):
+def pick_game(pri, day, disabled=()):
     area = pri[day % len(pri)]
-    g = next((g for g in GAMES if area in g["areas"]), GAMES[0])
+    pool = [g for g in GAMES if g["id"] not in disabled]
+    if not pool:
+        return None, area
+    g = next((g for g in pool if area in g["areas"]), pool[0])
     return g, area
 
 
@@ -308,10 +311,10 @@ def _ex_why(e, pri, mood, personalised=True):
     return f"Chosen for your {AREA_NAMES[area]} focus from your check-in."
 
 
-def today_plan(report):
+def today_plan(report, disabled_games=()):
     day, mood, pri = _ctx(report)
     ex = pick_exercise(pri, mood, day)
-    game, garea = pick_game(pri, day)
+    game, garea = pick_game(pri, day, disabled_games)
     reads = pick_reads(pri, mood, day)
     title, text = MOOD_NUDGE[mood] if mood is not None else NEUTRAL_NUDGE
     return {
@@ -319,7 +322,7 @@ def today_plan(report):
         "mood": mood, "mood_label": MOODS[mood] if mood is not None else None,
         "focus_areas": [{"key": k, "name": AREA_NAMES[k]} for k in pri[:3]],
         "exercise": {**ex, "why": _ex_why(ex, pri, mood, bool(report))},
-        "game": {**game, "tag": "Hustle for Your Brain", "for_area": AREA_NAMES[garea]},
+        "game": {**game, "tag": "Hustle for Your Brain", "for_area": AREA_NAMES[garea]} if game else None,
         "nudge": {"title": title, "text": text, "area_tip": AREA_NUDGE[pri[0]]},
         "reads": [{**a, "area_name": AREA_NAMES[a["area"]]} for a in reads],
     }

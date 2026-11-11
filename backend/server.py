@@ -25,6 +25,7 @@ from scoring import pick_items, score_responses, priority_pages, build_plan, bod
 from narrative import write_narrative  # noqa: E402
 from media_seed import SEED_MEDIA  # noqa: E402
 from wellness import today_plan, all_reads  # noqa: E402
+import games as games_lib  # noqa: E402
 from plan_theory import enrich_plan, next_activities  # noqa: E402
 import counselling  # noqa: E402
 import push_notify  # noqa: E402
@@ -255,7 +256,7 @@ async def _latest_report(user_id: str):
 
 @api.get("/wellness/today")
 async def wellness_today(user: dict = Depends(student_user)):
-    return today_plan(await _latest_report(user["id"]))
+    return today_plan(await _latest_report(user["id"]), await games_lib.disabled_ids(db))
 
 
 @api.get("/wellness/reads")
@@ -344,6 +345,7 @@ async def admin_activities(_: dict = Depends(admin_user)):
 _cou_router, counsellor_user = counselling.build_router(db, current_user, student_user)
 api.include_router(_cou_router)
 api.include_router(push_notify.build_router(db, current_user, student_user))
+api.include_router(games_lib.build_router(db, admin_user, current_user))
 app.include_router(api)
 
 app.add_middleware(

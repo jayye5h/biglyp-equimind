@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 import { ArrowRight, Grid3x3, Network, Wind, Brain, Clock } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Sudoku } from "@/components/games/Sudoku";
@@ -50,11 +51,11 @@ export const ActivityOfDay = ({ plan }) => {
     <section data-testid="activity-of-day-section" className="rounded-[2rem] bg-white border border-eq/10 p-5 sm:p-7">
       <h2 className="font-serif text-2xl font-bold text-slate-900">Activity of the Day</h2>
       <p className="mt-1 text-sm text-slate-600">{plan.personalised ? <>Two little things picked just for you{plan.mood_label ? <> — for a <span className="font-medium text-slate-800">{plan.mood_label.toLowerCase()}</span> day</> : null}, focused on <span className="font-medium text-slate-800">{plan.focus_areas[0].name}</span>.</> : "Two little things to lift your day. Your check-in will make these even more personal."}</p>
-      <div className="mt-5 grid md:grid-cols-2 gap-4">
+      <div className={`mt-5 grid gap-4 ${game ? "md:grid-cols-2" : ""}`}>
         <Card testid="activity-exercise-card" onClick={() => setEx(plan.exercise)} icon={Wind} eyebrow="Guided exercise" title={plan.exercise.name}
           meta={<><Clock className="h-3.5 w-3.5" /> About {plan.exercise.minutes} min</>} why={plan.exercise.why} cta="Begin now" />
-        <Card testid="activity-game-card" onClick={() => setG(GAME[game.id])} icon={GAME[game.id]?.icon || Brain} eyebrow="Brain game" tag={game.tag} title={game.name}
-          meta={<><Brain className="h-3.5 w-3.5" /> {game.skill}</>} why={game.why} cta="Play now" />
+        {game && <Card testid="activity-game-card" onClick={() => setG(GAME[game.id])} icon={GAME[game.id]?.icon || Brain} eyebrow="Brain game" tag={game.tag} title={game.name}
+          meta={<><Brain className="h-3.5 w-3.5" /> {game.skill}</>} why={game.why} cta="Play now" />}
       </div>
       <Dialog open={!!ex} onOpenChange={(o) => { if (!o) setEx(null); }}>
         <DialogContent data-testid="exercise-dialog" className="w-[calc(100%-2rem)] max-w-md rounded-3xl p-6">
@@ -70,11 +71,17 @@ export const ActivityOfDay = ({ plan }) => {
 
 export const MoreGames = () => {
   const [g, setG] = useState(null);
+  const [on, setOn] = useState(null);
+  useEffect(() => {
+    api.get("/games/enabled").then((r) => setOn(r.data)).catch(() => setOn(GAMES.map((x) => x.id)));
+  }, []);
+  const list = GAMES.filter((x) => !on || on.includes(x.id));
+  if (on && !list.length) return null;
   return (
     <section data-testid="more-games-section" className="rounded-[2rem] bg-white border border-eq/10 p-5 sm:p-7">
       <div className="flex items-center gap-3"><h2 className="font-serif text-2xl font-bold text-slate-900">Brain Games</h2><span className="rounded-full bg-eq-soft text-eq-dark text-[11px] font-semibold px-3 py-1">Hustle for Your Brain</span></div>
       <div className="mt-5 grid sm:grid-cols-3 gap-4">
-        {GAMES.map((x) => (
+        {list.map((x) => (
           <button key={x.id} data-testid={`game-card-${x.id}`} onClick={() => setG(x)} className="group rounded-2xl border border-eq/10 bg-eq-bg/50 p-4 flex items-center gap-4 text-left hover:border-eq/40 hover:shadow-md transition-[border-color,box-shadow]">
             <span className="h-14 w-14 shrink-0 rounded-xl border-2 border-eq/30 bg-white grid place-items-center text-eq"><x.icon className="h-7 w-7" /></span>
             <span className="flex-1 font-semibold text-slate-800">{x.name}</span>
