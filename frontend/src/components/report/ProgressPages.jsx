@@ -1,19 +1,39 @@
-import { PageShell } from "@/components/report/PageShell";
+import { PageShell, Art } from "@/components/report/PageShell";
 import { weekStats, week1Writeup, week2Writeup, trendInsights, bandName, nextStepsPlan } from "@/lib/progress";
-import { ArrowUpRight, ArrowDownRight, Minus, Repeat, ListMinus, Rocket, Check } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Minus, Repeat, ListMinus, Rocket, Check, SquareCheck, CalendarDays, Smile, Target, TrendingUp } from "lucide-react";
 
-const Tile = ({ label, value, testid }) => (
-  <div data-testid={testid} className="rounded-2xl bg-eq-bg p-4"><div className="text-[11px] font-mono uppercase text-slate-400">{label}</div><div className="mt-1 font-semibold text-slate-900">{value}</div></div>
+const Tile = ({ label, value, testid, icon: Icon }) => (
+  <div data-testid={testid} className="rounded-2xl bg-eq-bg p-4 flex items-center gap-3">
+    {Icon && <Icon className="h-7 w-7 shrink-0 text-eq" strokeWidth={1.5} />}
+    <div className="min-w-0"><div className="text-[11px] font-mono uppercase text-slate-400">{label}</div><div className="mt-1 font-semibold text-slate-900">{value}</div></div>
+  </div>
+);
+
+const WeekBody = ({ s, prev }) => (
+  <div className="mt-6 grid md:grid-cols-[0.8fr_1.2fr] gap-6 items-center [&>*]:min-w-0">
+    <Art src="/report-art/week.webp" alt="Tracking progress" testid="report-page-week-art" className="max-w-[320px] mx-auto" />
+    <Bars s={s} prev={prev} />
+  </div>
+);
+
+const Writeup = ({ title, children }) => (
+  <div className="mt-7 rounded-2xl bg-eq-soft p-6 grid sm:grid-cols-[120px_1fr] gap-5 items-center">
+    <img src="/report-art/week_clip.webp" alt="" draggable={false} className="hidden sm:block w-full h-auto" />
+    <div className="sm:border-l sm:border-eq/20 sm:pl-5">
+      <h3 className="font-mono text-[11px] uppercase tracking-widest text-eq-dark">{title}</h3>
+      {children}
+    </div>
+  </div>
 );
 
 const Delta = ({ d }) => (d > 0 ? <ArrowUpRight className="h-4 w-4 text-eq" /> : d < 0 ? <ArrowDownRight className="h-4 w-4 text-[#c2410c]" /> : <Minus className="h-4 w-4 text-slate-400" />);
 
 const Bars = ({ s, prev }) => (
-  <div className="mt-6 space-y-3">
+  <div className="space-y-3">
     {s.acts.map((a, i) => (
       <div key={a.short}><div className="flex justify-between items-center text-sm"><span className="text-slate-700">{a.name}</span>
         <span className="font-mono text-xs text-slate-500 inline-flex items-center gap-1.5">{prev && <>{prev.acts[i].done}/7 → </>}{a.done}/7{prev && <Delta d={a.done - prev.acts[i].done} />}</span></div>
-        <div className="mt-1.5 h-2 rounded-full bg-eq-bg overflow-hidden"><div className="h-full bg-eq" style={{ width: `${(a.done / 7) * 100}%` }} /></div></div>
+        <div className="mt-1.5 h-2.5 rounded-full bg-eq-bg overflow-hidden"><div className="h-full bg-eq" style={{ width: `${(a.done / 7) * 100}%` }} /></div></div>
     ))}
   </div>
 );
@@ -21,18 +41,17 @@ const Bars = ({ s, prev }) => (
 export const Week1Page = ({ r, n, total }) => {
   const s = weekStats(r, 0);
   return (
-    <PageShell n={n} total={total} eyebrow="Days 1–7" title="Week 1 Progress" id="week-1" testid="report-page-week-1" art="/report-art/week1.webp" artAlt="First steps of progress">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 -mt-2">
-        <Tile testid="week1-total" label="Activities done" value={`${s.total}/35 · ${s.pct}%`} />
-        <Tile label="Full days (all 5)" value={`${s.fullDays}/7`} />
-        <Tile label="Mostly felt" value={bandName(s.avgMood) || "—"} />
-        <Tile label="Most consistent" value={s.best.short} />
+    <PageShell n={n} total={total} eyebrow="Days 1–7" title="Week 1 Progress" id="week-1" testid="report-page-week-1" inline>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <Tile testid="week1-total" icon={SquareCheck} label="Activities done" value={`${s.total}/35 · ${s.pct}%`} />
+        <Tile icon={CalendarDays} label="Full days (all 5)" value={`${s.fullDays}/7`} />
+        <Tile icon={Smile} label="Mostly felt" value={bandName(s.avgMood) || "—"} />
+        <Tile icon={Target} label="Most consistent" value={s.best.short} />
       </div>
-      <Bars s={s} />
-      <div className="mt-7 rounded-2xl bg-eq-soft p-6">
-        <h3 className="font-mono text-[11px] uppercase tracking-widest text-eq-dark">How your week went</h3>
+      <WeekBody s={s} />
+      <Writeup title="How your week went">
         <p data-testid="week1-writeup" className="mt-3 text-slate-800 leading-relaxed">{week1Writeup(r, s)}</p>
-      </div>
+      </Writeup>
     </PageShell>
   );
 };
@@ -42,19 +61,18 @@ export const Week2Page = ({ r, n, total }) => {
   const s2 = weekStats(r, 1);
   const t = trendInsights(r, s1, s2);
   return (
-    <PageShell n={n} total={total} eyebrow="Days 8–14" title="Week 2 Progress" id="week-2" testid="report-page-week-2" art="/report-art/week2.webp" artAlt="Growing progress">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 -mt-2">
-        <Tile testid="week2-total" label="Activities done" value={`${s2.total}/35 · ${s2.pct}%`} />
-        <Tile label="vs Week 1" value={<span className="inline-flex items-center gap-1">{s2.total - s1.total >= 0 ? "+" : ""}{s2.total - s1.total} <Delta d={s2.total - s1.total} /></span>} />
-        <Tile label="Full days (all 5)" value={`${s2.fullDays}/7`} />
-        <Tile label="Mostly felt" value={bandName(s2.avgMood) || "—"} />
+    <PageShell n={n} total={total} eyebrow="Days 8–14" title="Week 2 Progress" id="week-2" testid="report-page-week-2" inline>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <Tile testid="week2-total" icon={SquareCheck} label="Activities done" value={`${s2.total}/35 · ${s2.pct}%`} />
+        <Tile icon={TrendingUp} label="vs Week 1" value={<span className="inline-flex items-center gap-1">{s2.total - s1.total >= 0 ? "+" : ""}{s2.total - s1.total} <Delta d={s2.total - s1.total} /></span>} />
+        <Tile icon={CalendarDays} label="Full days (all 5)" value={`${s2.fullDays}/7`} />
+        <Tile icon={Smile} label="Mostly felt" value={bandName(s2.avgMood) || "—"} />
       </div>
-      <Bars s={s2} prev={s1} />
-      <div className="mt-7 rounded-2xl bg-eq-soft p-6">
-        <h3 className="font-mono text-[11px] uppercase tracking-widest text-eq-dark">How your second week went</h3>
+      <WeekBody s={s2} prev={s1} />
+      <Writeup title="How your second week went">
         <p data-testid="week2-writeup" className="mt-3 text-slate-800 leading-relaxed">{week2Writeup(r, s1, s2)}</p>
         <ul data-testid="trend-insights" className="mt-4 space-y-2">{t.lines.map((l) => <li key={l} className="flex gap-3 text-sm text-slate-700"><span className="mt-2 h-1.5 w-1.5 rounded-full bg-eq shrink-0" />{l}</li>)}</ul>
-      </div>
+      </Writeup>
     </PageShell>
   );
 };

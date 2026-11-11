@@ -1,18 +1,18 @@
-import { Copy, Phone } from "lucide-react";
+import { Copy, Phone, MessageCircleMore, Sun, Pill, Droplet, HeartPulse, UtensilsCrossed, Footprints, Stethoscope } from "lucide-react";
 import { toast } from "sonner";
-import { PageShell } from "@/components/report/PageShell";
+import { PageShell, Art } from "@/components/report/PageShell";
 import { fmtDate } from "@/lib/api";
 
 const tiers = (r) => [
-  { t: "1. Yourself", c: "bg-eq-soft text-eq-dark", d: `Your 14-day plan: ${r.plan.map((a) => a.short.toLowerCase()).join(", ")}. Start today.` },
-  { t: "2. One trusted person", c: "bg-[#fef3c7] text-[#92400e]", d: "Family or a close friend. For money worry, homesickness, or feeling alone with it. A call home that includes one real thing — not just 'all fine'." },
-  { t: "3. Campus counsellor", c: r.path === 2 ? "bg-[#c2410c] text-white" : "bg-[#fff0ee] text-[#c2410c]", strong: r.path === 2,
+  { t: "1. Yourself", art: "help_self", c: "bg-eq-soft text-eq-dark", d: `Your 14-day plan: ${r.plan.map((a) => a.short.toLowerCase()).join(", ")}. Start today.` },
+  { t: "2. One trusted person", art: "help_trusted", c: "bg-[#fef3c7] text-[#92400e]", d: "Family or a close friend. For money worry, homesickness, or feeling alone with it. A call home that includes one real thing — not just 'all fine'." },
+  { t: "3. Campus counsellor", art: "help_campus", c: r.path === 2 ? "bg-[#c2410c] text-white" : "bg-[#fff0ee] text-[#c2410c]", strong: r.path === 2,
     d: r.path === 2 ? `Book this week. Free, confidential. Your score pattern (overall ${r.overall}, lowest ${Math.min(...r.areas.map((a) => a.score))}) makes this strongly suggested.` : "Free and confidential. For sleep that won't budge, worry that interferes with life, or feeling you've been carrying it too long alone." },
-  { t: "4. Professional help", c: "bg-[#f3e8ff] text-[#6d28d9]", d: "Psychologist, psychiatrist or doctor — usually reached through your counsellor. Needed when low mood or loss of interest lasts most days for 2 weeks+, panic attacks, using substances to cope, or the plan makes no difference after 4 weeks." },
+  { t: "4. Professional help", art: "help_pro", c: "bg-[#f3e8ff] text-[#6d28d9]", d: "Psychologist, psychiatrist or doctor — usually reached through your counsellor. Needed when low mood or loss of interest lasts most days for 2 weeks+, panic attacks, using substances to cope, or the plan makes no difference after 4 weeks." },
 ];
 
 export const HelpPage = ({ r, n, total }) => (
-  <PageShell n={n} total={total} eyebrow="Support" title="Who Can Help & When to Ask" id="help" testid="report-page-help" art="/report-art/help.webp" artAlt="Talking with a counsellor">
+  <PageShell n={n} total={total} eyebrow="Support" title="Who Can Help & When to Ask" id="help" testid="report-page-help" inline side={<Art src="/report-art/help_head.webp" alt="Talking with a counsellor" testid="report-page-help-art" className="max-w-[360px] ml-auto" />}>
     <HelpContent r={r} />
   </PageShell>
 );
@@ -23,9 +23,12 @@ export const HelpContent = ({ r }) => {
     <>
       <div className="grid md:grid-cols-2 gap-4">
         {tiers(r).map((x, i) => (
-          <div key={x.t} data-testid={`help-tier-${i + 1}`} className={`rounded-2xl p-5 ${x.c}`}>
-            <div className="flex items-center justify-between"><h3 className="font-semibold">{x.t}</h3>{x.strong && <span className="text-[10px] font-mono uppercase bg-white/25 rounded-full px-2 py-0.5">Strongly suggested</span>}</div>
-            <p className="mt-2 text-sm opacity-90 leading-relaxed">{x.d}</p>
+          <div key={x.t} data-testid={`help-tier-${i + 1}`} className={`rounded-2xl p-5 grid grid-cols-[96px_1fr] sm:grid-cols-[120px_1fr] gap-4 items-center ${x.c}`}>
+            <img src={`/report-art/${x.art}.webp`} alt="" draggable={false} className="w-full h-auto" data-testid={`help-tier-art-${i + 1}`} />
+            <div className="border-l border-current/20 pl-4" style={{ borderColor: "rgba(100,116,139,0.25)" }}>
+              <div className="flex items-center justify-between gap-2"><h3 className="font-semibold">{x.t}</h3>{x.strong && <span className="text-[10px] font-mono uppercase bg-white/25 rounded-full px-2 py-0.5">Strongly suggested</span>}</div>
+              <p className="mt-2 text-sm opacity-90 leading-relaxed">{x.d}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -33,7 +36,7 @@ export const HelpContent = ({ r }) => {
       <div className="mt-3 grid md:grid-cols-3 gap-3">
         {r.scripts.map((s, i) => (
           <div key={s.to} className="rounded-2xl border border-slate-100 p-4 flex flex-col">
-            <div className="text-xs font-semibold text-slate-500">{s.to}</div>
+            <div className="text-xs font-semibold text-slate-700 flex items-center gap-2"><MessageCircleMore className="h-5 w-5 text-eq" />{s.to}</div>
             <p className="mt-2 text-sm text-slate-700 italic flex-1">&ldquo;{s.text}&rdquo;</p>
             <button data-testid={`copy-script-${i}`} onClick={() => copy(s.text)} className="mt-3 self-start text-xs text-eq hover:text-eq-dark flex items-center gap-1"><Copy className="h-3.5 w-3.5" /> Copy</button>
           </div>
@@ -47,19 +50,27 @@ export const HelpContent = ({ r }) => {
   );
 };
 
+const bodyIcon = (c) => { const k = c.toLowerCase(); return k.includes("vitamin d") ? Sun : k.includes("b12") ? Pill : k.includes("iron") ? Droplet : k.includes("thyroid") ? HeartPulse : k.includes("meal") ? UtensilsCrossed : k.includes("movement") ? Footprints : Stethoscope; };
+
 export const BodyPage = ({ r, n, total }) => (
-  <PageShell n={n} total={total} eyebrow="A soft suggestion, not an alarm" title="Worth Ruling Out: Your Body" id="body" testid="report-page-body" art="/report-art/body.webp" artAlt="A gentle health check">
-    <p className="text-slate-700 leading-relaxed -mt-2">Low mood, tiredness, fog and poor sleep can be influenced by common physical causes that are easy to miss. Your pattern ({r.body_pattern}) makes it worth asking: is anything else going on in your body?</p>
-    <div className="mt-6 overflow-x-auto">
-      <table className="w-full text-sm min-w-[520px]" data-testid="body-table">
-        <thead><tr className="text-left font-mono text-[11px] uppercase text-slate-400"><th className="py-2 font-normal">Worth ruling out</th><th className="font-normal">Can show up as</th><th className="font-normal">What to ask about</th></tr></thead>
-        <tbody>{r.body_table.map((b) => <tr key={b.cause} className="border-t border-slate-100 align-top"><td className="py-3 pr-3 font-semibold text-slate-800">{b.cause}</td><td className="py-3 pr-3 text-slate-600">{b.signs}</td><td className="py-3 text-slate-600">{b.check}</td></tr>)}</tbody>
+  <PageShell n={n} total={total} eyebrow="A soft suggestion, not an alarm" title="Worth Ruling Out: Your Body" id="body" testid="report-page-body" inline side={<Art src="/report-art/body_head.webp" alt="Wondering about the body" testid="report-page-body-art" className="max-w-[320px] ml-auto" />}
+    headExtra={<p className="text-slate-700 leading-relaxed -mt-2">Low mood, tiredness, fog and poor sleep can be influenced by common physical causes that are easy to miss. Your pattern ({r.body_pattern}) makes it worth asking: is anything else going on in your body?</p>}>
+    <div className="overflow-x-auto rounded-2xl border border-eq/10">
+      <table className="w-full text-sm min-w-[560px]" data-testid="body-table">
+        <thead><tr className="text-left font-mono text-[11px] uppercase text-slate-500 bg-eq-bg"><th className="py-3 pl-4 font-normal">Worth ruling out</th><th className="font-normal">Can show up as</th><th className="font-normal pr-4">What to ask about</th></tr></thead>
+        <tbody>{r.body_table.map((b) => { const Ic = bodyIcon(b.cause); return (
+          <tr key={b.cause} className="border-t border-slate-100 align-middle">
+            <td className="py-3 pl-4 pr-3"><div className="flex items-center gap-3"><span className="h-10 w-10 shrink-0 rounded-xl bg-eq-bg grid place-items-center"><Ic className="h-5 w-5 text-eq" strokeWidth={1.6} /></span><span className="font-semibold text-slate-800">{b.cause}</span></div></td>
+            <td className="py-3 pr-3 text-slate-600">{b.signs}</td>
+            <td className="py-3 pr-4"><span className="inline-block rounded-2xl bg-eq-bg px-3 py-1.5 text-slate-700">{b.check}</span></td>
+          </tr>); })}</tbody>
       </table>
     </div>
     <div className="mt-6 grid md:grid-cols-2 gap-4 text-sm">
       <div className="rounded-2xl bg-eq-soft p-5"><h4 className="font-semibold text-eq-dark">What a basic health check-up looks like</h4>
-        <ul className="mt-2 space-y-1.5 text-slate-700"><li>A 15-minute visit to your campus health centre or a GP. Tell them: &lsquo;I&apos;ve been tired, sleeping poorly and finding it hard to focus for weeks.&rsquo;</li><li>A common basic panel: CBC, ferritin / iron studies, Vitamin D (25-OH), Vitamin B12, thyroid (TSH). The doctor decides which tests fit.</li></ul></div>
-      <div className="rounded-2xl bg-[#fef3c7] p-5"><h4 className="font-semibold text-[#92400e]">Both can be true</h4><p className="mt-2 text-slate-700">Stress is real AND a physical shortfall can make it harder to cope. Rule out the physical, keep going with the plan{r.path === 2 ? ", and keep your counsellor appointment" : ""}. This report never prescribes supplements or doses.</p></div>
+        <div className="mt-3 grid grid-cols-[90px_1fr] gap-4 items-center"><img src="/report-art/body_check.webp" alt="" draggable={false} className="w-full h-auto" />
+        <ul className="border-l border-slate-300/60 pl-4 space-y-1.5 text-slate-700"><li>A 15-minute visit to your campus health centre or a GP. Tell them: &lsquo;I&apos;ve been tired, sleeping poorly and finding it hard to focus for weeks.&rsquo;</li><li>A common basic panel: CBC, ferritin / iron studies, Vitamin D (25-OH), Vitamin B12, thyroid (TSH). The doctor decides which tests fit.</li></ul></div></div>
+      <div className="rounded-2xl bg-[#fef3c7] p-5"><h4 className="font-semibold text-[#92400e]">Both can be true</h4><div className="mt-3 grid grid-cols-[90px_1fr] gap-4 items-center"><img src="/report-art/body_scale.webp" alt="" draggable={false} className="w-full h-auto" /><p className="border-l border-amber-300/70 pl-4 text-slate-700">Stress is real AND a physical shortfall can make it harder to cope. Rule out the physical, keep going with the plan{r.path === 2 ? ", and keep your counsellor appointment" : ""}. This report never prescribes supplements or doses.</p></div></div>
     </div>
   </PageShell>
 );

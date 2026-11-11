@@ -1,37 +1,49 @@
 import { Clock, CalendarDays, Lightbulb, ListChecks } from "lucide-react";
-import { PageShell } from "@/components/report/PageShell";
+import { PageShell, Art } from "@/components/report/PageShell";
+
+const ICON_BY_ID = { "b-wake": "ic_wake", "a-10min": "ic_laptop", "c-breath": "ic_breath", "f-money": "ic_chat", "c-checkin": "ic_check" };
+const ICON_BY_AREA = { a: "ic_laptop", b: "ic_wake", c: "ic_breath", d: "ic_chat", e: "ic_check", f: "ic_chat" };
+export const activityIcon = (a) => `/report-art/${ICON_BY_ID[a.id] || ICON_BY_AREA[a.id.split("-")[0]] || "ic_check"}.webp`;
 
 const Activity = ({ a, i }) => (
-  <div data-testid={`plan-activity-${i}`} className="rounded-2xl border border-slate-100 p-5 sm:p-6" style={{ breakInside: "avoid" }}>
-    <div className="flex items-start gap-4">
-      <span className="h-10 w-10 shrink-0 rounded-xl bg-eq text-white font-serif text-lg font-bold grid place-items-center">{i + 1}</span>
-      <div className="min-w-0 flex-1">
-        <h3 className="font-serif text-xl font-bold text-slate-900">{a.name}</h3>
-        <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
-          <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {a.time}</span>
-          <span className="inline-flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" /> {a.when}</span>
+  <div data-testid={`plan-activity-${i}`} className="rounded-3xl border border-eq/10 bg-gradient-to-r from-eq-bg/70 to-white grid md:grid-cols-[1fr_1.25fr] overflow-hidden" style={{ breakInside: "avoid" }}>
+    <div className="p-5 flex items-center gap-4">
+      <img src={activityIcon(a)} alt="" data-testid={`plan-activity-icon-${i}`} draggable={false} className="h-24 w-24 sm:h-28 sm:w-28 shrink-0 object-contain" />
+      <div className="min-w-0">
+        <div className="flex items-start gap-3">
+          <span className="h-8 w-8 shrink-0 rounded-lg bg-eq text-white font-semibold grid place-items-center">{i + 1}</span>
+          <h3 className="font-serif text-xl font-bold text-slate-900 leading-snug">{a.name}</h3>
+        </div>
+        <div className="mt-3 space-y-1.5 text-sm text-slate-600">
+          <p className="flex gap-2"><Clock className="h-4 w-4 shrink-0 mt-0.5 text-slate-500" /> {a.time}</p>
+          <p className="flex gap-2"><CalendarDays className="h-4 w-4 shrink-0 mt-0.5 text-slate-500" /> {a.when}</p>
         </div>
       </div>
     </div>
-    {a.why && (
-      <div className="mt-4 rounded-xl bg-eq-bg p-4 flex gap-3">
-        <Lightbulb className="h-4 w-4 text-eq shrink-0 mt-0.5" />
-        <div><p className="text-[11px] font-mono uppercase tracking-wider text-eq-dark">Why it helps</p><p data-testid={`plan-activity-why-${i}`} className="mt-1 text-sm text-slate-700 leading-relaxed">{a.why}</p></div>
+    <div className="p-5 md:border-l border-t md:border-t-0 border-eq/10 bg-white/60">
+      {a.why && (
+        <div className="flex gap-3">
+          <Lightbulb className="h-4 w-4 text-eq shrink-0 mt-0.5" />
+          <div><p className="text-[11px] font-mono uppercase tracking-wider text-eq-dark">Why it helps</p><p data-testid={`plan-activity-why-${i}`} className="mt-1 text-sm text-slate-700 leading-relaxed">{a.why}</p></div>
+        </div>
+      )}
+      <div className={`flex gap-3 ${a.why ? "mt-4 pt-4 border-t border-eq/10" : ""}`}>
+        <ListChecks className="h-4 w-4 text-eq shrink-0 mt-0.5" />
+        <div><p className="text-[11px] font-mono uppercase tracking-wider text-eq-dark">How to do it</p>
+          <ol className="mt-1.5 space-y-1">
+            {a.steps.map((st, k) => <li key={k} className="flex gap-2 text-sm text-slate-700"><span className="text-slate-500">{k + 1}.</span>{st}</li>)}
+          </ol>
+        </div>
       </div>
-    )}
-    <div className="mt-4">
-      <p className="text-[11px] font-mono uppercase tracking-wider text-slate-400 inline-flex items-center gap-1.5"><ListChecks className="h-3.5 w-3.5" /> How to do it</p>
-      <ol className="mt-2 space-y-1.5">
-        {a.steps.map((s, k) => <li key={k} className="flex gap-3 text-sm text-slate-700"><span className="font-mono text-xs text-slate-400 mt-0.5">{k + 1}.</span>{s}</li>)}
-      </ol>
     </div>
   </div>
 );
 
 export const PlanPage = ({ r, n, total }) => (
-  <PageShell n={n} total={total} eyebrow="Your daily habits" title="Your 14-Day Plan" id="plan" testid="report-page-plan" art="/report-art/plan.webp" artAlt="Daily plan">
-    <p className="text-slate-600 -mt-2">Five tiny activities, chosen from your check-in, with under 30 minutes of new effort a day. You log them each day in your <b>Daily Check-in</b> on the dashboard — here is what each one is and why it works.</p>
-    <div className="mt-6 space-y-4">{r.plan.map((a, i) => <Activity key={a.id} a={a} i={i} />)}</div>
+  <PageShell n={n} total={total} eyebrow="Your daily habits" title="Your 14-Day Plan" id="plan" testid="report-page-plan" inline
+    side={<Art src="/report-art/plan_head.webp" alt="Planning daily habits" testid="report-page-plan-art" className="max-w-[340px] ml-auto" />}
+    headExtra={<p className="text-slate-600 -mt-2">Five tiny activities, chosen from your check-in, with under 30 minutes of new effort a day. You log them each day in your <b>Daily Check-in</b> on the dashboard — here is what each one is and why it works.</p>}>
+    <div className="space-y-4">{r.plan.map((a, i) => <Activity key={a.id} a={a} i={i} />)}</div>
     <div className="mt-6 grid md:grid-cols-3 gap-4 text-sm">
       <div className="rounded-2xl bg-eq-soft p-5"><h4 className="font-semibold text-eq-dark">What counts as a good day</h4><ul className="mt-2 space-y-1.5 text-slate-700"><li>3 or more activities done.</li><li>1 or 2 and you still showed up — count that too.</li><li>None today? Tomorrow is the restart, not next Monday.</li></ul></div>
       <div className="rounded-2xl bg-[#fef3c7] p-5"><h4 className="font-semibold text-[#92400e]">Minimum version</h4><p className="mt-2 text-slate-700">Just do activity 1 ({r.plan[0]?.short}) and activity 2 ({r.plan[1]?.short}). That still counts, and it protects everything else.</p></div>
