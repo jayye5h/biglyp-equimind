@@ -1,0 +1,30 @@
+{
+  "summary": "Frontend-only retest of the daily check-in popup fix (pendingDay now returns today's index from Day 1). Every requested scenario passed (6/6). Rohan (report about 1h old): the popup opened by itself on login showing 'Day 1 of 14', mood buttons 0-4 and the avatar. 'Remind me later' closed it and it stayed closed after a reload in the same browser session; the bell dot still showed, and both nav-checkin and bell-btn reopened it. Ananya (report about 13h old): the popup opened by itself showing Day 1. Flow tested: mood Steady, Continue, then 5 activities answered Y/N/Y/N/Y, then Submit. The toast 'New stage unlocked: Finding Calm' appeared and the popup closed. After a reload it did not reopen. streak-current=1, streak-earned=2/14, streak-badge-2 data-earned=true, journey-main-avatar data-stage=2, and the bell dot was gone. Clicking Daily Check-in then showed the toast \"You're all caught up for today.\" On My Journey, dashboard-plan-progress rows read 1/14, 0/14, 1/14, 0/14, 1/14 (3/70). Edge cases, tested by temporarily changing Ananya's created_at: at 14.5 days old the popup showed 'Day 14 of 14'; at 16.5 days old there was no popup and no bell dot, and the nav showed the caught-up toast. Questions said 'today' and none said 'yesterday'; one question has no time word at all.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "DailyLog COPY['a-10min']", "issue": "The question 'Did you do a 10-minute start on a task you were avoiding?' has no 'today'. Every other question says 'today'.", "selector": "[data-testid='daily-checkin-question']", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home after the 14-day journey ends (more than 15 days)", "issues": ["Calm Streak still says 'Complete today's check-in to grow into your next stage.' even though no check-in is possible any more.", "The journey card still labels Day 14 as 'Today'."]},
+      {"screen": "New stage toast", "issues": ["The description repeats itself, e.g. 'A little calmer today. A little calmer already...' (stage caption followed by the badge message)."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Optional: add 'today' to the a-10min question copy",
+    "Optional: change the cheer text in CalmStreak when elapsedDays > 15 (journey over)"
+  ],
+  "critical_code_review_comments": [
+    "pendingDay, DailyLog todayIdx, streakInfo cur and stages.todayIndex all use min(elapsed,13). They agree with each other.",
+    "closeDaily also writes the sessionStorage key after a save. That does no harm because pendingDay returns null once the day is logged."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100% (6/6 scenarios)"},
+  "seed_data_creation": "None. Ananya's report 6053e41d was changed during testing (check-in saved, created_at temporarily set to 14.5 and 16.5 days ago). Both reports are now restored: Ananya to created_at 2026-11-10T17:34:10.797139+00:00, ticks [], logged_days [], moods {'0':1}; Rohan to ticks [], logged_days [], moods {'0':2}. Neither has daily_notes.",
+  "test_credentials": "/app/memory/test_credentials.md does not exist. Used demo login buttons demo-login-stu-ananya and demo-login-stu-rohan (mocked).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "/tmp/m.py (age N | restore) was used to change and restore report dates. The sessionStorage key eq-daily-<reportId>-<day> stops the popup opening by itself. Use a fresh browser context for each scenario."
+}

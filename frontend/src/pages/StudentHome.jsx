@@ -80,7 +80,7 @@ export default function StudentHome() {
       if (patch.moods) { setPlanTick((t) => t + 1); setAllReads(null); }
       if (patch.logged_days && after.stage > before) {
         const b = BADGES[after.stage - 1];
-        toast.success(`New stage unlocked: ${b.name}`, { description: `${STAGES[after.stage - 1].caption}. ${after.current > 1 ? `${after.current}-day streak! ` : ""}${b.msg}` });
+        toast.success(`New stage unlocked: ${b.name}`, { description: `${STAGES[after.stage - 1].caption} — ${after.current > 1 ? `${after.current}-day streak! ` : ""}${b.msg}` });
       } else toast.success(patch.logged_days ? "Saved to your plan" : "Mood logged");
     }).catch(() => toast.error("Could not save. Please try again."));
   };

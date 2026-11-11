@@ -28,11 +28,12 @@ export const streakInfo = (r) => {
   for (let d = logged.has(cur) ? cur : cur - 1; d >= 0 && logged.has(d); d--) current++;
   let best = 0, run = 0;
   for (let d = 0; d < 14; d++) { run = logged.has(d) ? run + 1 : 0; best = Math.max(best, run); }
-  return { logged, current, best, cur, earned: logged.size, stage: currentStage(r) };
+  return { logged, current, best, cur, earned: logged.size, stage: currentStage(r), over: e > 15 };
 };
 
 const cheer = (s) => {
   if (s.cur < 0) return "Your journey has begun. Check in tomorrow to grow into your next stage — something lovely to look forward to.";
+  if (s.over) return "Your 14-day journey is complete. Take a New Assessment whenever you are ready for the next chapter.";
   if (s.stage >= 14) return "You reached the final stage. What a journey — be proud of yourself.";
   if (s.current >= 7) return "You're on a beautiful run. Keep this gentle rhythm going.";
   if (s.current >= 3) return "You're building real momentum. One more check-in keeps your streak glowing.";
