@@ -1,6 +1,6 @@
 import { PageShell, Art } from "@/components/report/PageShell";
 import { weekStats, week1Writeup, week2Writeup, trendInsights, bandName, nextStepsPlan } from "@/lib/progress";
-import { ArrowUpRight, ArrowDownRight, Minus, Repeat, ListMinus, Rocket, Check, SquareCheck, CalendarDays, Smile, Target, TrendingUp } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Minus, Check, CalendarCheck, SquareCheck, CalendarDays, Smile, Target, TrendingUp } from "lucide-react";
 
 const Tile = ({ label, value, testid, icon: Icon }) => (
   <div data-testid={testid} className="rounded-2xl bg-eq-bg p-4 flex items-center gap-3">
@@ -9,16 +9,16 @@ const Tile = ({ label, value, testid, icon: Icon }) => (
   </div>
 );
 
-const WeekBody = ({ s, prev, w = 1 }) => (
+const WeekBody = ({ s, prev, w = 1, art = "/report-art/week.webp" }) => (
   <div className="mt-6 grid md:grid-cols-[0.8fr_1.2fr] gap-6 items-center [&>*]:min-w-0">
-    <Art src="/report-art/week.webp" alt="Tracking progress" testid={`report-page-week-${w}-art`} className="max-w-[320px] mx-auto" />
+    <Art src={art} alt="Tracking progress" testid={`report-page-week-${w}-art`} className="max-w-[320px] mx-auto" />
     <Bars s={s} prev={prev} />
   </div>
 );
 
-const Writeup = ({ title, children }) => (
-  <div className="mt-7 rounded-2xl bg-eq-soft p-6 grid sm:grid-cols-[120px_1fr] gap-5 items-center">
-    <img src="/report-art/week_clip.webp" alt="" draggable={false} className="hidden sm:block w-full h-auto" />
+const Writeup = ({ title, children, clip = "/report-art/week_clip.webp", testid }) => (
+  <div data-testid={testid} className="mt-7 rounded-2xl bg-eq-soft p-6 grid sm:grid-cols-[120px_1fr] gap-5 items-center">
+    <img src={clip} alt="" draggable={false} className="hidden sm:block w-full h-auto" />
     <div className="sm:border-l sm:border-eq/20 sm:pl-5">
       <h3 className="font-mono text-[11px] uppercase tracking-widest text-eq-dark">{title}</h3>
       {children}
@@ -68,51 +68,53 @@ export const Week2Page = ({ r, n, total }) => {
         <Tile icon={CalendarDays} label="Full days (all 5)" value={`${s2.fullDays}/7`} />
         <Tile icon={Smile} label="Mostly felt" value={bandName(s2.avgMood) || "—"} />
       </div>
-      <WeekBody s={s2} prev={s1} w={2} />
-      <Writeup title="How your second week went">
-        <p data-testid="week2-writeup" className="mt-3 text-slate-800 leading-relaxed">{week2Writeup(r, s1, s2)}</p>
-        <ul data-testid="trend-insights" className="mt-4 space-y-2">{t.lines.map((l) => <li key={l} className="flex gap-3 text-sm text-slate-700"><span className="mt-2 h-1.5 w-1.5 rounded-full bg-eq shrink-0" />{l}</li>)}</ul>
+      <WeekBody s={s2} prev={s1} w={2} art="/report-art/week2_hero.webp" />
+      <Writeup title="How your second week went" clip="/report-art/week2_clip.webp" testid="week2-writeup-box">
+        <p data-testid="week2-writeup" className="mt-3 text-[17px] text-slate-800 leading-relaxed">{week2Writeup(r, s1, s2)}</p>
+        <ul data-testid="trend-insights" className="mt-4 space-y-2">{t.lines.map((l) => <li key={l} className="flex gap-3 text-[15px] text-slate-700"><span className="mt-2 h-1.5 w-1.5 rounded-full bg-eq shrink-0" />{l}</li>)}</ul>
       </Writeup>
     </PageShell>
   );
 };
 
 const OPTIONS = {
-  same: { icon: Repeat, title: "Continue with the same 5 habits", body: "Your rhythm is working. Keep the same five activities for the next two weeks and let them become automatic." },
-  three: { icon: ListMinus, title: "Focus on 3 activities a day", body: "Doing all five every day was hard to keep up — that's very common. Shrink the plan to the three that suit you best, and do them well." },
-  new: { icon: Rocket, title: "Take up new activities", body: "You're doing really well. Keep your two strongest habits on autopilot and add a fresh challenge from your focus areas." },
+  same: { art: "/report-art/next_same.webp", tint: "bg-[#eef6fe]", title: "Continue with the same 5 habits", body: "Your rhythm is working. Keep the same five activities for the next two weeks and let them become automatic." },
+  three: { art: "/report-art/next_three.webp", tint: "bg-[#fef2ee]", title: "Focus on 3 activities a day", body: "Doing all five every day was hard to keep up — that's very common. Shrink the plan to the three that suit you best, and do them well." },
+  new: { art: "/report-art/next_new.webp", tint: "bg-[#f7f2fd]", title: "Take up new activities", body: "You're doing really well. Keep your two strongest habits on autopilot and add a fresh challenge from your focus areas." },
 };
 
 export const NextStepsPage = ({ r, n, total }) => {
   const ns = nextStepsPlan(r);
   return (
-    <PageShell n={n} total={total} eyebrow="After Day 14" title="Your Next Steps" id="next-steps" testid="report-page-next-steps" art="/report-art/next.webp" artAlt="Choosing the path ahead">
-      <p className="text-slate-600 -mt-2">{ns.intro}</p>
-      <div className="mt-6 grid md:grid-cols-3 gap-4">
+    <PageShell n={n} total={total} eyebrow="After Day 14" title="Your Next Steps" id="next-steps" testid="report-page-next-steps" inline
+      side={<Art src="/report-art/next_head.webp" alt="Choosing the path ahead" testid="report-page-next-steps-art" className="max-w-[300px] sm:max-w-[380px] mx-auto md:ml-auto md:mr-0" />}>
+      <p className="text-[17px] text-slate-700 leading-relaxed md:max-w-[80%] -mt-2">{ns.intro}</p>
+      <div className="mt-8 grid md:grid-cols-3 gap-4">
         {Object.entries(OPTIONS).map(([k, o]) => {
           const on = k === ns.path;
           return (
-            <div key={k} data-testid={`next-option-${k}`} data-recommended={on} className={`relative rounded-2xl p-5 border-2 ${on ? "border-eq bg-eq-soft" : "border-slate-100 bg-white opacity-70"}`}>
-              {on && <span className="absolute -top-3 left-4 rounded-full bg-eq text-white text-[10px] font-semibold px-2.5 py-0.5">Recommended for you</span>}
-              <o.icon className={`h-6 w-6 ${on ? "text-eq-dark" : "text-slate-400"}`} />
-              <h3 className="mt-3 font-semibold text-slate-900">{o.title}</h3>
-              <p className="mt-1.5 text-sm text-slate-600">{o.body}</p>
+            <div key={k} data-testid={`next-option-${k}`} data-recommended={on} className={`relative rounded-2xl p-5 sm:p-6 border-2 ${o.tint} ${on ? "border-[#6d5ce7]" : "border-transparent"}`}>
+              {on && <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#6d5ce7] text-white text-[11px] font-semibold px-3 py-1">Recommended for you</span>}
+              <img src={o.art} alt="" draggable={false} className="block mx-auto h-24 w-auto object-contain select-none" />
+              <h3 className="mt-4 font-serif text-xl font-bold leading-snug text-slate-900">{o.title}</h3>
+              <p className="mt-2 text-[15px] leading-relaxed text-slate-700">{o.body}</p>
             </div>
           );
         })}
       </div>
-      <div data-testid="next-steps-list" className="mt-6 rounded-2xl bg-white border border-eq/15 p-5 sm:p-6">
-        <h3 className="font-mono text-[11px] uppercase tracking-widest text-eq-dark">{ns.listTitle}</h3>
-        <ul className="mt-3 space-y-3">
+      <div data-testid="next-steps-list" className="mt-6 flow-root rounded-2xl bg-white border border-eq/15 p-5 sm:p-6">
+        <img src="/report-art/next_study.webp" alt="" data-testid="next-steps-list-art" draggable={false} className="hidden md:block float-right w-[36%] max-w-[340px] ml-6 mb-2 select-none" />
+        <h3 className="font-mono text-[12px] uppercase tracking-widest text-eq-dark">{ns.listTitle}</h3>
+        <ul className="mt-4 space-y-4">
           {ns.items.map((a) => (
             <li key={a.id} className="flex gap-3">
-              <span className="mt-0.5 h-6 w-6 shrink-0 rounded-full bg-eq text-white grid place-items-center"><Check className="h-3.5 w-3.5" /></span>
-              <div><p className="font-medium text-slate-900">{a.name} <span className="text-xs font-normal text-slate-500">· {a.time}</span></p>{a.note && <p className="text-sm text-slate-600">{a.note}</p>}</div>
+              <span className="mt-0.5 h-7 w-7 shrink-0 rounded-full bg-eq text-white grid place-items-center"><Check className="h-4 w-4" strokeWidth={3} /></span>
+              <div className="min-w-0"><p className="font-semibold text-[17px] text-slate-900">{a.name} <span className="text-sm font-normal text-slate-500">· {a.time}</span></p>{a.note && <p className="mt-0.5 text-[15px] text-slate-700">{a.note}</p>}</div>
             </li>
           ))}
         </ul>
       </div>
-      <div data-testid="trend-next-step" className={`mt-4 rounded-2xl p-5 text-sm ${ns.notMoving ? "bg-[#fff0ee] text-[#9a3412]" : "bg-[#fef3c7] text-[#92400e]"}`}><b>Also:</b> {ns.closing}</div>
+      <div data-testid="trend-next-step" className={`mt-6 rounded-2xl p-5 flex items-center gap-4 text-[15px] ${ns.notMoving ? "bg-[#fff0ee] text-[#9a3412]" : "bg-[#fef3c7] text-[#92400e]"}`}><CalendarCheck className="h-7 w-7 shrink-0" strokeWidth={1.6} /><p><b>Also:</b> {ns.closing}</p></div>
     </PageShell>
   );
 };
