@@ -1,0 +1,29 @@
+{
+  "summary": "Frontend-only test of the redesign of report pages 7-10 (Plan, Week 1/Week 2, Help, Body), checked on the in-app report at 1920px and 390px and in the PDF. Reports tested as counsellor Kavya: Rohan, Ananya and Meera. PDF downloaded as student Ananya. At 1920px every image in #plan, #week-1, #week-2, #help and #body loads (naturalWidth>0). Counts per page: plan 6, week 2, help 5, body 3. No image overlaps the h2 title, no text is clipped, and nothing overflows its section. All earlier content is still there: 5 activity cards, each with a why line and 3 steps; week1-total and week1-writeup (Rohan 25/35 71%, Ananya 20/35 57%); week2-total, week2-writeup and trend-insights (Rohan 33/35 94%); help-tier-1 to 4; Meera's tier 3 shows 'Strongly suggested' and 'Book this week'; copy-script-1 shows a 'Copied' toast; get-help-today; the body table has 6 rows, each with cause, signs and check. Pages show up only when they should: Ananya has no week-2 or next-steps page and Meera has no week pages. At 390px the page is not wider than the screen (scrollWidth 390), the activity cards and tier cards stack, and the body table scrolls inside its own container (560 inside 298). The PDF as Ananya worked: 'Report downloaded' toast, an 11-page 4.4MB file, and all 21 [data-pdf-page] images loaded afterwards. One image (area_f) had not loaded yet when the PDF started, but the PDF step waits for it. Only cosmetic issues found.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "PlanTrack activityIcon", "issue": "Activity icons repeat when activities fall back to the area mapping. Rohan's plan: activity 1 (b-wake) and activity 2 (Phone across the room, area b) both show ic_wake, the alarm clock. Activities 3 (money talk) and 4 (one honest sentence) both show ic_chat. A phone icon on the 'Phone across the room' card looks wrong. Add more ICON_BY_ID entries, e.g. b-phone, and other common ids.", "selector": "[data-testid=plan-activity-icon-1]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Week 1/2 at 390px", "issues": ["The 2-column tiles are narrow, so labels wrap to 2-3 lines ('ACTIVITIES DONE', 'FULL DAYS (ALL 5)') and '25/35 · 71%' breaks onto two lines. Still readable. Consider grid-cols-1 below 400px or smaller icons."]},
+      {"screen": "Week 2 desktop", "issues": ["The 'FULL DAYS (ALL 5)' label wraps inside its tile at 1920px too (minor)."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Optional: give activities like b-phone their own icons so the plan does not show the same icon on two cards in a row.",
+    "Optional: testid 'report-page-week-art' is used on both the Week 1 and Week 2 pages, so it is not unique. Also add testids to the week_clip, body_check and body_scale images."
+  ],
+  "critical_code_review_comments": [
+    "In HelpBodyAbout, 'border-current/20' is overridden by an inline borderColor. Remove the unused class.",
+    "Rendering the Strongly suggested badge with bg-white/25 on a white-text tier works only because tier 3 has a dark orange background when path is 2. That is fine as it is."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100% (functional); 1 low-priority cosmetic issue"},
+  "seed_data_creation": "None. No data was modified.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Pages 7-10 verified. Reports: Rohan dee67d7a (week1, week2, next-steps, 13 pages), Ananya 6053e41d (week1 only, 11 pages), Meera 7be0dd35 (path 2, no week pages). Log in as counsellor with demo-login-cou-kavya. The PDF button is download-pdf-report-btn, and the PDF has one raster image per page. The sticky header shows over element screenshots; this comes from the screenshot method and is not a bug."
+}

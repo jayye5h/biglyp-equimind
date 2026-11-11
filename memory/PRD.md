@@ -81,6 +81,7 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 
 ## Implemented (2026-11-11, iteration 16)
 - Report pages 2-6 restructured to user mockups (app + PDF): PageShell `inline` (accent underline, no motif), `side`/`headExtra`; Snapshot (art + radar | tiles, icon area cards, purple honest line), Narrative (art left/text right), Priority 1 (art beside title), Priority 2/3 (art left, score + why right). Art cropped from mockups (snapshot, narrative, area_a/c/f) + generated matching area_b/d/e. Pages 7-10 mockups pending from user.
+- Report pages 7-10 restructured to user mockups (app + PDF): Plan (header art, two-column activity cards with unique illustrated icons via planIcons), Week 1/2 (icon tiles, art + bars, writeup with clipboard art), Help (header art, illustrated tier cards, chat-icon scripts), Body (header art, icon table + chips, illustrated bottom boxes). Art cropped from mockups with transparent bg.
 
 ## Backlog
 - P1: Counsellor role with consent-based report sharing; Institution admin with cohort filters

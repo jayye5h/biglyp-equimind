@@ -1,14 +1,23 @@
 import { Clock, CalendarDays, Lightbulb, ListChecks } from "lucide-react";
 import { PageShell, Art } from "@/components/report/PageShell";
 
-const ICON_BY_ID = { "b-wake": "ic_wake", "a-10min": "ic_laptop", "c-breath": "ic_breath", "f-money": "ic_chat", "c-checkin": "ic_check" };
+const ICON_BY_ID = { "b-phone": "ic_check", "b-dump": "ic_check", "e-three": "ic_check", "b-wake": "ic_wake", "a-10min": "ic_laptop", "c-breath": "ic_breath", "f-money": "ic_chat", "c-checkin": "ic_check" };
 const ICON_BY_AREA = { a: "ic_laptop", b: "ic_wake", c: "ic_breath", d: "ic_chat", e: "ic_check", f: "ic_chat" };
-export const activityIcon = (a) => `/report-art/${ICON_BY_ID[a.id] || ICON_BY_AREA[a.id.split("-")[0]] || "ic_check"}.webp`;
+const POOL = ["ic_wake", "ic_laptop", "ic_breath", "ic_chat", "ic_check"];
+export const planIcons = (plan) => {
+  const used = new Set();
+  return plan.map((a) => {
+    const pref = ICON_BY_ID[a.id] || ICON_BY_AREA[a.id.split("-")[0]] || "ic_check";
+    const pick = !used.has(pref) ? pref : POOL.find((x) => !used.has(x)) || pref;
+    used.add(pick);
+    return `/report-art/${pick}.webp`;
+  });
+};
 
-const Activity = ({ a, i }) => (
+const Activity = ({ a, i, icon }) => (
   <div data-testid={`plan-activity-${i}`} className="rounded-3xl border border-eq/10 bg-gradient-to-r from-eq-bg/70 to-white grid md:grid-cols-[1fr_1.25fr] overflow-hidden" style={{ breakInside: "avoid" }}>
     <div className="p-5 flex items-center gap-4">
-      <img src={activityIcon(a)} alt="" data-testid={`plan-activity-icon-${i}`} draggable={false} className="h-24 w-24 sm:h-28 sm:w-28 shrink-0 object-contain" />
+      <img src={icon} alt="" data-testid={`plan-activity-icon-${i}`} draggable={false} className="h-24 w-24 sm:h-28 sm:w-28 shrink-0 object-contain" />
       <div className="min-w-0">
         <div className="flex items-start gap-3">
           <span className="h-8 w-8 shrink-0 rounded-lg bg-eq text-white font-semibold grid place-items-center">{i + 1}</span>
@@ -43,7 +52,7 @@ export const PlanPage = ({ r, n, total }) => (
   <PageShell n={n} total={total} eyebrow="Your daily habits" title="Your 14-Day Plan" id="plan" testid="report-page-plan" inline
     side={<Art src="/report-art/plan_head.webp" alt="Planning daily habits" testid="report-page-plan-art" className="max-w-[340px] ml-auto" />}
     headExtra={<p className="text-slate-600 -mt-2">Five tiny activities, chosen from your check-in, with under 30 minutes of new effort a day. You log them each day in your <b>Daily Check-in</b> on the dashboard — here is what each one is and why it works.</p>}>
-    <div className="space-y-4">{r.plan.map((a, i) => <Activity key={a.id} a={a} i={i} />)}</div>
+    <div className="space-y-4">{(() => { const ic = planIcons(r.plan); return r.plan.map((a, i) => <Activity key={a.id} a={a} i={i} icon={ic[i]} />); })()}</div>
     <div className="mt-6 grid md:grid-cols-3 gap-4 text-sm">
       <div className="rounded-2xl bg-eq-soft p-5"><h4 className="font-semibold text-eq-dark">What counts as a good day</h4><ul className="mt-2 space-y-1.5 text-slate-700"><li>3 or more activities done.</li><li>1 or 2 and you still showed up — count that too.</li><li>None today? Tomorrow is the restart, not next Monday.</li></ul></div>
       <div className="rounded-2xl bg-[#fef3c7] p-5"><h4 className="font-semibold text-[#92400e]">Minimum version</h4><p className="mt-2 text-slate-700">Just do activity 1 ({r.plan[0]?.short}) and activity 2 ({r.plan[1]?.short}). That still counts, and it protects everything else.</p></div>

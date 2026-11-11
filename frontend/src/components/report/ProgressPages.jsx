@@ -9,9 +9,9 @@ const Tile = ({ label, value, testid, icon: Icon }) => (
   </div>
 );
 
-const WeekBody = ({ s, prev }) => (
+const WeekBody = ({ s, prev, w = 1 }) => (
   <div className="mt-6 grid md:grid-cols-[0.8fr_1.2fr] gap-6 items-center [&>*]:min-w-0">
-    <Art src="/report-art/week.webp" alt="Tracking progress" testid="report-page-week-art" className="max-w-[320px] mx-auto" />
+    <Art src="/report-art/week.webp" alt="Tracking progress" testid={`report-page-week-${w}-art`} className="max-w-[320px] mx-auto" />
     <Bars s={s} prev={prev} />
   </div>
 );
@@ -42,7 +42,7 @@ export const Week1Page = ({ r, n, total }) => {
   const s = weekStats(r, 0);
   return (
     <PageShell n={n} total={total} eyebrow="Days 1–7" title="Week 1 Progress" id="week-1" testid="report-page-week-1" inline>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-4 gap-3">
         <Tile testid="week1-total" icon={SquareCheck} label="Activities done" value={`${s.total}/35 · ${s.pct}%`} />
         <Tile icon={CalendarDays} label="Full days (all 5)" value={`${s.fullDays}/7`} />
         <Tile icon={Smile} label="Mostly felt" value={bandName(s.avgMood) || "—"} />
@@ -62,13 +62,13 @@ export const Week2Page = ({ r, n, total }) => {
   const t = trendInsights(r, s1, s2);
   return (
     <PageShell n={n} total={total} eyebrow="Days 8–14" title="Week 2 Progress" id="week-2" testid="report-page-week-2" inline>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-4 gap-3">
         <Tile testid="week2-total" icon={SquareCheck} label="Activities done" value={`${s2.total}/35 · ${s2.pct}%`} />
         <Tile icon={TrendingUp} label="vs Week 1" value={<span className="inline-flex items-center gap-1">{s2.total - s1.total >= 0 ? "+" : ""}{s2.total - s1.total} <Delta d={s2.total - s1.total} /></span>} />
         <Tile icon={CalendarDays} label="Full days (all 5)" value={`${s2.fullDays}/7`} />
         <Tile icon={Smile} label="Mostly felt" value={bandName(s2.avgMood) || "—"} />
       </div>
-      <WeekBody s={s2} prev={s1} />
+      <WeekBody s={s2} prev={s1} w={2} />
       <Writeup title="How your second week went">
         <p data-testid="week2-writeup" className="mt-3 text-slate-800 leading-relaxed">{week2Writeup(r, s1, s2)}</p>
         <ul data-testid="trend-insights" className="mt-4 space-y-2">{t.lines.map((l) => <li key={l} className="flex gap-3 text-sm text-slate-700"><span className="mt-2 h-1.5 w-1.5 rounded-full bg-eq shrink-0" />{l}</li>)}</ul>
