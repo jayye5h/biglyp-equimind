@@ -3,7 +3,7 @@ import { PageShell, Pill } from "@/components/report/PageShell";
 import { LEVEL_STYLE } from "@/lib/api";
 
 export const NarrativePage = ({ r, n, total }) => (
-  <PageShell n={n} total={total} eyebrow="Page 3" title="What You May Be Going Through" id="narrative" testid="report-page-narrative">
+  <PageShell n={n} total={total} eyebrow="Page 3" title="What You May Be Going Through" id="narrative" testid="report-page-narrative" art="/report-art/narrative.webp" artAlt="A student reflecting">
     <p data-testid="narrative-text" className="font-serif text-lg sm:text-xl leading-relaxed text-slate-800">{r.narrative.narrative}</p>
     {r.narrative.source === "ai" && <p className="mt-3 text-[11px] text-slate-400 flex items-center gap-1"><Sparkles className="h-3 w-3" /> Written with AI from your own answers, within EquiMind&apos;s safe-wording rules.</p>}
     {r.high_items.length > 0 && (
@@ -41,7 +41,7 @@ const ActivityCard = ({ a, i, testid }) => (
 );
 
 export const PriorityPage = ({ p, idx, n, total }) => (
-  <PageShell n={n} total={total} eyebrow={`Priority ${idx + 1}`} title={p.name} id={`priority-${idx + 1}`} testid={`report-page-priority-${idx + 1}`}>
+  <PageShell n={n} total={total} eyebrow={`Priority ${idx + 1}`} title={p.name} id={`priority-${idx + 1}`} testid={`report-page-priority-${idx + 1}`} art={`/report-art/area_${p.area.toLowerCase()}.webp`} artAlt={p.name}>
     <div className="flex flex-wrap items-center gap-3 -mt-2">
       <span className="font-mono text-3xl font-semibold text-slate-900">{p.score}<span className="text-base text-slate-400">/100</span></span>
       <Pill className={LEVEL_STYLE[p.level]}>{p.level}</Pill>

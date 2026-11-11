@@ -427,5 +427,6 @@ DEMO_USERS = [
     {"id": "stu-ananya", "role": "student", "name": "Ananya Rao", "program": "B.Tech, Computer Science", "level": "UG", "year": "2nd year", "institution": "Demo University", "student_code": "EQ-UG-2041"},
     {"id": "stu-rohan", "role": "student", "name": "Rohan Verma", "program": "MBA", "level": "PG", "year": "1st year", "institution": "Demo University", "student_code": "EQ-PG-1187"},
     {"id": "stu-meera", "role": "student", "name": "Meera Iyer", "program": "B.A. Psychology", "level": "UG", "year": "3rd year", "institution": "Demo University", "student_code": "EQ-UG-3302"},
+    {"id": "cou-kavya", "role": "counsellor", "name": "Dr. Kavya Menon", "program": "Campus Counsellor · Wellness Centre", "level": "", "year": "", "institution": "Demo University", "student_code": ""},
     {"id": "adm-platform", "role": "admin", "name": "Platform Admin", "program": "Biglyp wellbeing team", "level": "", "year": "", "institution": "Biglyp", "student_code": ""},
 ]

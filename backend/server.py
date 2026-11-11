@@ -26,6 +26,8 @@ from narrative import write_narrative  # noqa: E402
 from media_seed import SEED_MEDIA  # noqa: E402
 from wellness import today_plan, all_reads  # noqa: E402
 from plan_theory import enrich_plan, next_activities  # noqa: E402
+import counselling  # noqa: E402
+import push_notify  # noqa: E402
 
 YT_RE = re.compile(r"^(?:https?://)?(?:www\.|m\.)?(?:youtube\.com/(?:watch\?(?:.*&)?v=|shorts/|embed/)|youtu\.be/)([A-Za-z0-9_-]{11})|^([A-Za-z0-9_-]{11})$")
 
@@ -103,6 +105,7 @@ class ProgressIn(BaseModel):
     reflections: Optional[Dict[str, Any]] = None
     logged_days: Optional[List[int]] = None
     daily_notes: Optional[Dict[str, Any]] = None
+    feedback: Optional[Dict[str, Any]] = None
 
 
 @api.get("/")
@@ -207,8 +210,11 @@ async def list_reports(user: dict = Depends(student_user)):
 
 
 @api.get("/reports/{rid}")
-async def get_report(rid: str, user: dict = Depends(student_user)):
-    r = await db.reports.find_one({"id": rid, "user_id": user["id"]}, {"_id": 0})
+async def get_report(rid: str, user: dict = Depends(current_user)):
+    if user["role"] not in ("student", "counsellor"):
+        raise HTTPException(403, "Not allowed")
+    q = {"id": rid} if user["role"] == "counsellor" else {"id": rid, "user_id": user["id"]}
+    r = await db.reports.find_one(q, {"_id": 0})
     if not r:
         raise HTTPException(404, "Report not found")
     r["body_table"] = BODY_TABLE
@@ -233,7 +239,7 @@ async def update_progress(rid: str, body: ProgressIn, user: dict = Depends(stude
         upd["ticks"] = list(dict.fromkeys(body.ticks))
     if body.ticks is not None and len(body.ticks) > 70:
         raise HTTPException(422, "Too many ticks")
-    if len(str(body.tracker or "")) + len(str(body.reflections or "")) + len(str(body.daily_notes or "")) > 20000:
+    if len(str(body.tracker or "")) + len(str(body.reflections or "")) + len(str(body.daily_notes or "")) + len(str(body.feedback or "")) > 30000:
         raise HTTPException(422, "Entries are too long")
     if not upd:
         raise HTTPException(400, "Nothing to update")
@@ -335,6 +341,9 @@ async def admin_activities(_: dict = Depends(admin_user)):
     return [{**act, "area": k, "area_name": AREA_BY_KEY[k]["name"]} for k, acts in ACTIVITIES.items() for act in acts]
 
 
+_cou_router, counsellor_user = counselling.build_router(db, current_user, student_user)
+api.include_router(_cou_router)
+api.include_router(push_notify.build_router(db, current_user, student_user))
 app.include_router(api)
 
 app.add_middleware(
@@ -351,6 +360,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 async def seed_users():
     for u in DEMO_USERS:
         await db.users.update_one({"id": u["id"]}, {"$set": u}, upsert=True)
+    for u in DEMO_USERS:
+        if u["role"] == "counsellor":
+            await counselling.seed_slots(db, u["id"])
     if not await db.media.count_documents({}):
         await db.media.insert_many([{"id": str(uuid.uuid4()), "kind": k, "title": t, "duration": d, "youtube_id": y, "order": i}
                                     for i, (k, t, d, y) in enumerate(SEED_MEDIA)])

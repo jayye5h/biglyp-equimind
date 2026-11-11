@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Quote, ClipboardCheck } from "lucide-react";
+import { ChevronLeft, ChevronRight, Quote, ClipboardCheck, MessageCircleHeart } from "lucide-react";
+import { HELPFUL_L, FEEL_L, FEEL_TONE } from "@/lib/feedback";
 import { Student } from "@/components/Avatar";
 import { BANDS } from "@/components/report/PlanTrack";
 import { elapsedDays } from "@/lib/progress";
@@ -62,6 +63,16 @@ const MainCard = ({ r, d, today, onSave, pending, onOpenDaily }) => {
           <h3 data-testid="journey-main-title" className="mt-3 font-serif text-2xl sm:text-3xl font-bold text-slate-900">{info.mood !== undefined ? TITLES[info.mood] : isToday ? "How are you today?" : info.future ? "Coming up" : "No mood logged"}</h3>
           <p className="mt-2 text-sm text-slate-600 leading-relaxed">{info.mood !== undefined ? DESC[info.mood] : isToday ? "One tap to log your mood — your journey card updates instantly." : info.future ? "Keep going with your plan — this day is waiting for you." : "You didn't log a mood this day. That's fine — today is what counts."}</p>
           <p data-testid="journey-main-progress" className="mt-3 text-xs font-mono text-slate-500">{info.done}/5 plan activities done</p>
+          {(r.feedback || {})[d] && (
+            <div data-testid="journey-main-feedback" className="mt-3 rounded-2xl bg-eq-bg/70 border border-eq/10 px-4 py-3">
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <span className="font-semibold text-slate-700 inline-flex items-center gap-1"><MessageCircleHeart className="h-3.5 w-3.5 text-eq" /> Your feedback</span>
+                <span className="rounded-full bg-white px-2.5 py-0.5 text-slate-700">{HELPFUL_L[r.feedback[d].helpful]}</span>
+                <span className={`rounded-full px-2.5 py-0.5 ${FEEL_TONE[r.feedback[d].feel] || ""}`}>{FEEL_L[r.feedback[d].feel]}</span>
+              </div>
+              {r.feedback[d].comment && <p className="mt-1.5 text-sm italic text-slate-600">&ldquo;{r.feedback[d].comment}&rdquo;</p>}
+            </div>
+          )}
         </div>
       </div>
       {isToday && (

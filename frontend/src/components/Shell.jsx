@@ -39,7 +39,7 @@ export const AppHeader = ({ children }) => {
   return (
     <header className="sticky top-0 z-30 bg-eq-bg/80 backdrop-blur-xl border-b border-eq/10">
       <div className="max-w-6xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between gap-4">
-        <Logo small to={user?.role === "admin" ? "/admin" : "/dashboard"} />
+        <Logo small to={user?.role === "admin" ? "/admin" : user?.role === "counsellor" ? "/counsellor" : "/dashboard"} />
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />
           {children}

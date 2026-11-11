@@ -79,7 +79,7 @@ const MoodStep = ({ todayNo, mood, glow, stage, setMood, onNext, onLater }) => (
   </div>
 );
 
-const ActivityStep = ({ a, idx, total, answer, stage, bounce, onAnswer, onBack, onNext, note, setNote }) => {
+const ActivityStep = ({ a, idx, total, answer, stage, bounce, onAnswer, onBack, onNext, note, setNote, willFeedback }) => {
   const [head, sub, q, desc] = copyFor(a);
   const last = idx === total - 1;
   return (
@@ -104,7 +104,7 @@ const ActivityStep = ({ a, idx, total, answer, stage, bounce, onAnswer, onBack, 
       <div className="relative mt-5 flex items-center justify-between">
         <button data-testid="daily-log-back-btn" onClick={onBack} className="text-sm font-medium text-eq inline-flex items-center gap-1.5"><ArrowLeft className="h-4 w-4" /> Back</button>
         {last ? (
-          <button data-testid="daily-checkin-save-btn" disabled={answer === undefined} onClick={onNext} className="h-10 px-5 rounded-full bg-eq text-white text-sm font-medium inline-flex items-center gap-2 disabled:opacity-40">Submit today&apos;s check-in <ArrowRight className="h-4 w-4" /></button>
+          <button data-testid="daily-checkin-save-btn" disabled={answer === undefined} onClick={onNext} className="h-10 px-5 rounded-full bg-eq text-white text-sm font-medium inline-flex items-center gap-2 disabled:opacity-40">{willFeedback ? "Continue" : <>Submit today&apos;s check-in</>} <ArrowRight className="h-4 w-4" /></button>
         ) : (
           <button data-testid="daily-log-next-btn" disabled={answer === undefined} onClick={onNext} className="text-sm font-medium text-eq inline-flex items-center gap-1.5 disabled:opacity-40">Next activity <ArrowRight className="h-4 w-4" /></button>
         )}
@@ -113,12 +113,50 @@ const ActivityStep = ({ a, idx, total, answer, stage, bounce, onAnswer, onBack, 
   );
 };
 
+const HELPFUL = [{ v: "a_lot", l: "Yes, a lot" }, { v: "a_little", l: "A little" }, { v: "not_really", l: "Not really" }];
+const FEEL = [{ v: "better", l: "Better", icon: Laugh }, { v: "same", l: "About the same", icon: Meh }, { v: "worse", l: "Not great", icon: Frown }];
+
+const Choice = ({ on, onClick, children, testid }) => (
+  <button data-testid={testid} onClick={onClick} className={`h-11 px-3 rounded-2xl text-sm font-medium border inline-flex items-center justify-center gap-1.5 transition-colors ${on ? "bg-eq text-white border-eq" : "bg-white border-eq/25 text-slate-700 hover:border-eq/60"}`}>{children}</button>
+);
+
+const FeedbackStep = ({ yes, total, stage, fb, setFb, onBack, onSubmit }) => (
+  <div className="text-center" data-testid="daily-feedback-step">
+    <h2 className="font-serif text-2xl sm:text-3xl font-bold text-slate-900">You did {yes} of {total} today!</h2>
+    <p className="mt-1 text-sm text-slate-500">That effort matters. One last thing — how did it feel?</p>
+    <div className="mt-5"><AvatarRing stage={stage} sparkle /></div>
+    <div className="relative mt-6 rounded-3xl bg-white/90 shadow-sm border border-eq/10 p-5 sm:p-6 text-left space-y-5">
+      <div>
+        <p className="font-semibold text-slate-900">Were today&apos;s activities helpful?</p>
+        <div className="mt-2 grid grid-cols-3 gap-2">{HELPFUL.map((o) => <Choice key={o.v} testid={`feedback-helpful-${o.v}`} on={fb.helpful === o.v} onClick={() => setFb({ ...fb, helpful: o.v })}>{o.l}</Choice>)}</div>
+      </div>
+      <div>
+        <p className="font-semibold text-slate-900">How do you feel after doing them?</p>
+        <div className="mt-2 grid grid-cols-3 gap-2">{FEEL.map((o) => <Choice key={o.v} testid={`feedback-feel-${o.v}`} on={fb.feel === o.v} onClick={() => setFb({ ...fb, feel: o.v })}><o.icon className="h-4 w-4" />{o.l}</Choice>)}</div>
+      </div>
+      <label className="block">
+        <span className="text-sm text-slate-600">Anything you&apos;d like to share? <span className="text-slate-400">(optional)</span></span>
+        <textarea data-testid="feedback-comment" maxLength={300} rows={2} value={fb.comment || ""} onChange={(e) => setFb({ ...fb, comment: e.target.value })} placeholder="e.g. The breathing helped me calm down before class"
+          className="mt-1 w-full rounded-xl border border-eq/20 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-eq resize-none" />
+      </label>
+    </div>
+    <div className="relative mt-5 flex items-center justify-between">
+      <button data-testid="daily-feedback-back-btn" onClick={onBack} className="text-sm font-medium text-eq inline-flex items-center gap-1.5"><ArrowLeft className="h-4 w-4" /> Back</button>
+      <div className="flex items-center gap-3">
+        <button data-testid="daily-feedback-skip-btn" onClick={() => onSubmit(false)} className="text-sm text-slate-500 hover:text-slate-700">Skip</button>
+        <button data-testid="daily-feedback-save-btn" disabled={!fb.helpful || !fb.feel} onClick={() => onSubmit(true)} className="h-10 px-5 rounded-full bg-eq text-white text-sm font-medium inline-flex items-center gap-2 disabled:opacity-40">Submit today&apos;s check-in <ArrowRight className="h-4 w-4" /></button>
+      </div>
+    </div>
+  </div>
+);
+
 export const DailyLog = ({ r, day, open, onClose, onSave }) => {
   const todayIdx = Math.min(elapsedDays(r), 13);
   const [step, setStep] = useState(-1);
   const [mood, setMood] = useState((r.moods || {})[todayIdx] ?? null);
   const [answers, setAnswers] = useState({});
   const [note, setNote] = useState({});
+  const [fb, setFb] = useState({});
   const [bounce, setBounce] = useState(0);
   const yes = Object.values(answers).filter(Boolean).length;
   const no = Object.values(answers).length - yes;
@@ -130,11 +168,12 @@ export const DailyLog = ({ r, day, open, onClose, onSave }) => {
     setAnswers({ ...answers, [step]: v });
     if (v) setBounce((b) => b + 1);
   };
-  const submit = () => {
+  const submit = (withFeedback = false) => {
     const ticks = new Set(r.ticks || []);
     r.plan.forEach((_, i) => (answers[i] ? ticks.add(`${i}-${day}`) : ticks.delete(`${i}-${day}`)));
     const patch = { ticks: [...ticks], logged_days: [...new Set([...(r.logged_days || []), day])], moods: { ...(r.moods || {}), [todayIdx]: mood } };
     if (note.stress !== undefined || note.feeling) patch.daily_notes = { ...(r.daily_notes || {}), [day]: note };
+    if (withFeedback && fb.helpful && fb.feel) patch.feedback = { ...(r.feedback || {}), [day]: { ...fb, comment: (fb.comment || "").trim() } };
     onSave(patch);
     onClose();
   };
@@ -151,9 +190,11 @@ export const DailyLog = ({ r, day, open, onClose, onSave }) => {
             <motion.div key={step} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.25 }} className="mt-4">
               {step < 0 ? (
                 <MoodStep todayNo={todayIdx + 1} mood={mood} glow={glow} stage={stage} setMood={setMood} onNext={() => setStep(0)} onLater={onClose} />
+              ) : step >= total ? (
+                <FeedbackStep yes={yes} total={total} stage={stage} fb={fb} setFb={setFb} onBack={() => setStep(total - 1)} onSubmit={submit} />
               ) : (
-                <ActivityStep a={r.plan[step]} idx={step} total={total} answer={answers[step]} stage={stage} bounce={bounce} onAnswer={answer}
-                  onBack={() => setStep(step - 1)} onNext={step === total - 1 ? submit : () => setStep(step + 1)} note={note} setNote={setNote} />
+                <ActivityStep a={r.plan[step]} idx={step} total={total} answer={answers[step]} stage={stage} bounce={bounce} onAnswer={answer} willFeedback={yes > 0}
+                  onBack={() => setStep(step - 1)} onNext={step === total - 1 ? (yes > 0 ? () => setStep(total) : () => submit(false)) : () => setStep(step + 1)} note={note} setNote={setNote} />
               )}
             </motion.div>
           </AnimatePresence>

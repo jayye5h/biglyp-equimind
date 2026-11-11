@@ -1,3 +1,4 @@
+import { STAGES, currentStage } from "@/lib/stages";
 import { elapsedDays } from "@/lib/progress";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
 import { PageShell, Pill } from "@/components/report/PageShell";
@@ -41,7 +42,7 @@ export const SnapshotPage = ({ r, n, total, print }) => {
   const data = r.areas.map((a) => ({ area: a.short, score: a.score }));
   const prev = r.previous ? Object.fromEntries(r.previous.areas.map((a) => [a.key, a.score])) : null;
   return (
-    <PageShell n={n} total={total} eyebrow="Page 2" title="Your Snapshot" id="snapshot" testid="report-page-snapshot">
+    <PageShell n={n} total={total} eyebrow="Page 2" title="Your Snapshot" id="snapshot" testid="report-page-snapshot" art={STAGES[currentStage(r) - 1].src} artAlt="Your progress avatar">
       <div className="grid lg:grid-cols-2 gap-8 items-center [&>*]:min-w-0">
         <div className="w-full min-w-0 h-[300px]" data-testid="radar-chart">
           <ResponsiveContainer width="100%" height="100%">

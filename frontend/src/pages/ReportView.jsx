@@ -7,6 +7,7 @@ import { ReportPages, reportSections } from "@/components/report/ReportPages";
 import { exportPdf } from "@/components/report/exportPdf";
 import { api, errMsg } from "@/lib/api";
 import { FEATURE_TONES, toneVars } from "@/lib/featureTones";
+import { useAuth } from "@/lib/auth";
 
 const TonePicker = ({ tone, setTone }) => (
   <div data-testid="feature-tone-picker" className="mb-6 rounded-2xl bg-white border border-eq/10 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4">
@@ -33,6 +34,10 @@ export default function ReportView() {
     localStorage.setItem("eq_feature_tone", k);
   };
   const printRef = useRef(null);
+  const { user } = useAuth();
+  const isCounsellor = user?.role === "counsellor";
+  const backTo = isCounsellor && r ? `/counsellor/student/${r.user_id}` : isCounsellor ? "/counsellor" : "/dashboard";
+  const backLabel = isCounsellor ? "Student record" : "Dashboard";
 
   useEffect(() => {
     api.get(`/reports/${id}`).then((res) => setR(res.data)).catch((e) => toast.error(errMsg(e)));
@@ -75,14 +80,14 @@ export default function ReportView() {
       <main className="max-w-6xl mx-auto px-4 sm:px-8 py-8 grid lg:grid-cols-[220px_1fr] gap-8">
         <aside className="hidden lg:block">
           <div className="sticky top-24 space-y-1">
-            <Link to="/dashboard" data-testid="back-to-dashboard-link" className="mb-4 text-sm text-slate-500 hover:text-slate-900 inline-flex items-center gap-1.5"><ArrowLeft className="h-4 w-4" /> Dashboard</Link>
+            <Link to={backTo} data-testid="back-to-dashboard-link" className="mb-4 text-sm text-slate-500 hover:text-slate-900 inline-flex items-center gap-1.5"><ArrowLeft className="h-4 w-4" /> {backLabel}</Link>
             {r && reportSections(r).map((s, i) => (
               <a key={s.id} href={`#${s.id}`} data-testid={`report-nav-${s.id}`} className="block text-sm text-slate-600 hover:text-slate-900 hover:bg-white rounded-lg px-3 py-1.5 transition-colors"><span className="font-mono text-[10px] text-slate-400 mr-2">{String(i + 1).padStart(2, "0")}</span>{s.label}</a>
             ))}
           </div>
         </aside>
         <div className="min-w-0" style={toneVars(tone)}>
-          <Link to="/dashboard" className="lg:hidden mb-4 text-sm text-slate-500 inline-flex items-center gap-1.5"><ArrowLeft className="h-4 w-4" /> Dashboard</Link>
+          <Link to={backTo} className="lg:hidden mb-4 text-sm text-slate-500 inline-flex items-center gap-1.5"><ArrowLeft className="h-4 w-4" /> {backLabel}</Link>
           {r && <TonePicker tone={tone} setTone={chooseTone} />}
           {r ? <ReportPages r={r} onSave={onSave} /> : <div className="h-96 rounded-[2rem] bg-white/60 animate-pulse" />}
         </div>

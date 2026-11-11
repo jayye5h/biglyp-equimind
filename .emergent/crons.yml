@@ -1,0 +1,25 @@
+crons:
+  - name: checkin-nudge-10am
+    description: "Push reminder at 10am IST to students who haven't done today's daily check-in"
+    cron: "0 10 * * *"
+    timezone: "Asia/Kolkata"
+    endpoint: "{{BASE_URL}}/api/cron/reminders"
+    method: POST
+    # Cron endpoints must ack 2xx immediately; enqueue/background the actual work.
+    enabled: true
+  - name: checkin-nudge-4pm
+    description: "Push reminder at 4pm IST to students who still haven't done today's daily check-in"
+    cron: "0 16 * * *"
+    timezone: "Asia/Kolkata"
+    endpoint: "{{BASE_URL}}/api/cron/reminders"
+    method: POST
+    # Cron endpoints must ack 2xx immediately; enqueue/background the actual work.
+    enabled: true
+  - name: checkin-nudge-8pm
+    description: "Final push reminder at 8pm IST to students who still haven't done today's daily check-in"
+    cron: "0 20 * * *"
+    timezone: "Asia/Kolkata"
+    endpoint: "{{BASE_URL}}/api/cron/reminders"
+    method: POST
+    # Cron endpoints must ack 2xx immediately; enqueue/background the actual work.
+    enabled: true

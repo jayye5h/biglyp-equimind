@@ -29,7 +29,7 @@ const Activity = ({ a, i }) => (
 );
 
 export const PlanPage = ({ r, n, total }) => (
-  <PageShell n={n} total={total} eyebrow="Your daily habits" title="Your 14-Day Plan" id="plan" testid="report-page-plan">
+  <PageShell n={n} total={total} eyebrow="Your daily habits" title="Your 14-Day Plan" id="plan" testid="report-page-plan" art="/report-art/plan.webp" artAlt="Daily plan">
     <p className="text-slate-600 -mt-2">Five tiny activities, chosen from your check-in, with under 30 minutes of new effort a day. You log them each day in your <b>Daily Check-in</b> on the dashboard — here is what each one is and why it works.</p>
     <div className="mt-6 space-y-4">{r.plan.map((a, i) => <Activity key={a.id} a={a} i={i} />)}</div>
     <div className="mt-6 grid md:grid-cols-3 gap-4 text-sm">

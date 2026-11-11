@@ -13,6 +13,8 @@ import { ActivityOfDay, MoreGames } from "@/components/home/ActivityOfDay";
 import { WellnessReads, AllReads } from "@/components/home/WellnessReads";
 import { StreakCard, streakInfo, BADGES } from "@/components/home/CalmStreak";
 import { STAGES } from "@/lib/stages";
+import { RemindersCard } from "@/components/home/Reminders";
+import { CounsellorCard } from "@/components/home/CounsellorCard";
 import { PlanProgress, MoodWeek } from "@/components/DashboardActions";
 import { HelpContent } from "@/components/report/HelpBodyAbout";
 import { pendingDay } from "@/components/DailyCheckin";
@@ -107,6 +109,7 @@ export default function StudentHome() {
       {!ready ? <div className="h-80 rounded-[2rem] bg-white/60 animate-pulse" /> : (
         <div data-testid={`dashboard-tab-${tab}`} className="space-y-7">
           {tab === "home" && (<>
+            {latest && <RemindersCard />}
             {latest ? <JourneyCard r={latest} onSave={save} pending={day} onOpenDaily={openDaily} /> : <NoReportCard />}
             {latest && <StreakCard r={latest} pending={day} onOpenDaily={openDaily} />}
             <ActivityOfDay plan={plan} />
@@ -115,11 +118,13 @@ export default function StudentHome() {
               <WellnessReads plan={plan} onAll={toToolkit} />
               <Audiobooks media={media} play={play} onAll={toToolkit} limit={4} />
             </div>
+            <CounsellorCard />
           </>)}
           {tab === "journey" && (latest ? (<>
             <LatestCard r={{ ...reports[0], ticks: latest.ticks }} />
             <StreakCard r={latest} pending={day} onOpenDaily={openDaily} />
             <PlanProgress r={latest} />
+            <CounsellorCard />
           </>) : <NoReportCard />)}
           {tab === "insights" && (latest ? (<><MoodWeek r={latest} /><History reports={reports} /></>) : <NoReportCard />)}
           {tab === "toolkit" && (<>

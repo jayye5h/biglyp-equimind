@@ -17,7 +17,7 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
-    if (user) nav(user.role === "admin" ? "/admin" : "/dashboard", { replace: true });
+    if (user) nav(user.role === "admin" ? "/admin" : user.role === "counsellor" ? "/counsellor" : "/dashboard", { replace: true });
   }, [user, nav]);
 
   const pick = async (id) => {
@@ -48,7 +48,7 @@ export default function Login() {
               </span>
               <span className="flex-1">
                 <span className="block font-semibold text-slate-800">{u.name}</span>
-                <span className="block text-sm text-slate-500">{u.role === "admin" ? "Platform admin · question bank & activities" : `${u.program} · ${u.year} · ${u.level}`}</span>
+                <span className="block text-sm text-slate-500">{u.role === "admin" ? "Platform admin · question bank & activities" : u.role === "counsellor" ? `${u.program} · sessions & student support` : `${u.program} · ${u.year} · ${u.level}`}</span>
               </span>
               {busy === u.id ? <Loader2 className="h-5 w-5 animate-spin text-eq" /> : <ArrowRight className="h-5 w-5 text-slate-400" />}
             </button>

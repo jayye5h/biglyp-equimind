@@ -21,7 +21,7 @@ const Bars = ({ s, prev }) => (
 export const Week1Page = ({ r, n, total }) => {
   const s = weekStats(r, 0);
   return (
-    <PageShell n={n} total={total} eyebrow="Days 1–7" title="Week 1 Progress" id="week-1" testid="report-page-week-1">
+    <PageShell n={n} total={total} eyebrow="Days 1–7" title="Week 1 Progress" id="week-1" testid="report-page-week-1" art="/report-art/week1.webp" artAlt="First steps of progress">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 -mt-2">
         <Tile testid="week1-total" label="Activities done" value={`${s.total}/35 · ${s.pct}%`} />
         <Tile label="Full days (all 5)" value={`${s.fullDays}/7`} />
@@ -42,7 +42,7 @@ export const Week2Page = ({ r, n, total }) => {
   const s2 = weekStats(r, 1);
   const t = trendInsights(r, s1, s2);
   return (
-    <PageShell n={n} total={total} eyebrow="Days 8–14" title="Week 2 Progress" id="week-2" testid="report-page-week-2">
+    <PageShell n={n} total={total} eyebrow="Days 8–14" title="Week 2 Progress" id="week-2" testid="report-page-week-2" art="/report-art/week2.webp" artAlt="Growing progress">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 -mt-2">
         <Tile testid="week2-total" label="Activities done" value={`${s2.total}/35 · ${s2.pct}%`} />
         <Tile label="vs Week 1" value={<span className="inline-flex items-center gap-1">{s2.total - s1.total >= 0 ? "+" : ""}{s2.total - s1.total} <Delta d={s2.total - s1.total} /></span>} />
@@ -68,7 +68,7 @@ const OPTIONS = {
 export const NextStepsPage = ({ r, n, total }) => {
   const ns = nextStepsPlan(r);
   return (
-    <PageShell n={n} total={total} eyebrow="After Day 14" title="Your Next Steps" id="next-steps" testid="report-page-next-steps">
+    <PageShell n={n} total={total} eyebrow="After Day 14" title="Your Next Steps" id="next-steps" testid="report-page-next-steps" art="/report-art/next.webp" artAlt="Choosing the path ahead">
       <p className="text-slate-600 -mt-2">{ns.intro}</p>
       <div className="mt-6 grid md:grid-cols-3 gap-4">
         {Object.entries(OPTIONS).map(([k, o]) => {
