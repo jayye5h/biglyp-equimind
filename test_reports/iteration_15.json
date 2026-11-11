@@ -1,0 +1,28 @@
+{
+  "summary": "Frontend-only re-test of the iteration_14 fixes. All 8 requested items PASS. (1) Bubble Pop: 4 of 4 trials with real mouse clicks at bubble centres reached 'All popped. Feel a little lighter?' within 2 passes. Popped bubbles have pointer-events 'none'. 'More bubbles' resets to 'Popped 0/14'. (Playwright locator.click always times out here because the infinite eqfloat animation means a bubble is never 'stable'. That is a test-tool quirk, not an app bug.) (2) Admin at 390px: scrollWidth stays 390 on load and after opening Games. The tab list wraps onto 2 rows and all 5 tabs are in the viewport and clickable. (3) Area chips are now tinted, with coloured text and border at 7% alpha plus brightness(0.8). (4) The admin game dialog shows the instruction once (DialogDescription is sr-only). Checked on Word Search, Steady Beat and Bubble Pop. (5) The Steady Beat end message depends on the score, using JS-timed taps: 8/8 'your rhythm is steady.', 4/8 'nice and settling…', 0/8 'slow down and let the pulse lead you…'. (6) With sudoku, memory and zerokata turned OFF through the admin UI switches, stu-rohan's Activity of the Day reads 'A little something picked just for you — for a strong day, focused on Family, Money & Future.' Only the exercise card shows. All 3 toggles were restored to ON via the API, which now reports 26 games and 0 off. (7) Word search: finding CALM gives 'Found 1/5'. Re-selecting it, forwards or reversed, gives 'You already found CALM.' (8) Next Steps report d80e237a: option 'three' is recommended (purple border, centred 'Recommended for you' pill), images load, no broken images, no NaN or undefined, no horizontal overflow, no page errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Admin Games cards", "issues": ["Area chips look much better, but the 10px amber 'Social & Belonging' text (#f59e0b × brightness 0.8 ≈ #c47e09 on a near-white tint) is about 3.3:1 contrast, below WCAG AA 4.5:1. Sky blue 'Family, Money & Future' is about 4.2:1. Consider darker hex values for these two areas instead of a filter."]},
+      {"screen": "Admin Games summary", "issues": ["With all 3 student games OFF, the summary still says '3 live for students · 3 turned off'. The 'live' count uses the static g.student flag and ignores 'enabled'. Consider counting g.student && g.enabled."]},
+      {"screen": "Report Next Steps list", "issues": ["'Fixed wake-up time · 0 min, every morning' shows '0 min', which looks odd. Consider hiding the duration when it is 0, or saying 'no extra time'."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Optional: darken the amber and sky area-chip text colours for AA contrast.",
+    "Optional: games-summary 'live for students' should count only enabled student games.",
+    "Optional: hide '0 min' in the Next Steps activity list."
+  ],
+  "critical_code_review_comments": [
+    "ActivityOfDay subtitle: the non-personalised branch still hardcodes 'Two little things to lift your day' even when no game is returned (plan.game null). This was not exercised with Rohan, who is personalised."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (not requested)", "frontend": "100% (8/8 requested items)"},
+  "seed_data_creation": "None. No assessments were taken and no reports deleted. Game toggles were changed temporarily and restored to ON (verified: 0 off).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Bubble Pop bubbles animate forever, so use page.mouse.click at the bounding-box centre or force=True, not plain locator.click. For Steady Beat, use JS setTimeout clicks at k*1200ms after the start click to get deterministic scores. Admin toggles: PATCH /api/admin/games/{id} {enabled}. Always restore them to ON."
+}

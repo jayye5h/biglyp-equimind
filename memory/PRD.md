@@ -91,3 +91,7 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 ## 2026-11-11 (iteration 16) — environment restore + demo data
 - Recreated backend/frontend .env (new VAPID keys, cron secret), installed deps. Fresh DB seeded: real AI reports for 3 students via API, then `python backend/scripts/seed_demo_progress.py` (Ananya 8 days, Rohan 14 days, Meera 5 low days + booking). Seed ticks "once this fortnight" activities only once.
 - Known gap (not fixed, awaiting user): progress.js treats one-off activities as daily (counts toward full days / "hardest" / "slipped").
+
+## 2026-11-11 (iteration 17)
+- Report Week 2 + Your Next Steps restyled to user mockups (art cropped from mockups → public/report-art/week2_hero, week2_clip, next_head, next_same/three/new, next_study .webp); web + PDF.
+- Admin Games library (backend/games.py: 26 games = 3 student-live + 23 admin-preview, tagged type/area/mood; `game_settings` on/off; GET/PATCH /api/admin/games, GET /api/games/enabled). Frontend: components/games/pack/* (23 new games), games/registry.js, admin/GamesLibrary.jsx (filters, play dialog, toggles). Disabled student games are skipped in wellness pick + Toolkit.
