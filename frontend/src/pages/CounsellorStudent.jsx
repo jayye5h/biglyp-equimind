@@ -77,7 +77,7 @@ export default function CounsellorStudent() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <h1 data-testid="student-detail-name" className="font-serif text-3xl sm:text-4xl font-bold text-slate-900">{d.student.name}</h1>
-            <p className="text-slate-600">{d.student.program} · {d.student.year} · {d.student.student_code}</p>
+            <p className="text-slate-600">{[d.student.program, d.student.year, d.student.student_code].filter(Boolean).join(" · ")}</p>
           </div>
           {r && <Link to={`/report/${r.id}`} data-testid="open-student-report" className="h-11 px-5 rounded-xl bg-eq text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-eq-dark"><FileText className="h-4 w-4" /> Open full report</Link>}
         </div>

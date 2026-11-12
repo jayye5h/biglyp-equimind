@@ -1,22 +1,54 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { BRANDS } from "@/lib/brand";
 
-export const PALETTES = {
+/* All palettes; each brand offers its own subset (EquiMind: blue / mint, MindMellow: lavender / peach / teal). */
+export const ALL_PALETTES = {
   sky: { label: "Light blue", p: "#3a86c8", grid: "#cfe0f0" },
   mint: { label: "Mint green", p: "#2d8a7c", grid: "#cfe7e2" },
+  lavender: { label: "Soft lavender", p: "#8b6fd1", grid: "#e2d9f5" },
+  peach: { label: "Warm peach", p: "#e07a5f", grid: "#f7dcd2" },
+  teal: { label: "Calm teal", p: "#2a9d8f", grid: "#cdeae6" },
 };
+const pick = (brand) => Object.fromEntries(BRANDS[brand].palettes.map((k) => [k, ALL_PALETTES[k]]));
+// Back-compat export (EquiMind palettes)
+export const PALETTES = pick("equimind");
 
-const initial = PALETTES[localStorage.getItem("eq_theme")] ? localStorage.getItem("eq_theme") : "sky";
-document.documentElement.dataset.theme = initial;
+const initialBrand = () => {
+  if (window.location.pathname.startsWith("/mindmellow")) return "mindmellow";
+  const b = localStorage.getItem("eq_brand");
+  return BRANDS[b] ? b : "equimind";
+};
+const themeFor = (brand) => {
+  const t = localStorage.getItem(`eq_theme_${brand}`) || (brand === "equimind" ? localStorage.getItem("eq_theme") : null);
+  return BRANDS[brand].palettes.includes(t) ? t : BRANDS[brand].palettes[0];
+};
+const b0 = initialBrand();
+document.documentElement.dataset.theme = themeFor(b0);
 
 const ThemeCtx = createContext(null);
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(initial);
+  const [brand, setBrandState] = useState(b0);
+  const [theme, setTheme] = useState(() => themeFor(b0));
+  const setBrand = (b) => {
+    if (!BRANDS[b] || b === brand) return;
+    setBrandState(b);
+    setTheme(themeFor(b));
+  };
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem("eq_theme", theme);
-  }, [theme]);
-  return <ThemeCtx.Provider value={{ theme, setTheme, palette: PALETTES[theme] }}>{children}</ThemeCtx.Provider>;
+    localStorage.setItem(`eq_theme_${brand}`, theme);
+    localStorage.setItem("eq_brand", brand);
+    document.title = `${BRANDS[brand].name} — ${BRANDS[brand].tagline}`;
+  }, [theme, brand]);
+  const palettes = pick(brand);
+  return (
+    <ThemeCtx.Provider value={{ theme, setTheme, palette: ALL_PALETTES[theme], palettes, brand, setBrand, B: BRANDS[brand] }}>
+      {children}
+    </ThemeCtx.Provider>
+  );
 };
 
 export const useTheme = () => useContext(ThemeCtx);
+/** Current brand config (name, audience, counsellor wording, paths…). */
+export const useBrand = () => useContext(ThemeCtx).B;

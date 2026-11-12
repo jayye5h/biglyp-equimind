@@ -201,7 +201,8 @@ async def maybe_low_mood(report):
         return
     stu = await _db.users.find_one({"id": report["user_id"]}, {"_id": 0, "name": 1}) or {}
     date = datetime.now(IST).date().isoformat()
-    async for c in _db.users.find({"role": "counsellor"}, {"_id": 0, "id": 1}):
+    prog = (await _db.users.find_one({"id": report["user_id"]}, {"_id": 0, "programme": 1}) or {}).get("programme", "equimind")
+    async for c in _db.users.find({"role": "counsellor", "programme": prog}, {"_id": 0, "id": 1}):
         await send("low_mood_alert", c["id"], f"Low mood: {stu.get('name', 'a student')}",
                    f"{stu.get('name', 'A student')} has logged low moods in recent check-ins ({flag.split('(')[-1].rstrip(')')}). A gentle check-in may help.",
                    url=f"/counsellor/student/{report['user_id']}", key=f"low_mood:{report['user_id']}:{c['id']}:{date}")

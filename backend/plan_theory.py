@@ -29,20 +29,23 @@ WHY = {
 }
 
 
-def enrich_plan(plan: list) -> list:
-    return [{**a, "why": WHY.get(a["id"], "")} for a in plan]
+def enrich_plan(plan: list, C=None) -> list:
+    why = getattr(C, "WHY", WHY)
+    return [{**a, "why": why.get(a["id"], "")} for a in plan]
 
 
-def next_activities(report: dict, limit: int = 3) -> list:
+def next_activities(report: dict, limit: int = 3, C=None) -> list:
+    WHY_ = getattr(C, "WHY", WHY)
+    ACTIVITIES_ = getattr(C, "ACTIVITIES", ACTIVITIES)
     taken = {a["id"] for a in report.get("plan", [])}
     out = []
     for area in report.get("priorities", []):
-        for a in ACTIVITIES.get(area, []):
+        for a in ACTIVITIES_.get(area, []):
             if a["id"] not in taken and a["id"] not in {x["id"] for x in out}:
-                out.append({**a, "why": WHY.get(a["id"], "")})
+                out.append({**a, "why": WHY_.get(a["id"], "")})
                 break
     for area in report.get("priorities", []):
-        for a in ACTIVITIES.get(area, []):
+        for a in ACTIVITIES_.get(area, []):
             if len(out) < limit and a["id"] not in taken and a["id"] not in {x["id"] for x in out}:
-                out.append({**a, "why": WHY.get(a["id"], "")})
+                out.append({**a, "why": WHY_.get(a["id"], "")})
     return out[:limit]

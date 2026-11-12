@@ -1,0 +1,368 @@
+[
+ {
+  "key": "A",
+  "name": "Academic & Exam Pressure",
+  "short": "Academic",
+  "subthemes": [
+   {
+    "key": "A1",
+    "name": "Boards & classroom workload",
+    "items": [
+     "I feel the board syllabus is more than I can finish on time.",
+     "Deadlines from different subjects keep piling up.",
+     "I can't tell where to start with pending academic work.",
+     "I lose personal time because of academic load.",
+     "I feel I need to study longer than I can realistically sustain.",
+     "I have no breathing room between tests and submissions.",
+     "I feel school hours stretch into my evenings and weekends.",
+     "I feel I'll never catch up with my pending topics."
+    ]
+   },
+   {
+    "key": "A2",
+    "name": "Competitive-exam anxiety (JEE / NEET / CUET / others)",
+    "items": [
+     "I worry about my competitive-exam preparation almost daily.",
+     "A bad mock test score ruins the rest of the week.",
+     "I feel my rank or percentile predictions decide my life.",
+     "I compare my scores and ranks with coaching batchmates.",
+     "I feel I'm falling behind my coaching batch.",
+     "I feel scared of the actual entrance exam day.",
+     "I feel I don't have a backup plan if my top exam doesn't work.",
+     "I feel I need to keep solving problems just to stay in the race."
+    ]
+   },
+   {
+    "key": "A3",
+    "name": "Performance pressure & fear of failure",
+    "items": [
+     "I feel I have to top every test to feel okay about myself.",
+     "I worry about disappointing teachers, tutors or parents.",
+     "I feel one bad exam will mark me for years.",
+     "I feel scared to attempt questions in case I get them wrong.",
+     "Even when I do well, I immediately worry about the next test.",
+     "I feel my worth depends on my next result.",
+     "I avoid certain subjects because I'm scared to score badly."
+    ]
+   },
+   {
+    "key": "A4",
+    "name": "Concentration, memory & study-habit strain",
+    "items": [
+     "Study-related worry makes it hard to concentrate.",
+     "I re-read the same page without taking anything in.",
+     "I feel mentally foggy after demanding days of study.",
+     "I forget things I just revised.",
+     "I need more breaks than I used to to get through study.",
+     "My mind drifts even when I try to focus.",
+     "I feel I don't have a study method that works for me anymore."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "B",
+  "name": "Career, Future & Financial",
+  "short": "Career & Future",
+  "subthemes": [
+   {
+    "key": "B1",
+    "name": "Career direction & stream uncertainty",
+    "items": [
+     "I feel unsure about my future career path, and it stresses me.",
+     "I feel I don't know what I'm actually good at.",
+     "I feel pressured to pick a career before I'm ready.",
+     "I compare my 'timeline' with peers and feel behind.",
+     "I feel the field I want is too competitive to break into.",
+     "I feel what I love doing isn't a 'real' career.",
+     "I feel my dreams are too small or too big for my family.",
+     "Big life questions keep looping in my head."
+    ]
+   },
+   {
+    "key": "B2",
+    "name": "College admissions worry",
+    "items": [
+     "I worry about whether I'll get into the colleges I want.",
+     "I feel one admission result will decide my life.",
+     "I worry about rejection from my dream college.",
+     "I compare my admission prospects with batchmates.",
+     "I feel I don't have a clear admissions plan.",
+     "I worry about fees and whether my family can afford my college choices.",
+     "I feel pressure to pick a 'safe' college over one I want.",
+     "I feel scared about the gap between boards and admission results."
+    ]
+   },
+   {
+    "key": "B3",
+    "name": "Family financial pressure",
+    "items": [
+     "I worry about money or my family's financial pressure.",
+     "I feel guilty about the cost of coaching, tuition or study material.",
+     "I feel pressure to start earning as soon as possible.",
+     "I think about my family's finances more than I'd like to.",
+     "I feel I'm a financial burden on my family.",
+     "I avoid asking for things I need because of money stress.",
+     "I feel fees or living costs are causing tension at home."
+    ]
+   },
+   {
+    "key": "B4",
+    "name": "Future-conversation avoidance",
+    "items": [
+     "I avoid talking about my future with my family.",
+     "I avoid discussing options I'm considering because of the reaction.",
+     "I don't tell my family what I'm actually spending on.",
+     "I postpone big conversations about my future to avoid stress.",
+     "I don't ask for help with planning because I worry about judgement.",
+     "I feel I need to look like I have it figured out to my family.",
+     "I feel ashamed to raise financial topics at home."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "C",
+  "name": "Parental & Family Expectations",
+  "short": "Family",
+  "subthemes": [
+   {
+    "key": "C1",
+    "name": "Parental expectations",
+    "items": [
+     "I feel the weight of my family's expectations about my career.",
+     "My family already has a plan for what I should do.",
+     "I feel my parents' happiness depends on my results.",
+     "I feel I owe my family a particular future that may not fit me.",
+     "I feel I can't tell my family what I actually want.",
+     "I feel I'm living my family's dream, not mine.",
+     "I feel scared of disappointing my parents.",
+     "I feel my parents don't understand what I'm going through."
+    ]
+   },
+   {
+    "key": "C2",
+    "name": "Comparison within family & community",
+    "items": [
+     "My parents compare me with cousins, siblings or classmates.",
+     "I'm compared to a 'topper' or 'successful cousin' at home.",
+     "I feel I'm never as good as the person my family holds up.",
+     "Relatives ask questions that make me feel smaller.",
+     "I feel I have to perform for the extended family.",
+     "I feel I'm being measured by other families' standards.",
+     "I feel invisible when a sibling does well."
+    ]
+   },
+   {
+    "key": "C3",
+    "name": "Home environment & tension",
+    "items": [
+     "My home feels tense right now.",
+     "I feel I can't relax at home.",
+     "I feel caught between family members.",
+     "I avoid being at home when I can.",
+     "Someone at home is going through a tough time, and it affects me.",
+     "I feel lonely at home even with people around.",
+     "I feel I have to look okay all the time at home.",
+     "I feel my home is stressful because of exam / career pressure around me."
+    ]
+   },
+   {
+    "key": "C4",
+    "name": "Communication with parents",
+    "items": [
+     "I don't tell my parents when something is really bothering me.",
+     "I hide how bad things are so I don't worry them.",
+     "I say 'I'm fine' at home when I'm not.",
+     "I feel my parents don't ask how I'm feeling, only about results.",
+     "I avoid honest conversations with my parents.",
+     "I feel I need to protect my parents from how I'm doing.",
+     "I feel my parents and I speak different languages about my life."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "D",
+  "name": "Identity, Relationships & Breakup",
+  "short": "Identity & Relationships",
+  "subthemes": [
+   {
+    "key": "D1",
+    "name": "Self-identity & imposter feelings",
+    "items": [
+     "I feel like a fraud when I'm praised or do well.",
+     "I feel other people are more capable or sorted than I am.",
+     "I think my success so far has been luck, not ability.",
+     "I feel I'll be found out as not good enough.",
+     "I minimise my achievements when I talk about them.",
+     "I measure myself against the best people in every room.",
+     "I feel I don't know who I really am right now.",
+     "I feel pulled in different directions by school, family and friends."
+    ]
+   },
+   {
+    "key": "D2",
+    "name": "Social comparison (including social media)",
+    "items": [
+     "I compare my progress with others and feel behind.",
+     "Social media makes me feel I'm not doing enough.",
+     "I compare my body, looks or lifestyle with people online.",
+     "I feel other people's lives look better than mine.",
+     "I feel my friends are achieving more than me.",
+     "I stop posting because of how I think it will be judged.",
+     "I compare my college prospects with batchmates and feel anxious."
+    ]
+   },
+   {
+    "key": "D3",
+    "name": "Breakup, rejection & close-relationship conflict",
+    "items": [
+     "A recent breakup, rejection or conflict with someone close is still affecting me.",
+     "I keep thinking about a relationship that ended or is strained.",
+     "I feel let down by someone close to me.",
+     "I have an unresolved argument with someone close.",
+     "I feel unsupported by my partner, best friend or family right now.",
+     "Seeing a person or their updates still hurts.",
+     "I had to end a connection that was hurting me, and it still weighs on me.",
+     "I feel I'm losing a bond that really mattered to me."
+    ]
+   },
+   {
+    "key": "D4",
+    "name": "Friendship loss & social isolation",
+    "items": [
+     "I don't have anyone I can talk to honestly.",
+     "I feel alone with my problems.",
+     "I feel I have lost touch with people I used to be close to.",
+     "My conversations stay surface-level even when I want more.",
+     "I feel invisible in the groups I'm part of.",
+     "I spend most evenings alone with my thoughts.",
+     "I keep my distress to myself even when it's hurting me."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "E",
+  "name": "Emotional Overload & Coping",
+  "short": "Emotional",
+  "subthemes": [
+   {
+    "key": "E1",
+    "name": "Overwhelm & distress intensity",
+    "items": [
+     "I feel overwhelmed and can't shake it off quickly.",
+     "Small problems feel much bigger than they should.",
+     "I feel like I'm running on edge most of the day.",
+     "I have no space left in my head for anything new.",
+     "Stress symptoms spill into my sleep, appetite or focus.",
+     "I feel I can barely keep up with everyday things.",
+     "I feel one more thing could tip me over.",
+     "Even small changes to my plan feel too much to handle."
+    ]
+   },
+   {
+    "key": "E2",
+    "name": "Anxiety & restlessness",
+    "items": [
+     "I feel on edge or anxious without a clear reason.",
+     "My heart races or my breathing speeds up when I'm not active.",
+     "I worry about things that haven't happened yet.",
+     "I feel restless and can't sit still for long.",
+     "I notice knots in my stomach or a tight chest.",
+     "I expect something bad is about to happen.",
+     "I replay stressful moments long after they are over."
+    ]
+   },
+   {
+    "key": "E3",
+    "name": "Low mood & motivation",
+    "items": [
+     "I feel low or unmotivated even when nothing specific is wrong.",
+     "Things I usually enjoy feel flat or not worth the effort.",
+     "I feel heavy or weighed down when I wake up.",
+     "I cry more easily than usual, or feel like crying.",
+     "Making small decisions feels harder than it used to.",
+     "I feel less interested in future plans I was looking forward to.",
+     "I feel I'm just going through the motions.",
+     "I feel disconnected from my day as it passes."
+    ]
+   },
+   {
+    "key": "E4",
+    "name": "Avoidant / escape coping",
+    "items": [
+     "I use scrolling, gaming or snacks to switch off difficult feelings.",
+     "I binge-watch content late into the night to avoid thinking.",
+     "I overeat or lose interest in food when I'm stressed.",
+     "I rely on caffeine or energy drinks to cope with the day.",
+     "I buy or shop more than I planned to feel better.",
+     "I distract myself rather than face what is actually bothering me.",
+     "I use substances (alcohol, tobacco) to cope."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "F",
+  "name": "Sleep, Lifestyle & Digital Pressure",
+  "short": "Sleep & Lifestyle",
+  "subthemes": [
+   {
+    "key": "F1",
+    "name": "Sleep timing & quantity",
+    "items": [
+     "I feel tired because screens or study push my sleep later.",
+     "I sleep fewer hours than I know I need.",
+     "My bedtime varies a lot from one night to the next.",
+     "I stay up late even when I have a full day ahead.",
+     "I lose an hour or more to my phone after lying down.",
+     "I only sleep properly on weekends.",
+     "I wake up earlier than I want to and can't sleep again.",
+     "I feel I never get a proper stretch of sleep."
+    ]
+   },
+   {
+    "key": "F2",
+    "name": "Sleep quality & stress dreams",
+    "items": [
+     "Stress makes it hard to fall asleep.",
+     "I wake up during the night and struggle to go back to sleep.",
+     "My thoughts get louder once I lie down.",
+     "I wake up and feel I didn't really rest.",
+     "I have unsettling dreams about exams or what's coming.",
+     "I feel physically tense when I try to sleep.",
+     "I grind my teeth or wake up with a tight jaw."
+    ]
+   },
+   {
+    "key": "F3",
+    "name": "Daytime energy, meals & body care",
+    "items": [
+     "I feel foggy or low on energy during the day.",
+     "I rely on caffeine or energy drinks to function.",
+     "I crash in the afternoon and struggle to recover.",
+     "I skip meals or forget to drink water when I'm busy.",
+     "I don't get proper movement or walking in my day.",
+     "I rarely get fresh air or daylight.",
+     "My body feels stiff or sore from sitting too long.",
+     "I notice headaches, acidity or stomach aches more often."
+    ]
+   },
+   {
+    "key": "F4",
+    "name": "Digital overuse & time pressure",
+    "items": [
+     "I spend more time on screens than I'd like to.",
+     "I lose study time to scrolling, gaming or videos.",
+     "I feel bad after long phone sessions, but I keep going.",
+     "I use my phone first thing in the morning and last thing at night.",
+     "I feel restless when I try to put my phone down.",
+     "I feel I don't have control over my own time.",
+     "I feel I'm behind on everything because of how I spend time."
+    ]
+   }
+  ]
+ }
+]

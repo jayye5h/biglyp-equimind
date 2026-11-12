@@ -2,7 +2,7 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider, useAuth } from "@/lib/auth";
-import { ThemeProvider } from "@/lib/theme";
+import { ThemeProvider, useBrand } from "@/lib/theme";
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import StudentHome from "@/pages/StudentHome";
@@ -17,8 +17,9 @@ export const homeFor = (role) => (role === "admin" ? "/admin" : role === "counse
 
 const Guard = ({ role, children }) => {
   const { user, ready } = useAuth();
+  const B = useBrand();
   if (!ready) return null;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to={B.login} replace />;
   if (role && ![].concat(role).includes(user.role)) return <Navigate to={homeFor(user.role)} replace />;
   return children;
 };
@@ -32,6 +33,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/mindmellow" element={<Landing brand="mindmellow" />} />
+            <Route path="/mindmellow/login" element={<Login brand="mindmellow" />} />
             <Route path="/dashboard" element={<Guard role="student"><StudentHome /></Guard>} />
             <Route path="/check-in" element={<Guard role="student"><Assessment /></Guard>} />
             <Route path="/report/:id" element={<Guard role={["student", "counsellor"]}><ReportView /></Guard>} />

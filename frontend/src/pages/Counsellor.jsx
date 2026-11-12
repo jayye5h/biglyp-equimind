@@ -18,7 +18,7 @@ export const SevChip = ({ s, testid }) => <span data-testid={testid} className={
 const StudentCell = ({ st, rep }) => (
   <div className="min-w-0">
     <Link to={`/counsellor/student/${st.id}`} className="font-semibold text-slate-900 hover:text-eq-dark">{st.name}</Link>
-    <p className="text-xs text-slate-500 truncate">{st.program} · {st.year} · {st.student_code}</p>
+    <p className="text-xs text-slate-500 truncate">{[st.program, st.year, st.student_code].filter(Boolean).join(" · ")}</p>
     {rep && <p className="text-xs text-slate-500">Overall <b className="text-slate-800">{rep.overall}</b> · {rep.journey_over ? "Journey complete" : `Day ${rep.day} of 14`} · {rep.logged} check-ins</p>}
   </div>
 );

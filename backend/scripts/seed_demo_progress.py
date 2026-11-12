@@ -80,7 +80,8 @@ def build(rows, plan=()):
 async def main():
     db = AsyncIOMotorClient(os.environ["MONGO_URL"])[os.environ["DB_NAME"]]
     now = datetime.now(timezone.utc)
-    for uid, rows, age in (("stu-ananya", ANANYA, 8), ("stu-rohan", ROHAN, 14), ("stu-meera", MEERA, 5)):
+    for uid, rows, age in (("stu-ananya", ANANYA, 8), ("stu-rohan", ROHAN, 14), ("stu-meera", MEERA, 5),
+                           ("mm-diya", ANANYA, 8), ("mm-aarav", ROHAN, 14), ("mm-kabir", MEERA, 5)):  # EquiMind + MindMellow
         r = await db.reports.find_one({"user_id": uid}, {"_id": 0, "id": 1, "plan": 1}, sort=[("created_at", -1)])
         if not r:
             print(f"{uid}: no report found - take a check-in first")
@@ -90,7 +91,7 @@ async def main():
         print(f"{uid}: report {r['id']} -> {len(rows)} days logged, created_at {created}")
     # Ananya books a counselling slot (if she has no active booking)
     if not await db.bookings.find_one({"student_id": "stu-ananya", "status": {"$in": ["pending", "confirmed"]}}):
-        slot = await db.slots.find_one({"booked_by": None, "removed": {"$ne": True}, "start": {"$gt": now.isoformat()}}, sort=[("start", 1)])
+        slot = await db.slots.find_one({"counsellor_id": "cou-kavya", "booked_by": None, "removed": {"$ne": True}, "start": {"$gt": now.isoformat()}}, sort=[("start", 1)])
         rep = await db.reports.find_one({"user_id": "stu-ananya"}, {"_id": 0, "id": 1}, sort=[("created_at", -1)])
         if slot and rep:
             bid = str(uuid.uuid4())

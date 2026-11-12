@@ -13,11 +13,12 @@ const Stat = ({ label, value, testid }) => (
   <div data-testid={testid} className="rounded-2xl bg-white border border-eq/10 p-5"><div className="text-xs font-mono uppercase text-slate-400">{label}</div><div className="mt-2 font-serif text-3xl font-bold text-slate-900">{value}</div></div>
 );
 
-const Overview = () => {
+const Overview = ({ prog }) => {
   const [s, setS] = useState(null);
   useEffect(() => {
-    api.get("/admin/stats").then((r) => setS(r.data));
-  }, []);
+    setS(null);
+    api.get(`/admin/stats?programme=${prog}`).then((r) => setS(r.data));
+  }, [prog]);
   if (!s) return <div className="h-60 rounded-2xl bg-white/60 animate-pulse" />;
   return (
     <div className="space-y-6">
@@ -43,13 +44,14 @@ const Overview = () => {
   );
 };
 
-const QuestionBank = () => {
+const QuestionBank = ({ prog }) => {
   const [data, setData] = useState(null);
   const [area, setArea] = useState("all");
   const [q, setQ] = useState("");
   useEffect(() => {
-    api.get("/admin/items").then((r) => setData(r.data));
-  }, []);
+    setData(null);
+    api.get(`/admin/items?programme=${prog}`).then((r) => setData(r.data));
+  }, [prog]);
   const rows = useMemo(() => (data ? data.items.filter((i) => (area === "all" || i.area === area) && i.text.toLowerCase().includes(q.toLowerCase())) : []), [data, area, q]);
   if (!data) return <div className="h-60 rounded-2xl bg-white/60 animate-pulse" />;
   const sub = Object.fromEntries(data.subthemes.map((s) => [s.key, s.name]));
@@ -72,11 +74,12 @@ const QuestionBank = () => {
   );
 };
 
-const Library = () => {
+const Library = ({ prog }) => {
   const [acts, setActs] = useState(null);
   useEffect(() => {
-    api.get("/admin/activities").then((r) => setActs(r.data));
-  }, []);
+    setActs(null);
+    api.get(`/admin/activities?programme=${prog}`).then((r) => setActs(r.data));
+  }, [prog]);
   if (!acts) return <div className="h-60 rounded-2xl bg-white/60 animate-pulse" />;
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -92,17 +95,31 @@ const Library = () => {
   );
 };
 
+const PROGS = [["equimind", "EquiMind", "University (UG / PG)"], ["mindmellow", "MindMellow", "Grades 11–12"]];
+
 export default function Admin() {
+  const [prog, setProg] = useState(() => localStorage.getItem("eq_admin_prog") || "equimind");
+  useEffect(() => { localStorage.setItem("eq_admin_prog", prog); }, [prog]);
+  const pName = PROGS.find((p) => p[0] === prog)[1];
   return (
     <div data-testid="admin-page" className="min-h-screen">
       <AppHeader />
       <main className="max-w-6xl mx-auto px-4 sm:px-8 py-10">
         <p className="font-mono text-xs uppercase tracking-[0.25em] text-eq">Platform admin</p>
         <h1 className="mt-2 font-serif text-4xl font-bold text-slate-900">Content &amp; <em className="text-eq">cohort view</em></h1>
-        <Link to="/admin/product-doc" data-testid="product-doc-link" className="mt-6 flex items-center gap-4 rounded-2xl bg-white border border-eq/15 p-4 sm:p-5 hover:border-eq/40 hover:shadow-sm transition">
+        <div data-testid="admin-programme-switch" role="radiogroup" aria-label="Programme" className="mt-6 inline-flex rounded-2xl bg-white border border-eq/15 p-1">
+          {PROGS.map(([k, n, d]) => (
+            <button key={k} data-testid={`admin-prog-${k}`} role="radio" aria-checked={prog === k} onClick={() => setProg(k)}
+              className={`rounded-xl px-4 py-2 text-left transition-colors ${prog === k ? "bg-eq text-white" : "text-slate-600 hover:bg-eq-soft"}`}>
+              <span className="block text-sm font-semibold">{n}</span><span className={`block text-[11px] ${prog === k ? "text-white/80" : "text-slate-400"}`}>{d}</span>
+            </button>
+          ))}
+        </div>
+        <p className="mt-2 text-xs text-slate-500">Overview, Question bank, Activities and the Product Document follow this switch. Media, Games and Notifications are shared by both programmes.</p>
+        <Link to={`/admin/product-doc?programme=${prog}`} data-testid="product-doc-link" className="mt-6 flex items-center gap-4 rounded-2xl bg-white border border-eq/15 p-4 sm:p-5 hover:border-eq/40 hover:shadow-sm transition">
           <span className="h-11 w-11 rounded-xl bg-eq-soft text-eq-dark grid place-items-center shrink-0"><FileText className="h-5 w-5" /></span>
           <span className="min-w-0 flex-1">
-            <span className="block font-semibold text-slate-900">EquiMind Product Document</span>
+            <span className="block font-semibold text-slate-900">{pName} Product Document</span>
             <span className="block text-xs text-slate-500">Theory, full question bank, scoring rules, report structure, activities, games, notifications and features. Always up to date.</span>
           </span>
           <span className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-eq-dark">Open <ArrowRight className="h-4 w-4" /></span>
@@ -116,9 +133,9 @@ export default function Admin() {
             <TabsTrigger data-testid="admin-tab-games" value="games" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Games</TabsTrigger>
             <TabsTrigger data-testid="admin-tab-notifications" value="notifications" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Notifications</TabsTrigger>
           </TabsList>
-          <TabsContent value="overview" className="mt-6"><Overview /></TabsContent>
-          <TabsContent value="items" className="mt-6"><QuestionBank /></TabsContent>
-          <TabsContent value="activities" className="mt-6"><Library /></TabsContent>
+          <TabsContent value="overview" className="mt-6"><Overview prog={prog} /></TabsContent>
+          <TabsContent value="items" className="mt-6"><QuestionBank prog={prog} /></TabsContent>
+          <TabsContent value="activities" className="mt-6"><Library prog={prog} /></TabsContent>
           <TabsContent value="media" className="mt-6"><MediaManager /></TabsContent>
           <TabsContent value="games" className="mt-6"><GamesLibrary /></TabsContent>
           <TabsContent value="notifications" className="mt-6"><NotificationsManager /></TabsContent>

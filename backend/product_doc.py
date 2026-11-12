@@ -2,7 +2,7 @@
 so the document always matches what the app actually does. Served to admins at GET /api/admin/product-doc."""
 from datetime import datetime, timezone
 
-import content as C
+import content as EQ
 import games as G
 import notify as N
 import plan_theory as PT
@@ -14,22 +14,23 @@ SOUNDS = ["Guitar", "Birds", "Night", "Flute", "Train", "Study", "Code", "Medita
 
 
 def _area(k):
-    return C.AREA_BY_KEY[k]["name"]
+    return EQ.AREA_BY_KEY[k]["name"]
 
 
 def _areas(keys):
     return ", ".join(_area(k) for k in keys)
 
 
-def build() -> str:
+def build(P=EQ) -> str:
     L = []
     w = L.append
-    n_items = len(C.ITEMS)
-    n_acts = sum(len(v) for v in C.ACTIVITIES.values())
+    n_items = len(P.ITEMS)
+    n_acts = sum(len(v) for v in P.ACTIVITIES.values())
     today = datetime.now(timezone.utc).strftime("%d %B %Y")
 
-    w("# EquiMind — Product Document")
-    w(f"*By Biglyp · Student stress & wellbeing platform for university undergraduates and postgraduates · Generated {today} from the live platform*")
+    mm = P.PROGRAMME == "mindmellow"
+    w(f"# {P.NAME} — Product Document")
+    w(f"*By Biglyp · Student stress & wellbeing platform for {P.AUDIENCE} · Generated {today} from the live platform*")
     w("")
     w("## Contents")
     for i, t in enumerate(["Product overview", "Users & roles", "Theoretical framework", "The assessment", "Question bank",
@@ -40,11 +41,11 @@ def build() -> str:
 
     # 1
     w("\n## 1. Product overview")
-    w("EquiMind is a private, non-diagnostic stress check-in and habit-building platform for Indian university students (UG and PG). "
-      f"A student answers **24 short statements** (drawn from a bank of **{n_items}**) about the last two weeks. EquiMind scores six life areas, "
+    w(f"{P.NAME} is a private, non-diagnostic stress check-in and habit-building platform for {P.AUDIENCE}. "
+      f"A student answers **24 short statements** (drawn from a bank of **{n_items}**) about the last two weeks. It scores six life areas, "
       "writes a warm personal report, and turns the three areas under most pressure into a **14-day plan of five small daily activities**. "
       "A daily check-in, mood tracking, progress pages at Day 7 and Day 14, calming exercises, games, sounds and short reads keep the student engaged, "
-      "while a campus counsellor can see who may need support and book sessions.")
+      "while a school / campus counsellor can see who may need support and book sessions.")
     w("\n**Design principles**")
     for b in ["**Reflect, don't diagnose** — tentative, student-friendly language; no medical or psychological labels; no risk scores.",
               "**Small steps beat big plans** — every recommendation is a short, concrete activity with a reason it helps.",
@@ -59,22 +60,25 @@ def build() -> str:
     w("| Student | Takes the check-in, reads the report, follows the 14-day plan, logs daily moods/activities, uses the Toolkit, books counselling |")
     w("| Counsellor | Sees sessions & requests, a ‘Needs attention’ list, every student's record and progress; manages availability slots |")
     w("| Admin | Views cohort numbers, the question bank, activity library, media, games, notifications and this document |")
-    w("\nDemo sign-in (no password): " + ", ".join(f"{u['name']} ({u['role']})" for u in C.DEMO_USERS) + ".")
+    w("\nDemo sign-in (no password): " + ", ".join(f"{u['name']} ({u['role']})" for u in P.DEMO_USERS) + (", Platform Admin (admin, shared with EquiMind)" if mm else "") + ".")
+    if mm:
+        w("\nMindMellow has its own landing page and sign-in (/mindmellow) and its own school counsellor. It shares the engine, report format, games, sounds, videos and notifications with EquiMind; only the theory, stress areas, question bank, activities and scripts differ. "
+          "It keeps dedicated coverage for competitive-exam anxiety (JEE / NEET / CUET), career + financial worry, and breakup / close-relationship conflict.")
 
     # 3
     w("\n## 3. Theoretical framework")
-    w("EquiMind models student stress across **six life areas**, each split into **four sub-themes** (24 in total). "
+    w(f"{P.NAME} models student stress across **six life areas**, each split into **four sub-themes** (24 in total). "
       "The report explains *why* each pressure feels the way it does, then offers activities that target the easiest link to change.")
     w("\n### 3.1 Six life areas and 24 sub-themes")
     w("| Area | Sub-themes |\n|---|---|")
-    for a in C.AREAS:
-        subs = [s for s in C.SUBTHEMES.values() if s["area"] == a["key"]]
+    for a in P.AREAS:
+        subs = [s for s in P.SUBTHEMES.values() if s["area"] == a["key"]]
         w(f"| **{a['key']} · {a['name']}** | " + "; ".join(f"{s['key']} {s['name']}" for s in subs) + " |")
     w("\n### 3.2 The theory behind each area (shown on the student's priority pages)")
-    for a in C.AREAS:
-        w(f"\n**{a['name']}** — {C.THEORY[a['key']]}")
+    for a in P.AREAS:
+        w(f"\n**{a['name']}** — {P.THEORY[a['key']]}")
     w("\n### 3.3 The stress loop")
-    w("Stress is presented as a self-reinforcing cycle of four links (e.g. " + " → ".join(C.LOOP_FRAGMENTS[k] for k in "ABC") + " → Less energy to cope). "
+    w("Stress is presented as a self-reinforcing cycle of four links (e.g. " + " → ".join(P.LOOP_FRAGMENTS[k] for k in "ABC") + " → Less energy to cope). "
       "The report names the student's loop from their own high-frequency answers and points to the link that is easiest to change first.")
     w("\n### 3.4 Why the activities work")
     w("Each activity is grounded in well-established behavioural principles — lowering the activation energy to start, protecting attention, "
@@ -89,24 +93,24 @@ def build() -> str:
     w("\n### 3.6 Worth ruling out: the body")
     w("Some ‘stress’ is partly physical. When sleep, energy or emotional scores are low, the report suggests simple checks:")
     w("| Possible cause | Signs | Simple check |\n|---|---|---|")
-    for r in C.BODY_TABLE:
+    for r in P.BODY_TABLE:
         w(f"| {r['cause']} | {r['signs']} | {r['check']} |")
 
     # 4
     w("\n## 4. The assessment")
     w(f"- **Format:** 24 statements, one from each sub-theme, picked at random from the {n_items}-item bank and shuffled.")
     w("- **Recall window:** the last two weeks.")
-    w("- **Answer scale:** " + ", ".join(f"{s['value']} = {s['label']}" for s in C.SCALE) + " (higher = more stress).")
+    w("- **Answer scale:** " + ", ".join(f"{s['value']} = {s['label']}" for s in P.SCALE) + " (higher = more stress).")
     w("- **Retakes:** Day 28–35 after the last check-in → the *same* 24 statements (a true comparison); within 7 days → fresh statements that exclude the previous ones; otherwise a fresh random set.")
     w("- **While the report is written** the student sees 20 rotating calming statements and mini-exercises.")
 
     # 5
     w(f"\n## 5. Question bank ({n_items} statements)")
     w("Item IDs follow `<sub-theme>-<number>`. All statements are currently active.")
-    for a in C.AREAS:
+    for a in P.AREAS:
         w(f"\n### {a['key']} · {a['name']}")
-        for s in [s for s in C.SUBTHEMES.values() if s["area"] == a["key"]]:
-            items = [i for i in C.ITEMS.values() if i["subtheme"] == s["key"]]
+        for s in [s for s in P.SUBTHEMES.values() if s["area"] == a["key"]]:
+            items = [i for i in P.ITEMS.values() if i["subtheme"] == s["key"]]
             w(f"\n**{s['key']} — {s['name']}** ({len(items)} statements)\n")
             for i in items:
                 w(f"- `{i['id']}` {i['text']}")
@@ -121,7 +125,7 @@ def build() -> str:
         ("Priority areas", "The three lowest-scoring areas (ties broken by more ‘Often/Almost always’ answers). Each gets its own report page."),
         ("Strengths / resources", "Up to two of the highest remaining areas scoring 50+."),
         ("Support path", "**Path 2 (counsellor strongly suggested)** if any area < 35 or overall < 45; otherwise **Path 1** (self-help first, support available)."),
-        ("Body page", "Shown if Body & Sleep < 50, Emotional < 55, 3+ fatigue statements answered Often/Almost always, or Path 2."),
+        ("Body page", f"Shown if {P.AREA_BY_KEY[P.BODY_AREA]['name']} < 50, {P.AREA_BY_KEY[P.EMO_AREA]['name']} < 55, 3+ fatigue statements answered Often/Almost always, or Path 2."),
         ("High statements", "Up to 8 statements answered Often/Almost always feed the narrative and stress loop."),
     ]
     for a, b in rules:
@@ -157,27 +161,29 @@ def build() -> str:
     w("\n**Next Steps rule:** Week 2 ≥ 80% done and ≥ 4 full days → *Take up new activities*; Week 2 < 60% or < 3 full days → *Focus on 3 activities a day*; "
       "otherwise → *Continue with the same 5 habits*. If mood or progress is not moving, the note suggests booking (or bringing forward) a counsellor appointment.")
     w("\n**Ready-to-copy scripts:**")
-    for s in C.SCRIPTS:
+    for s in P.SCRIPTS:
         w(f"- *{s['to']}:* “{s['text']}”")
 
     # 9
     w("\n## 9. The 14-day plan & daily check-in")
-    w("- **Plan construction:** Fixed wake-up time → the first activity of each priority area → 60-second check-in → fillers (brain dump, phone away, morning top-3, breathing) until there are five.")
+    names = lambda ids: ", ".join(P.act(i)["name"].lower() for i in ids)
+    w(f"- **Plan construction:** {P.act(P.PLAN_START)['name']} → the first activity of each priority area → {P.act(P.PLAN_CHECKIN)['name']} → fillers ({names(P.PLAN_FILLERS)}) until there are five.")
     w("- **Daily check-in pop-up** (once a day, from 24 h after the report): greeting + glow meter + today's mood (5 faces) → one step per activity (Yes / Not this time) → stress rating & feeling → a short feedback step.")
     w("- **Moods:** " + " · ".join(f"{i} {m}" for i, m in enumerate(MOOD_LABELS)) + ".")
     w("- **Calm Streak:** 14 named day badges, current and best streak, warm messages.")
     w("- **Week stats:** activities done of 35, % done, full days (all five done), best and hardest habit, average mood.")
 
     # 10
-    w(f"\n## 10. Activity library ({n_acts} activities)")
-    for k, acts in C.ACTIVITIES.items():
-        w(f"\n### {k} · {_area(k)}")
+    w(f"\n## 10. Activity library ({n_acts} activity slots)")
+    for k, acts in P.ACTIVITIES.items():
+        w(f"\n### {k} · {P.AREA_BY_KEY[k]['name']}")
         for a in acts:
             w(f"\n**{a['name']}** — *{a['time']}* · Best for: {a['when']}")
             for i, st in enumerate(a["steps"], 1):
                 w(f"{i}. {st}")
-            if PT.WHY.get(a["id"]):
-                w(f"\n*Why it helps:* {PT.WHY[a['id']]}")
+            why = getattr(P, "WHY", PT.WHY).get(a["id"])
+            if why:
+                w(f"\n*Why it helps:* {why}")
 
     # 11
     w("\n## 11. Student dashboard")
@@ -257,5 +263,5 @@ def build() -> str:
                  ("Growth stage", "One of 14 avatar illustrations; advances with each daily check-in."),
                  ("Stress loop", "Four linked pressures that feed each other, from the student's own answers.")]:
         w(f"- **{a}** — {b}")
-    w("\n---\n*This document is generated from the live EquiMind content and rules, so it updates automatically when the platform changes.*")
+    w(f"\n---\n*This document is generated from the live {P.NAME} content and rules, so it updates automatically when the platform changes.*")
     return "\n".join(L)

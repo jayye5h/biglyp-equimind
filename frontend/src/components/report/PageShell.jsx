@@ -1,9 +1,11 @@
 import { Mountain, Waves, Moon, Sun, Leaf, Cloud, Sprout, Feather, Wind, Flower2, Star } from "lucide-react";
+import { useBrand } from "@/lib/theme";
 
 const MOTIFS = [Sun, Mountain, Waves, Leaf, Sprout, Feather, Moon, Cloud, Wind, Flower2, Star];
 
 export const PageShell = ({ n, total, title, eyebrow, id, children, dark, testid, art, artAlt = "", inline, side, headExtra }) => {
   const Motif = MOTIFS[(n - 1) % MOTIFS.length];
+  const B = useBrand();
   return (
     <section id={id} data-pdf-page data-testid={testid}
       className={`relative overflow-hidden rounded-[2rem] p-7 sm:p-10 border scroll-mt-24 ${dark ? "ft-bg border-transparent" : "bg-white border-eq/10"}`}>
@@ -23,7 +25,7 @@ export const PageShell = ({ n, total, title, eyebrow, id, children, dark, testid
       </div>
       <div className="mt-7">{children}</div>
       <div className={`mt-10 pt-4 border-t text-[10px] font-mono uppercase tracking-widest flex justify-between ${dark ? "ft-line ft-faint" : "border-slate-100 text-slate-400"}`}>
-        <span>EquiMind · Biglyp</span><span>Private to you</span>
+        <span>{B.name} · Biglyp</span><span>Private to you</span>
       </div>
     </section>
   );

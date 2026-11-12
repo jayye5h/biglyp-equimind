@@ -430,3 +430,20 @@ DEMO_USERS = [
     {"id": "cou-kavya", "role": "counsellor", "name": "Dr. Kavya Menon", "program": "Campus Counsellor · Wellness Centre", "level": "", "year": "", "institution": "Demo University", "student_code": ""},
     {"id": "adm-platform", "role": "admin", "name": "Platform Admin", "program": "Biglyp wellbeing team", "level": "", "year": "", "institution": "Biglyp", "student_code": ""},
 ]
+
+# ---- programme config (shared engine contract; see content_mm.py for MindMellow)
+PROGRAMME = "equimind"
+NAME = "EquiMind"
+AUDIENCE = "Indian university students (UG and PG)"
+BODY_AREA, EMO_AREA = "B", "C"
+WELLNESS_MAP = {k: k for k in "ABCDEF"}
+PLAN_START = "b-wake"
+PLAN_CHECKIN = "c-checkin"
+PLAN_FILLERS = ["b-dump", "b-phone", "a-top3", "c-breath"]
+_ACT_BY_ID = {a["id"]: a for v in ACTIVITIES.values() for a in v}
+for _u in DEMO_USERS:
+    _u.setdefault("programme", "equimind")
+
+
+def act(aid):
+    return _ACT_BY_ID[aid]

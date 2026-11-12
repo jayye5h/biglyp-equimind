@@ -1,11 +1,16 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api";
+import { useTheme } from "@/lib/theme";
 
 const AuthCtx = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
+  const { setBrand } = useTheme();
+  useEffect(() => {
+    if (user?.programme && user.role !== "admin") setBrand(user.programme);
+  }, [user, setBrand]);
 
   useEffect(() => {
     if (!localStorage.getItem("eq_token")) {

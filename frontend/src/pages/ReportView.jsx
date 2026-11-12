@@ -6,14 +6,15 @@ import { AppHeader } from "@/components/Shell";
 import { ReportPages, reportSections } from "@/components/report/ReportPages";
 import { exportPdf } from "@/components/report/exportPdf";
 import { api, errMsg } from "@/lib/api";
-import { FEATURE_TONES, toneVars } from "@/lib/featureTones";
+import { FEATURE_TONES, TONE_SETS, savedTone, toneVars } from "@/lib/featureTones";
 import { useAuth } from "@/lib/auth";
+import { BRANDS } from "@/lib/brand";
 
 const TonePicker = ({ tone, setTone }) => (
   <div data-testid="feature-tone-picker" className="mb-6 rounded-2xl bg-white border border-eq/10 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4">
     <div className="sm:w-56 shrink-0"><div className="text-sm font-semibold text-slate-800">Highlight page colour</div><div className="text-xs text-slate-500">Cover, About, loop chips and the help box</div></div>
     <div className="flex flex-wrap gap-2">
-      {Object.entries(FEATURE_TONES).map(([k, t]) => (
+      {TONE_SETS[localStorage.getItem("eq_brand") === "mindmellow" ? "mindmellow" : "equimind"].map((k) => [k, FEATURE_TONES[k]]).map(([k, t]) => (
         <button key={k} data-testid={`feature-tone-${k}`} onClick={() => setTone(k)} aria-pressed={tone === k}
           className={`flex items-center gap-2 h-10 pl-1.5 pr-3 rounded-full border text-sm transition-colors ${tone === k ? "border-slate-800 bg-slate-50 text-slate-900" : "border-slate-200 text-slate-600 hover:border-slate-400"}`}>
           <span className="h-7 w-7 rounded-full" style={{ background: t.bg }} />{t.label}
@@ -28,10 +29,10 @@ export default function ReportView() {
   const { hash } = useLocation();
   const [r, setR] = useState(null);
   const [exporting, setExporting] = useState(false);
-  const [tone, setTone] = useState(() => (FEATURE_TONES[localStorage.getItem("eq_feature_tone")] ? localStorage.getItem("eq_feature_tone") : "azure"));
+  const [tone, setTone] = useState(() => savedTone());
   const chooseTone = (k) => {
     setTone(k);
-    localStorage.setItem("eq_feature_tone", k);
+    localStorage.setItem(localStorage.getItem("eq_brand") === "mindmellow" ? "eq_feature_tone_mindmellow" : "eq_feature_tone", k);
   };
   const printRef = useRef(null);
   const { user } = useAuth();
@@ -56,7 +57,7 @@ export default function ReportView() {
     if (!exporting) return;
     const t = setTimeout(async () => {
       try {
-        await exportPdf(printRef.current, `EquiMind-Report-${r.student.name.replace(/\s+/g, "-")}.pdf`);
+        await exportPdf(printRef.current, `${(BRANDS[r.programme] || BRANDS.equimind).pdfPrefix}-Report-${r.student.name.replace(/\s+/g, "-")}.pdf`);
         toast.success("Report downloaded");
       } catch (e) {
         toast.error("Could not create the PDF. Please try again.");

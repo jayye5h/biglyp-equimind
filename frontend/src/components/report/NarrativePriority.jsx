@@ -59,8 +59,11 @@ const Why = ({ p }) => (
   </div>
 );
 
-export const PriorityPage = ({ p, idx, n, total }) => {
-  const art = <Art src={`/report-art/area_${p.area.toLowerCase()}.webp`} alt={p.name} testid={`report-page-priority-${idx + 1}-art`} className="max-w-[420px] mx-auto" />;
+// MindMellow areas reuse the closest EquiMind illustration
+const MM_ART = { A: "a", B: "f", C: "f", D: "d", E: "c", F: "b" };
+
+export const PriorityPage = ({ p, idx, n, total, programme }) => {
+  const art = <Art src={`/report-art/area_${programme === "mindmellow" ? MM_ART[p.area] : p.area.toLowerCase()}.webp`} alt={p.name} testid={`report-page-priority-${idx + 1}-art`} className="max-w-[420px] mx-auto" />;
   return (
     <PageShell n={n} total={total} eyebrow={`Priority ${idx + 1}`} title={p.name} id={`priority-${idx + 1}`} testid={`report-page-priority-${idx + 1}`} inline
       side={idx === 0 ? art : null} headExtra={idx === 0 ? <Score p={p} /> : null}>

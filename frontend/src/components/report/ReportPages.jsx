@@ -25,7 +25,7 @@ export const ReportPages = ({ r, onSave, print }) => {
     (p) => <CoverPage key="cover" r={r} {...p} />,
     (p) => <SnapshotPage key="snap" r={r} print={print} {...p} />,
     (p) => <NarrativePage key="narr" r={r} {...p} />,
-    ...r.priority_pages.map((pp, i) => (p) => <PriorityPage key={pp.area} p={pp} idx={i} {...p} />),
+    ...r.priority_pages.map((pp, i) => (p) => <PriorityPage key={pp.area} p={pp} idx={i} programme={r.programme} {...p} />),
     (p) => <PlanPage key="plan" r={r} {...p} />,
     ...(days >= 7 ? [(p) => <Week1Page key="w1" r={r} {...p} />] : []),
     ...(days >= 14 ? [(p) => <Week2Page key="w2" r={r} {...p} />, (p) => <NextStepsPage key="next" r={r} {...p} />] : []),

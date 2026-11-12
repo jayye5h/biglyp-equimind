@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowLeft, Download, FileText, Printer } from "lucide-react";
@@ -29,14 +29,17 @@ const MD = {
 export default function ProductDoc() {
   const [doc, setDoc] = useState(null);
   const [err, setErr] = useState(false);
+  const [sp] = useSearchParams();
+  const prog = sp.get("programme") === "mindmellow" ? "mindmellow" : "equimind";
+  const pName = prog === "mindmellow" ? "MindMellow" : "EquiMind";
   useEffect(() => {
-    api.get("/admin/product-doc").then((r) => setDoc(r.data)).catch(() => setErr(true));
-  }, []);
+    api.get(`/admin/product-doc?programme=${prog}`).then((r) => setDoc(r.data)).catch(() => setErr(true));
+  }, [prog]);
   const toc = doc ? [...doc.markdown.matchAll(/^## (.+)$/gm)].map((m) => m[1]).filter((t) => t !== "Contents") : [];
   const md = doc ? doc.markdown.replace(/## Contents\n[\s\S]*?\n\n## /, "## ") : "";
   const downloadMd = () => {
     const url = URL.createObjectURL(new Blob([doc.markdown], { type: "text/markdown" }));
-    const a = Object.assign(document.createElement("a"), { href: url, download: "EquiMind_Product_Document.md" });
+    const a = Object.assign(document.createElement("a"), { href: url, download: `${pName}_Product_Document.md` });
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -47,7 +50,7 @@ export default function ProductDoc() {
         <div className="max-w-6xl mx-auto px-4 sm:px-8 h-14 flex items-center gap-2">
           <Link to="/admin" data-testid="product-doc-back" className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900"><ArrowLeft className="h-4 w-4" /> Admin</Link>
           <span className="mx-2 h-4 w-px bg-eq/20" />
-          <FileText className="h-4 w-4 text-eq" /><span className="text-sm font-semibold text-slate-800 truncate">EquiMind Product Document</span>
+          <FileText className="h-4 w-4 text-eq" /><span data-testid="product-doc-title" className="text-sm font-semibold text-slate-800 truncate">{pName} Product Document</span>
           <div className="ml-auto flex gap-2">
             <button data-testid="product-doc-print" disabled={!doc} onClick={() => window.print()} className="inline-flex items-center gap-1.5 rounded-full bg-eq text-white px-4 py-1.5 text-xs font-semibold hover:bg-eq-dark disabled:opacity-40"><Printer className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Save as</span> PDF</button>
             <button data-testid="product-doc-md" disabled={!doc} onClick={downloadMd} className="inline-flex items-center gap-1.5 rounded-full border border-eq/30 px-4 py-1.5 text-xs font-semibold text-eq-dark hover:bg-eq-soft disabled:opacity-40"><Download className="h-3.5 w-3.5" /> .md</button>

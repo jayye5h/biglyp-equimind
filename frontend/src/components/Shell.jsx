@@ -1,13 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Heart, LogOut, UserCog } from "lucide-react";
+import { Heart, Flower2, LogOut, UserCog } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-import { useTheme, PALETTES } from "@/lib/theme";
+import { useTheme, useBrand } from "@/lib/theme";
 import { NotificationBell } from "@/components/NotificationBell";
 import { ContactDialog } from "@/components/ContactDialog";
 
 export const ThemeToggle = () => {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, palettes: PALETTES } = useTheme();
   return (
     <div data-testid="theme-toggle" role="radiogroup" aria-label="Colour theme" className="flex items-center gap-1 rounded-full bg-white/80 border border-slate-200 p-1">
       {Object.entries(PALETTES).map(([k, p]) => (
@@ -20,25 +20,30 @@ export const ThemeToggle = () => {
   );
 };
 
-export const Logo = ({ to = "/", small }) => (
-  <Link to={to} data-testid="brand-logo-link" className="flex items-center gap-2.5 group">
+export const Logo = ({ to, small }) => {
+  const B = useBrand();
+  const Icon = B.key === "mindmellow" ? Flower2 : Heart;
+  return (
+  <Link to={to || B.home} data-testid="brand-logo-link" className="flex items-center gap-2.5 group">
     <span className={`${small ? "h-9 w-9" : "h-11 w-11"} rounded-2xl bg-eq grid place-items-center shadow-sm transition-transform duration-300 group-hover:rotate-[-6deg]`}>
-      <Heart className="h-5 w-5 text-white" strokeWidth={2.2} />
+      <Icon className="h-5 w-5 text-white" strokeWidth={2.2} />
     </span>
     <span className="leading-none">
-      <span className={`font-serif ${small ? "text-xl" : "text-2xl"} font-semibold text-eq`}>EquiMind</span>
+      <span data-testid="brand-name" className={`font-serif ${small ? "text-xl" : "text-2xl"} font-semibold text-eq`}>{B.name}</span>
       <span className="block font-mono text-[9px] uppercase tracking-[0.25em] text-slate-500 mt-1">by Biglyp</span>
     </span>
   </Link>
-);
+  );
+};
 
 export const AppHeader = ({ children }) => {
   const { user, logout } = useAuth();
   const nav = useNavigate();
   const [contact, setContact] = useState(false);
+  const B = useBrand();
   const out = async () => {
     await logout();
-    nav("/");
+    nav(B.home);
   };
   return (
     <header className="sticky top-0 z-30 bg-eq-bg/80 backdrop-blur-xl border-b border-eq/10">

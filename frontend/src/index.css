@@ -22,6 +22,19 @@ body {
     --eq-p: 45 138 124; --eq-dark: 34 107 96; --eq-soft: 230 244 241;
     --eq-softer: 214 239 233; --eq-bg: 240 251 249; --eq-mid: 94 184 169;
 }
+/* MindMellow palettes */
+[data-theme="lavender"] {
+    --eq-p: 139 111 209; --eq-dark: 108 84 176; --eq-soft: 241 236 251;
+    --eq-softer: 228 219 248; --eq-bg: 248 245 254; --eq-mid: 183 163 232;
+}
+[data-theme="peach"] {
+    --eq-p: 224 122 95; --eq-dark: 184 92 68; --eq-soft: 253 240 235;
+    --eq-softer: 250 225 215; --eq-bg: 255 248 245; --eq-mid: 240 170 150;
+}
+[data-theme="teal"] {
+    --eq-p: 42 157 143; --eq-dark: 31 122 111; --eq-soft: 230 245 243;
+    --eq-softer: 210 238 234; --eq-bg: 242 251 250; --eq-mid: 110 196 185;
+}
 
 .font-serif { font-family: 'Playfair Display', Georgia, serif; }
 .font-mono { font-family: 'JetBrains Mono', monospace; }
@@ -39,6 +52,18 @@ body {
         --accent: 208 70% 94%;
         --border: 208 40% 88%;
         --input: 208 40% 88%;
+    }
+    [data-theme="lavender"] {
+        --background: 260 70% 98%; --primary: 256 52% 63%; --ring: 256 52% 63%; --secondary: 258 60% 95%;
+        --muted: 258 40% 95%; --accent: 258 60% 95%; --border: 258 40% 89%; --input: 258 40% 89%;
+    }
+    [data-theme="peach"] {
+        --background: 15 100% 98%; --primary: 12 68% 63%; --ring: 12 68% 63%; --secondary: 15 80% 95%;
+        --muted: 15 60% 95%; --accent: 15 80% 95%; --border: 15 50% 89%; --input: 15 50% 89%;
+    }
+    [data-theme="teal"] {
+        --background: 174 55% 97%; --primary: 173 58% 39%; --ring: 173 58% 39%; --secondary: 172 45% 93%;
+        --muted: 172 30% 93%; --accent: 172 45% 93%; --border: 172 25% 86%; --input: 172 25% 86%;
     }
     [data-theme="mint"] {
         --background: 168 60% 96%;

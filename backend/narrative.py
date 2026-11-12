@@ -5,13 +5,13 @@ import uuid
 import asyncio
 import logging
 from emergentintegrations.llm.chat import LlmChat, UserMessage, TextDelta, StreamDone
-from content import AREA_BY_KEY, LOOP_FRAGMENTS, AREA_PHRASES
+import content as EQ
 
 logger = logging.getLogger(__name__)
 
 FORBIDDEN = re.compile(r"diagnos|depress|adhd|disorder|suicid|self-harm|anxiety disorder|you have |you are suffering|mental illness|bipolar|ptsd", re.I)
 
-SYSTEM = """You write one short section of a student wellbeing self-reflection report (EquiMind by Biglyp) for Indian university students.
+SYSTEM = """You write one short section of a student wellbeing self-reflection report ({name} by Biglyp) for {audience}.
 Strict rules:
 - Use only the facts given (scores and the student's own high-frequency statements). Never invent events, history, causes or symptoms.
 - Tentative phrasing only: 'Your responses suggest...', 'You may be...', 'It sounds like...'. Never 'you have' or 'you are'.
@@ -24,7 +24,8 @@ Return ONLY valid JSON with keys:
 "loop_note": one sentence starting with '...and' explaining how it feeds back, ending with which link is easiest to change first."""
 
 
-def fallback(first_name: str, result: dict) -> dict:
+def fallback(first_name: str, result: dict, C=EQ) -> dict:
+    AREA_BY_KEY, LOOP_FRAGMENTS, AREA_PHRASES = C.AREA_BY_KEY, C.LOOP_FRAGMENTS, C.AREA_PHRASES
     p = result["priorities"]
     names = [AREA_BY_KEY[k]["short"] for k in p]
     alone = "D" in p
@@ -49,14 +50,15 @@ def _valid(d: dict) -> bool:
     return not FORBIDDEN.search(blob)
 
 
-async def _generate(first_name: str, result: dict) -> str:
+async def _generate(first_name: str, result: dict, C=EQ) -> str:
+    AREA_BY_KEY = C.AREA_BY_KEY
     areas = "; ".join(f"{a['name']}: {a['score']}/100 ({a['level']})" for a in result["areas"])
     pri = ", ".join(AREA_BY_KEY[k]["name"] for k in result["priorities"])
     items = "\n".join(f"- {t}" for t in result["high_items"]) or "- (none rated Often or Almost always)"
     prompt = (f"Student first name: {first_name}\nArea scores (higher = less stress): {areas}\nOverall: {result['overall']}/100\n"
               f"Three priority areas: {pri}\nStatements the student said happen Often or Almost always:\n{items}\n\nWrite the JSON now.")
     chat = LlmChat(api_key=os.environ["EMERGENT_LLM_KEY"], session_id=f"narr-{uuid.uuid4()}",
-                   system_message=SYSTEM).with_model("anthropic", "claude-sonnet-5-5")
+                   system_message=SYSTEM.format(name=C.NAME, audience=C.AUDIENCE)).with_model("anthropic", "claude-sonnet-5-5")
     out = []
     async for ev in chat.stream_message(UserMessage(text=prompt)):
         if isinstance(ev, TextDelta):
@@ -66,9 +68,9 @@ async def _generate(first_name: str, result: dict) -> str:
     return "".join(out)
 
 
-async def write_narrative(first_name: str, result: dict) -> dict:
+async def write_narrative(first_name: str, result: dict, C=EQ) -> dict:
     try:
-        text = await asyncio.wait_for(_generate(first_name, result), timeout=75)
+        text = await asyncio.wait_for(_generate(first_name, result, C), timeout=75)
         m = re.search(r"\{.*\}", text, re.S)
         data = json.loads(m.group(0)) if m else None
         if _valid(data):
@@ -77,4 +79,4 @@ async def write_narrative(first_name: str, result: dict) -> dict:
         logger.warning("Narrative failed guardrails, using template")
     except Exception as exc:
         logger.error("Narrative generation error: %s", exc)
-    return fallback(first_name, result)
+    return fallback(first_name, result, C)

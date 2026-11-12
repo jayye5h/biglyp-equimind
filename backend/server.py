@@ -26,6 +26,8 @@ from narrative import write_narrative  # noqa: E402
 from media_seed import SEED_MEDIA  # noqa: E402
 from wellness import today_plan, all_reads  # noqa: E402
 import games as games_lib  # noqa: E402
+import programmes  # noqa: E402
+import content_mm  # noqa: E402
 from plan_theory import enrich_plan, next_activities  # noqa: E402
 import counselling  # noqa: E402
 import push_notify  # noqa: E402
@@ -123,7 +125,7 @@ async def root():
 
 @api.get("/auth/demo-users")
 async def demo_users():
-    return [{k: u[k] for k in ("id", "role", "name", "program", "year", "level")} for u in DEMO_USERS]
+    return [{k: u.get(k, "") for k in ("id", "role", "name", "program", "year", "level", "programme")} for u in DEMO_USERS + content_mm.DEMO_USERS]
 
 
 @api.post("/auth/demo-login")
@@ -149,9 +151,10 @@ async def logout(authorization: Optional[str] = Header(None)):
 
 
 def _public_assessment(a: dict) -> dict:
-    return {"id": a["id"], "kind": a["kind"], "scale": SCALE,
-            "items": [{"id": i, "text": BANK[i]["text"], "area": BANK[i]["area"],
-                       "area_name": AREA_BY_KEY[BANK[i]["area"]]["name"]} for i in a["items"]]}
+    C = programmes.get(a.get("programme"))
+    return {"id": a["id"], "kind": a["kind"], "scale": C.SCALE,
+            "items": [{"id": i, "text": C.ITEMS[i]["text"], "area": C.ITEMS[i]["area"],
+                       "area_name": C.AREA_BY_KEY[C.ITEMS[i]["area"]]["name"]} for i in a["items"]]}
 
 
 @api.post("/assessments/start")
@@ -162,17 +165,20 @@ async def start_assessment(user: dict = Depends(student_user)):
     prev = await db.assessments.find_one({"user_id": user["id"], "status": "completed"}, {"_id": 0}, sort=[("completed_at", -1)])
     seed = random.randint(1, 10**9)
     kind = "first"
+    C = programmes.of_user(user)
+    if prev and prev.get("programme", "equimind") != C.PROGRAMME:
+        prev = None
     if prev:
         days = (now() - datetime.fromisoformat(prev["completed_at"])).days
         if 28 <= days <= 35 and prev["kind"] != "day30":
             kind, items = "day30", prev["items"]
         elif days < 7:
-            kind, items = "retake_excluding_previous", pick_items(seed, set(prev["items"]))
+            kind, items = "retake_excluding_previous", pick_items(seed, set(prev["items"]), C)
         else:
-            kind, items = "retake", pick_items(seed, set())
+            kind, items = "retake", pick_items(seed, set(), C)
     else:
-        items = pick_items(seed, set())
-    doc = {"id": str(uuid.uuid4()), "user_id": user["id"], "seed": seed, "kind": kind, "items": items,
+        items = pick_items(seed, set(), C)
+    doc = {"id": str(uuid.uuid4()), "user_id": user["id"], "programme": C.PROGRAMME, "seed": seed, "kind": kind, "items": items,
            "status": "in_progress", "created_at": now().isoformat(), "completed_at": None}
     await db.assessments.insert_one(doc)
     return _public_assessment(doc)
@@ -191,17 +197,18 @@ async def submit_assessment(aid: str, body: SubmitIn, user: dict = Depends(stude
     locked = await db.assessments.find_one_and_update({"id": aid, "status": "in_progress"}, {"$set": {"status": "submitting"}})
     if not locked:
         raise HTTPException(400, "Already submitted")
-    result = score_responses(a["items"], resp)
-    pages = priority_pages(result, a["items"], resp)
+    C = programmes.get(a.get("programme"))
+    result = score_responses(a["items"], resp, C)
+    pages = priority_pages(result, a["items"], resp, C)
     first = user["name"].split()[0]
-    narr = await write_narrative(first, result)
+    narr = await write_narrative(first, result, C)
     prev = await db.reports.find_one({"user_id": user["id"]}, {"_id": 0, "areas": 1, "overall": 1, "created_at": 1}, sort=[("created_at", -1)])
     report = {
         "id": str(uuid.uuid4()), "assessment_id": aid, "user_id": user["id"], "created_at": now().isoformat(),
-        "kind": a["kind"], "version": "EquiMind v4.0",
+        "kind": a["kind"], "version": f"{C.NAME} v4.0", "programme": C.PROGRAMME,
         "student": {k: user[k] for k in ("name", "program", "level", "year", "institution", "student_code")},
-        **result, "narrative": narr, "priority_pages": pages, "plan": build_plan(pages),
-        "body_pattern": body_pattern(result), "previous": prev,
+        **result, "narrative": narr, "priority_pages": pages, "plan": build_plan(pages, C),
+        "body_pattern": body_pattern(result, C), "previous": prev,
         "ticks": [], "moods": {}, "tracker": {}, "reflections": {},
     }
     await db.reports.insert_one(report)
@@ -225,10 +232,11 @@ async def get_report(rid: str, user: dict = Depends(current_user)):
     r = await db.reports.find_one(q, {"_id": 0})
     if not r:
         raise HTTPException(404, "Report not found")
-    r["body_table"] = BODY_TABLE
-    r["scripts"] = SCRIPTS
-    r["plan"] = enrich_plan(r.get("plan", []))
-    r["next_activities"] = next_activities(r)
+    C = programmes.get(r.get("programme"))
+    r["body_table"] = C.BODY_TABLE
+    r["scripts"] = C.SCRIPTS
+    r["plan"] = enrich_plan(r.get("plan", []), C)
+    r["next_activities"] = next_activities(r, C=C)
     return r
 
 
@@ -323,8 +331,11 @@ async def delete_media(mid: str, _: dict = Depends(admin_user)):
 
 
 @api.get("/admin/stats")
-async def admin_stats(_: dict = Depends(admin_user)):
-    rows = await db.reports.find({}, {"_id": 0, "areas": 1, "overall": 1, "path": 1, "user_id": 1, "priorities": 1}).sort("created_at", -1).to_list(5000)
+async def admin_stats(programme: str = "equimind", _: dict = Depends(admin_user)):
+    C = programmes.get(programme)
+    prog_areas = C.AREAS
+    q = {"programme": "mindmellow"} if C.PROGRAMME == "mindmellow" else {"programme": {"$in": [None, "equimind"]}}
+    rows = await db.reports.find(q, {"_id": 0, "areas": 1, "overall": 1, "path": 1, "user_id": 1, "priorities": 1}).sort("created_at", -1).to_list(5000)
     total = len(rows)
     latest = {}
     for r in rows:
@@ -334,22 +345,24 @@ async def admin_stats(_: dict = Depends(admin_user)):
     min_cohort = 3
     if students < min_cohort:
         return {"total_checkins": None, "students": None, "min_cohort": min_cohort, "suppressed": True}
-    avg = {a["key"]: round(sum(next(x["score"] for x in r["areas"] if x["key"] == a["key"]) for r in reports) / n) for a in AREAS}
-    pri = {a["key"]: sum(1 for r in reports if a["key"] in r["priorities"]) for a in AREAS}
+    avg = {a["key"]: round(sum(next(x["score"] for x in r["areas"] if x["key"] == a["key"]) for r in reports) / n) for a in prog_areas}
+    pri = {a["key"]: sum(1 for r in reports if a["key"] in r["priorities"]) for a in prog_areas}
     return {"total_checkins": total, "students": students, "min_cohort": min_cohort, "suppressed": False,
             "avg_overall": round(sum(r["overall"] for r in reports) / n),
             "path_split": {"strengthening": sum(1 for r in reports if r["path"] == 1), "counsellor": sum(1 for r in reports if r["path"] == 2)},
-            "areas": [{"key": a["key"], "name": a["name"], "short": a["short"], "avg": avg[a["key"]], "priority_count": pri[a["key"]]} for a in AREAS]}
+            "areas": [{"key": a["key"], "name": a["name"], "short": a["short"], "avg": avg[a["key"]], "priority_count": pri[a["key"]]} for a in prog_areas]}
 
 
 @api.get("/admin/items")
-async def admin_items(_: dict = Depends(admin_user)):
-    return {"areas": AREAS, "subthemes": list(SUBTHEMES.values()), "items": list(ITEMS.values())}
+async def admin_items(programme: str = "equimind", _: dict = Depends(admin_user)):
+    C = programmes.get(programme)
+    return {"areas": C.AREAS, "subthemes": list(C.SUBTHEMES.values()), "items": list(C.ITEMS.values())}
 
 
 @api.get("/admin/activities")
-async def admin_activities(_: dict = Depends(admin_user)):
-    return [{**act, "area": k, "area_name": AREA_BY_KEY[k]["name"]} for k, acts in ACTIVITIES.items() for act in acts]
+async def admin_activities(programme: str = "equimind", _: dict = Depends(admin_user)):
+    C = programmes.get(programme)
+    return [{**act, "area": k, "area_name": C.AREA_BY_KEY[k]["name"]} for k, acts in C.ACTIVITIES.items() for act in acts]
 
 
 _cou_router, counsellor_user = counselling.build_router(db, current_user, student_user)
@@ -360,9 +373,9 @@ api.include_router(notify.build_router(db, current_user, admin_user))
 
 
 @api.get("/admin/product-doc")
-async def product_document(_: dict = Depends(admin_user)):
+async def product_document(programme: str = "equimind", _: dict = Depends(admin_user)):
     import product_doc
-    return {"markdown": product_doc.build(), "generated_at": datetime.now(timezone.utc).isoformat()}
+    return {"markdown": product_doc.build(programmes.get(programme)), "generated_at": datetime.now(timezone.utc).isoformat()}
 app.include_router(api)
 
 app.add_middleware(
@@ -377,9 +390,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 
 
 async def seed_users():
-    for u in DEMO_USERS:
+    for u in DEMO_USERS + content_mm.DEMO_USERS:
         await db.users.update_one({"id": u["id"]}, {"$set": u}, upsert=True)
-    for u in DEMO_USERS:
+    for u in DEMO_USERS + content_mm.DEMO_USERS:
         if u["role"] == "counsellor":
             await counselling.seed_slots(db, u["id"])
     await notify.seed_contacts(db)
