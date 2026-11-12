@@ -10,6 +10,7 @@ import { HomeLayout, NoReportCard } from "@/components/home/HomeLayout";
 import { JourneyCard } from "@/components/home/JourneyCard";
 import { CalmShorts, Audiobooks, usePlayer } from "@/components/home/MediaSections";
 import { ActivityOfDay, MoreGames } from "@/components/home/ActivityOfDay";
+import { RelaxUnwind } from "@/components/home/RelaxUnwind";
 import { WellnessReads, AllReads } from "@/components/home/WellnessReads";
 import { StreakCard, streakInfo, BADGES } from "@/components/home/CalmStreak";
 import { STAGES } from "@/lib/stages";
@@ -113,6 +114,7 @@ export default function StudentHome() {
             {latest ? <JourneyCard r={latest} onSave={save} pending={day} onOpenDaily={openDaily} /> : <NoReportCard />}
             {latest && <StreakCard r={latest} pending={day} onOpenDaily={openDaily} />}
             <ActivityOfDay plan={plan} />
+            <RelaxUnwind />
             <CalmShorts items={shorts} play={play} onAll={toToolkit} />
             <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-6 [&>*]:min-w-0 items-start">
               <WellnessReads plan={plan} onAll={toToolkit} />
@@ -129,6 +131,7 @@ export default function StudentHome() {
           {tab === "insights" && (latest ? (<><MoodWeek r={latest} /><History reports={reports} /></>) : <NoReportCard />)}
           {tab === "toolkit" && (<>
             <ActivityOfDay plan={plan} />
+            <RelaxUnwind />
             <MoreGames />
             <CalmShorts items={shorts} play={play} limit={50} />
             <AllReads reads={allReads} />
