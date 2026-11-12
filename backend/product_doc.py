@@ -174,7 +174,7 @@ def build(P=EQ) -> str:
     w("- **Week stats:** activities done of 35, % done, full days (all five done), best and hardest habit, average mood.")
 
     # 10
-    w(f"\n## 10. Activity library ({n_acts} activity slots)")
+    w(f"\n## 10. Activity library ({n_acts} activities)")
     for k, acts in P.ACTIVITIES.items():
         w(f"\n### {k} · {P.AREA_BY_KEY[k]['name']}")
         for a in acts:

@@ -1,6 +1,7 @@
 import { ArrowRight, RefreshCw, Clock, Sparkles } from "lucide-react";
 import { PageShell, Pill, Art } from "@/components/report/PageShell";
 import { LEVEL_STYLE } from "@/lib/api";
+import { BRANDS } from "@/lib/brand";
 
 export const NarrativePage = ({ r, n, total }) => (
   <PageShell n={n} total={total} eyebrow="Page 3" title="What You May Be Going Through" id="narrative" testid="report-page-narrative" inline>
@@ -8,7 +9,7 @@ export const NarrativePage = ({ r, n, total }) => (
       <Art src="/report-art/narrative.webp" alt="A student reflecting" testid="report-page-narrative-art" className="max-w-[340px] mx-auto" />
       <div>
         <p data-testid="narrative-text" className="font-serif text-lg sm:text-xl leading-relaxed text-slate-800">{r.narrative.narrative}</p>
-        {r.narrative.source === "ai" && <p className="mt-3 text-[11px] text-slate-400 flex items-center gap-1"><Sparkles className="h-3 w-3" /> Written with AI from your own answers, within EquiMind&apos;s safe-wording rules.</p>}
+        {r.narrative.source === "ai" && <p className="mt-3 text-[11px] text-slate-400 flex items-center gap-1"><Sparkles className="h-3 w-3" /> Written with AI from your own answers, within {(BRANDS[r.programme] || BRANDS.equimind).name}&apos;s safe-wording rules.</p>}
       </div>
     </div>
     {r.high_items.length > 0 && (

@@ -132,7 +132,8 @@ def build_router(db, current_user, student_user):
         bid = str(uuid.uuid4())
         counsellor_id = None
         if body.slot_id:
-            slot = await db.slots.find_one_and_update({"id": body.slot_id, "booked_by": None, "removed": {"$ne": True}, "start": {"$gt": _now().isoformat()}},
+            allowed = [c["id"] for c in await db.users.find({"role": "counsellor", "programme": user.get("programme", "equimind")}, {"_id": 0, "id": 1}).to_list(50)]
+            slot = await db.slots.find_one_and_update({"id": body.slot_id, "counsellor_id": {"$in": allowed}, "booked_by": None, "removed": {"$ne": True}, "start": {"$gt": _now().isoformat()}},
                                                       {"$set": {"booked_by": user["id"], "booking_id": bid}}, projection={"_id": 0})
             if not slot:
                 raise HTTPException(409, "Sorry, that slot was just taken. Please pick another time.")
@@ -216,7 +217,8 @@ def build_router(db, current_user, student_user):
 
     @r.get("/counsellor/sessions")
     async def sessions(user: dict = Depends(counsellor_user)):
-        rows = await db.bookings.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+        mine = [u["id"] for u in await db.users.find({"role": "student", "programme": user.get("programme", "equimind")}, {"_id": 0, "id": 1}).to_list(5000)]
+        rows = await db.bookings.find({"student_id": {"$in": mine}}, {"_id": 0}).sort("created_at", -1).to_list(500)
         out = []
         for b in rows:
             u = await db.users.find_one({"id": b["student_id"]}, {"_id": 0, "id": 1, "name": 1, "program": 1, "year": 1, "student_code": 1})
@@ -228,7 +230,8 @@ def build_router(db, current_user, student_user):
     @r.patch("/counsellor/bookings/{bid}")
     async def update_booking(bid: str, body: BookingUpdate, user: dict = Depends(counsellor_user)):
         b = await db.bookings.find_one({"id": bid}, {"_id": 0})
-        if not b:
+        stu = await db.users.find_one({"id": (b or {}).get("student_id")}, {"_id": 0, "programme": 1}) if b else None
+        if not b or (stu or {}).get("programme", "equimind") != user.get("programme", "equimind"):
             raise HTTPException(404, "Booking not found")
         upd = {}
         if body.counsellor_note is not None:

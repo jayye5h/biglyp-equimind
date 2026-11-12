@@ -1,4 +1,5 @@
 import asyncio
+import json
 import os
 import logging
 import random
@@ -230,6 +231,8 @@ async def get_report(rid: str, user: dict = Depends(current_user)):
         raise HTTPException(403, "Not allowed")
     q = {"id": rid} if user["role"] == "counsellor" else {"id": rid, "user_id": user["id"]}
     r = await db.reports.find_one(q, {"_id": 0})
+    if r and user["role"] == "counsellor" and r.get("programme", "equimind") != user.get("programme", "equimind"):
+        r = None  # counsellors only see reports from their own programme
     if not r:
         raise HTTPException(404, "Report not found")
     C = programmes.get(r.get("programme"))
@@ -269,17 +272,33 @@ async def update_progress(rid: str, body: ProgressIn, user: dict = Depends(stude
 
 
 async def _latest_report(user_id: str):
-    return await db.reports.find_one({"user_id": user_id}, {"_id": 0, "created_at": 1, "moods": 1, "priorities": 1}, sort=[("created_at", -1)])
+    return await db.reports.find_one({"user_id": user_id}, {"_id": 0, "created_at": 1, "moods": 1, "priorities": 1, "programme": 1}, sort=[("created_at", -1)])
+
+
+_EQ_TO_MM = {"A": "A", "F": "B", "D": "D", "C": "E", "B": "F", "E": "D"}  # shared-library area -> MindMellow area label
+
+
+def _brand_labels(user, data):
+    """MindMellow students see their own area names on the shared wellness libraries."""
+    if user.get("programme") != "mindmellow":
+        return data
+    txt = json.dumps(data)
+    for k, a in AREA_BY_KEY.items():
+        txt = txt.replace(json.dumps(a["name"])[1:-1], content_mm.AREA_BY_KEY[_EQ_TO_MM[k]]["name"])
+    out = json.loads(txt)
+    if isinstance(out, dict) and isinstance(out.get("focus_areas"), list):
+        out["focus_areas"] = [{**f, "key": _EQ_TO_MM.get(f.get("key"), f.get("key"))} for f in out["focus_areas"]]
+    return out
 
 
 @api.get("/wellness/today")
 async def wellness_today(user: dict = Depends(student_user)):
-    return today_plan(await _latest_report(user["id"]), await games_lib.disabled_ids(db))
+    return _brand_labels(user, today_plan(await _latest_report(user["id"]), await games_lib.disabled_ids(db)))
 
 
 @api.get("/wellness/reads")
 async def wellness_reads(user: dict = Depends(student_user)):
-    return all_reads(await _latest_report(user["id"]))
+    return _brand_labels(user, all_reads(await _latest_report(user["id"])))
 
 
 class MediaIn(BaseModel):

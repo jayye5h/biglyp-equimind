@@ -3,6 +3,7 @@ import { HeartHandshake, CalendarClock, MapPin, X, ShieldCheck, Send } from "luc
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { api, errMsg } from "@/lib/api";
+import { useBrand } from "@/lib/theme";
 
 const TZ = { timeZone: "Asia/Kolkata" };
 export const fmtDay = (iso) => new Date(iso).toLocaleDateString("en-IN", { ...TZ, weekday: "short", day: "numeric", month: "short" });
@@ -11,7 +12,7 @@ export const STATUS_TONE = { pending: "bg-amber-50 text-amber-800", confirmed: "
 const STATUS_L = { pending: "Request sent", confirmed: "Confirmed", completed: "Completed", cancelled: "Cancelled" };
 
 const Consent = () => (
-  <p data-testid="counsellor-visibility-note" className="flex gap-2 text-xs text-slate-500"><ShieldCheck className="h-4 w-4 text-eq shrink-0" />Your campus counsellor can see your report, 14-day progress and daily feedback to prepare for your session and to support you.</p>
+  <p data-testid="counsellor-visibility-note" className="flex gap-2 text-xs text-slate-500"><ShieldCheck className="h-4 w-4 text-eq shrink-0" />Your {useBrand().counsellor.split(" ")[0]} counsellor can see your report, 14-day progress and daily feedback to prepare for your session and to support you.</p>
 );
 
 const BookDialog = ({ open, onClose, onBooked }) => {

@@ -1,0 +1,51 @@
+{
+  "summary": "Iteration 19: tested the MindMellow programme (Class 11-12) end to end, plus EquiMind regression. New pytest /app/backend/tests/test_mindmellow.py: 17/19 pass. The 2 failures are real gaps that let one programme see the other's data (counsellor side). I found and fixed one bug: wellness/today and wellness/reads ignored the MindMellow area mapping. Frontend: every requested flow works. Landing, login lists, the lavender/peach/teal palettes, switching between EquiMind and MindMellow, Diya/Aarav dashboards (check-in popup dismissed with 'Remind me later', nothing submitted), the Aarav report (Week 1, Week 2 and Next Steps present; '2-subject rule', 'School counsellor', MindMellow footer, lilac/wisteria/violet/plum/dusk tones, MindMellow-Report-Aarav-Shah.pdf) and the Diya report (Week 1 only). Kabir's new check-in had 24 MindMellow statements and produced a report with version 'MindMellow v4.0' and an AI narrative; I then re-ran the seed script and Kabir's new report got the 5 low-mood days. Neha sees only Aarav/Diya/Kabir (all 3 flagged), and her student detail page works. Kavya sees only the EquiMind students. Admin: the switch changes Overview, Question bank (180 items, A2-01 present), Activities and the Product Document card/link; the MindMellow doc page has 180 codes and downloads MindMellow_Product_Document.md. Rohan's report is still blue with EquiMind content and downloads EquiMind-Report-Rohan-Verma.pdf.",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "GET /api/counsellor/sessions", "issue": "Not filtered by programme. MindMellow counsellor mm-neha sees EquiMind bookings (stu-meera, stu-ananya) in 'Sessions & requests' (API and UI). It should only return bookings whose student programme matches the counsellor's (or counsellor_id == user.id).", "priority": "HIGH"},
+      {"endpoint": "GET /api/reports/{rid} (counsellor role)", "issue": "A counsellor can read any report: the query is {id: rid} with no programme check. cou-kavya gets 200 on Aarav's MindMellow report 3520670c... Fix: look up the report owner and require owner.programme == counsellor.programme.", "priority": "HIGH"}
+    ],
+    "minor": [
+      {"endpoint": "PATCH /api/counsellor/bookings/{bid}", "issue": "No programme or counsellor check: any counsellor can update or cancel the other programme's bookings."},
+      {"endpoint": "POST /api/counselling/bookings", "issue": "slot_id is not checked against the student's programme: a MindMellow student could book an EquiMind counsellor's slot by id (and the reverse)."},
+      {"endpoint": "GET /api/counsellor/slots", "issue": "The student name lookup spans all students. It works, but it is not scoped by programme."},
+      {"endpoint": "GET /api/wellness/today, /wellness/reads", "issue": "FIXED by testing agent: _latest_report projection left out 'programme', so the MindMellow WELLNESS_MAP never ran (Kabir got F,E,D instead of B,C,D). Added 'programme': 1 to the projection in server.py."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Counsellor Sessions & requests tab (mm-neha)", "issue": "Shows EquiMind students' bookings (Ananya, Meera) because of the backend sessions leak", "affected_selectors": ["[data-testid='tab-sessions']", "[data-testid='sessions-upcoming']", "[data-testid='sessions-past']"]}
+    ],
+    "design_issues": [
+      {"screen": "MindMellow report + Support tab + Counsellor card (shared components)", "issues": [
+        "University copy in MindMellow: HelpBodyAbout.jsx 'For money worry, homesickness...' and 'go to campus health'; 'Privacy & counsellor review ... your campus counsellors'; counsellor-handover 'Visible to your campus counsellor'",
+        "NarrativePriority.jsx shows 'Written with AI ... within EquiMind's safe-wording rules' on MindMellow reports",
+        "CounsellorCard.jsx counsellor-visibility-note and booking dialog say 'Your campus counsellor' for MindMellow; lib/progress.js (lines 53/99) 'campus counsellor appointment'. brand.js already has a counsellor label per programme; use it",
+        "MindMellow Home/Toolkit Activity of the Day and Wellness Reads show EquiMind area names ('focused on Social & Belonging', 'Body & Sleep', 'Emotional Load & Coping') because the shared wellness libraries use EquiMind AREA_NAMES. Consider MindMellow-friendly labels"
+      ]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_mindmellow.py", "/app/test_reports/pytest/pytest_mm.xml"],
+  "action_items": [
+    "Scope /api/counsellor/sessions by the counsellor's programme",
+    "Scope counsellor access to /api/reports/{rid} by the report owner's programme",
+    "Scope PATCH /api/counsellor/bookings/{bid}, and slot booking in POST /api/counselling/bookings, by programme",
+    "Replace hardcoded 'campus counsellor' / 'campus health' / 'EquiMind's safe-wording rules' / 'homesickness' copy with brand-aware text for MindMellow",
+    "Update stale legacy tests: test_product_doc_sounds expects '26 activities' but the doc now says '26 activity slots'; test_equimind_api cross-isolation uses an invalid tick 'x', so it now gets 422 before the 404 ownership check",
+    "WARNING for future agents: the legacy suites (test_equimind_api, test_wellness_api, test_counselling_push, test_notifications) create assessments, reports and bookings for EquiMind demo students. Do not run them when EquiMind assessments are forbidden"
+  ],
+  "critical_code_review_comments": [
+    "counselling.py: student_detail and students are scoped by programme, but sessions, update_booking and slot booking are not. The programme isolation is incomplete",
+    "server.py get_report: counsellors bypass ownership and programme checks entirely",
+    "server.py _latest_report: the projection must include every field _ctx needs (programme); I fixed this",
+    "wellness.py _ctx: WELLNESS_MAP maps both B and C to F, so MindMellow Career and Family collapse into one library area. That is acceptable, but the displayed area names are EquiMind's"
+  ],
+  "updated_files": ["/app/backend/server.py (added 'programme': 1 to _latest_report projection)", "/app/backend/tests/test_mindmellow.py"],
+  "success_rate": {"backend": "89% (17/19 new MindMellow tests; 2 programme-isolation failures)", "frontend": "95% (all requested flows work; copy leaks + sessions leak)"},
+  "seed_data_creation": "One MindMellow assessment and report for mm-kabir (report fa5913e3-9c21-4166-b232-505eb1c3b306, version 'MindMellow v4.0'), as allowed; then I re-ran scripts/seed_demo_progress.py, so Kabir's latest report has 5 low-mood days. By mistake I also ran the legacy regression suite once. It created 2 reports, 3 assessments, 4 cancelled TEST_ bookings and 1 TEST_mode slot for stu-ananya/stu-rohan/stu-meera/cou-kavya. I deleted all of them by id (reports 04e2b1c7..., e216e034...; assessments ff9d0997..., 6cd695a1..., b333bdd8...; bookings f75ecfb9..., a137ce5f..., c3e68866..., a1c1171a...; slot bce4376e...). Rohan's feedback day 13 was restored by the test itself. The seed re-run reset all demo reports' created_at.",
+  "legacy_suite_results": "107 passed, 5 failed, 4 skipped. Failures: test_cross_student_isolation (422 vs 404, stale test), test_counts_and_rules (doc heading wording changed, stale test), test_sweep_fast_and_idempotent (the first sweep after the MindMellow seed sent 9 new week-unlock notifications for the new MindMellow students; likely a one-time event), test_strong_mood_and_day_key (mood None; not investigated further, possibly test timing/created_at related), test_cron_run_and_duplicate_and_notifications (not investigated)",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run only tests/test_mindmellow.py (it is read-only) with -n0. Do NOT run the legacy suites if EquiMind assessments are forbidden. Report IDs: Aarav 3520670c..., Diya 4ba240ab..., Kabir latest fa5913e3... (older 239f2bb1...), Rohan d80e237a.... Neha's dashboard opens on Sessions & requests; Needs attention is under tab-attention. The counsellor booking card is on the Home/Journey tabs, not Support."
+}

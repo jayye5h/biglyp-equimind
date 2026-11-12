@@ -50,7 +50,7 @@ export const trendInsights = (r, s1, s2) => {
   if (feelUp !== null) out.push(`Your overall feel went from ${feel[0]} on Day 1 to ${feel[2]} at Week 2 (${feelUp >= 0 ? "+" : ""}${feelUp}).`);
   const notMoving = moodDown || (feelUp !== null && feelUp <= 0) || s2.pct < 40;
   const next = notMoving
-    ? `The plan isn't moving things enough yet — ${r.path === 2 ? "keep" : "consider booking"} a campus counsellor appointment and bring it forward. A plan not moving is information, not failure.`
+    ? `The plan isn't moving things enough yet — ${r.path === 2 ? "keep" : "consider booking"} a ${r.programme === "mindmellow" ? "school" : "campus"} counsellor appointment and bring it forward. A plan not moving is information, not failure.`
     : "Keep the two habits that helped most, and retake the check-in on Day 30 to see how your six areas have moved.";
   return { lines: out, next, feel, notMoving };
 };
@@ -96,7 +96,7 @@ export const nextStepsPlan = (r) => {
       ? `${first}, you completed ${pct}% of your plan over 14 days \u2014 that's excellent. You're ready for a fresh challenge, so we suggest adding new activities while keeping your strongest habits.`
       : `${first}, you completed ${pct}% of your plan over 14 days. Your rhythm is building, so the best next step is to continue with the same five habits for two more weeks.`;
   const closing = t.notMoving
-    ? `Your mood or progress isn't moving as much as we'd hope yet \u2014 ${r.path === 2 ? "keep" : "consider booking"} a campus counsellor appointment, and bring it forward. A plan not moving is information, not failure.`
+    ? `Your mood or progress isn't moving as much as we'd hope yet \u2014 ${r.path === 2 ? "keep" : "consider booking"} a ${r.programme === "mindmellow" ? "school" : "campus"} counsellor appointment, and bring it forward. A plan not moving is information, not failure.`
     : "Retake your check-in around Day 30 to see how your six areas have moved. Be proud of what you've built.";
   return { path, pct, items, listTitle, intro, closing, notMoving: t.notMoving };
 };

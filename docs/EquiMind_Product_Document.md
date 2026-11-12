@@ -1,5 +1,5 @@
 # EquiMind — Product Document
-*By Biglyp · Student stress & wellbeing platform for university undergraduates and postgraduates · Generated 12 November 2026 from the live platform*
+*By Biglyp · Student stress & wellbeing platform for Indian university students (UG and PG) · Generated 12 November 2026 from the live platform*
 
 ## Contents
 1. Product overview
@@ -22,7 +22,7 @@
 18. Appendix
 
 ## 1. Product overview
-EquiMind is a private, non-diagnostic stress check-in and habit-building platform for Indian university students (UG and PG). A student answers **24 short statements** (drawn from a bank of **180**) about the last two weeks. EquiMind scores six life areas, writes a warm personal report, and turns the three areas under most pressure into a **14-day plan of five small daily activities**. A daily check-in, mood tracking, progress pages at Day 7 and Day 14, calming exercises, games, sounds and short reads keep the student engaged, while a campus counsellor can see who may need support and book sessions.
+EquiMind is a private, non-diagnostic stress check-in and habit-building platform for Indian university students (UG and PG). A student answers **24 short statements** (drawn from a bank of **180**) about the last two weeks. It scores six life areas, writes a warm personal report, and turns the three areas under most pressure into a **14-day plan of five small daily activities**. A daily check-in, mood tracking, progress pages at Day 7 and Day 14, calming exercises, games, sounds and short reads keep the student engaged, while a school / campus counsellor can see who may need support and book sessions.
 
 **Design principles**
 - **Reflect, don't diagnose** — tentative, student-friendly language; no medical or psychological labels; no risk scores.
@@ -376,7 +376,7 @@ Item IDs follow `<sub-theme>-<number>`. All statements are currently active.
 | Priority areas | The three lowest-scoring areas (ties broken by more ‘Often/Almost always’ answers). Each gets its own report page. |
 | Strengths / resources | Up to two of the highest remaining areas scoring 50+. |
 | Support path | **Path 2 (counsellor strongly suggested)** if any area < 35 or overall < 45; otherwise **Path 1** (self-help first, support available). |
-| Body page | Shown if Body & Sleep < 50, Emotional < 55, 3+ fatigue statements answered Often/Almost always, or Path 2. |
+| Body page | Shown if Body & Sleep < 50, Emotional Load & Coping < 55, 3+ fatigue statements answered Often/Almost always, or Path 2. |
 | High statements | Up to 8 statements answered Often/Almost always feed the narrative and stress loop. |
 
 ## 7. AI-written narrative
@@ -409,7 +409,7 @@ The report is readable in the app and downloadable as a PDF (pages sized to thei
 - *To a faculty (deadline):* “Two submissions fall in the same week. Could we agree which to prioritise, or could I have a short extension on one?”
 
 ## 9. The 14-day plan & daily check-in
-- **Plan construction:** Fixed wake-up time → the first activity of each priority area → 60-second check-in → fillers (brain dump, phone away, morning top-3, breathing) until there are five.
+- **Plan construction:** Fixed wake-up time → the first activity of each priority area → 60-second check-in → fillers (the 5-minute brain dump, phone across the room, morning top-3, 4-7-8 breathing) until there are five.
 - **Daily check-in pop-up** (once a day, from 24 h after the report): greeting + glow meter + today's mood (5 faces) → one step per activity (Yes / Not this time) → stress rating & feeling → a short feedback step.
 - **Moods:** 0 Struggling · 1 Rough · 2 Mixed · 3 Steady · 4 Strong.
 - **Calm Streak:** 14 named day badges, current and best streak, warm messages.

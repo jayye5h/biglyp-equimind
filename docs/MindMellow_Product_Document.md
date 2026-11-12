@@ -417,7 +417,7 @@ The report is readable in the app and downloadable as a PDF (pages sized to thei
 - **Calm Streak:** 14 named day badges, current and best streak, warm messages.
 - **Week stats:** activities done of 35, % done, full days (all five done), best and hardest habit, average mood.
 
-## 10. Activity library (28 activity slots)
+## 10. Activity library (28 activities)
 
 ### A · Academic & Exam Pressure
 
