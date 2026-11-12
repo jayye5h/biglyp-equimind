@@ -37,7 +37,7 @@ def build(P=EQ) -> str:
     WL = getattr(P, "WELLNESS", None) or {"EXERCISES": W.EXERCISES, "ARTICLES": W.ARTICLES, "AREA_NAMES": W.AREA_NAMES, "GAMES": W.GAMES}
     _an = lambda k: WL["AREA_NAMES"].get(k, k)
     w(f"# {P.NAME} — Product Document")
-    w(f"*By Biglyp · Student stress & wellbeing platform for {P.AUDIENCE} · Generated {today} from the live platform*")
+    w(f"*By Biglyp · {'Focus, study-habit & learning-energy check-in for Grades 6-8 (11-13 years)' if fe else 'Student stress & wellbeing platform for ' + P.AUDIENCE} · Generated {today} from the live platform*")
     w("")
     w("## Contents")
     for i, t in enumerate(["Product overview", "Users & roles", "Theoretical framework", "The assessment", "Question bank",
@@ -48,9 +48,9 @@ def build(P=EQ) -> str:
 
     # 1
     w("\n## 1. Product overview")
-    w(f"{P.NAME} is a private, non-diagnostic stress check-in and habit-building platform for {P.AUDIENCE}. "
+    w(f"{P.NAME} is a private, non-diagnostic {'focus and study-habit' if fe else 'stress'} check-in and habit-building platform for {'Indian middle-school students in Grades 6-8 (11-13 years)' if fe else P.AUDIENCE}. "
       f"A student answers **{n_sit} short statements** (drawn from a bank of **{n_items}**) about the last two weeks. It scores {aw}, "
-      "writes a warm personal report, and turns the three areas under most pressure into a **14-day plan of five small daily activities**. "
+      "writes a warm personal report, and turns the three lowest-scoring areas into a **14-day plan of five small daily activities**. "
       "A daily check-in, mood tracking, progress pages at Day 7 and Day 14, calming exercises, games, sounds and short reads keep the student engaged, "
       f"while a {'school' if mm else 'campus'} counsellor can see who may need support and book sessions.")
     w("\n**Design principles**")
@@ -239,10 +239,14 @@ def build(P=EQ) -> str:
 
     # 14
     w(f"\n## 14. Games library ({len(G.GAMES)} games)")
-    w("Three games are live for students today; the rest can be previewed and tested by admins. Each game is tagged by type, life areas and the moods it suits.")
+    if fe:
+        w(f"The shared library holds {len(G.GAMES)} games. **FocusEdge students get their own focus-themed set of {len(WL['GAMES'])} games** (listed in section 11): " + ", ".join(g["name"] for g in WL["GAMES"]) + ". Admins can still switch any game off below.")
+    else:
+        w("Three games are live for students today; the rest can be previewed and tested by admins. Each game is tagged by type, life areas and the moods it suits.")
     w("\n| Game | Type | Minutes | Areas | Good on moods | Live for students | Why it helps |\n|---|---|---|---|---|---|---|")
     for g in G.GAMES:
-        w(f"| {g['name']} | {g['type']} | {g['minutes']} | {_areas(g['areas'])} | {', '.join(MOOD_LABELS[m] for m in g['moods'])} | {'Yes' if g.get('student') else 'Admin preview'} | {g['why']} |")
+        live = g["id"] in {x["id"] for x in WL["GAMES"]} if fe else g.get("student")
+        w(f"| {g['name']} | {g['type']} | {g['minutes']} | {_areas(g['areas'])} | {', '.join(MOOD_LABELS[m] for m in g['moods'])} | {'Yes' if live else 'Admin preview'} | {g['why']} |")
 
     # 15
     w("\n## 15. Notifications")

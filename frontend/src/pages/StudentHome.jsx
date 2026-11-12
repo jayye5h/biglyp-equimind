@@ -8,7 +8,7 @@ import { toneVars } from "@/lib/featureTones";
 import { SafetyStrip } from "@/components/Shell";
 import { HomeLayout, NoReportCard } from "@/components/home/HomeLayout";
 import { JourneyCard } from "@/components/home/JourneyCard";
-import { CalmShorts, Audiobooks, usePlayer } from "@/components/home/MediaSections";
+import { CalmShorts, Audiobooks, AudioVideo, usePlayer } from "@/components/home/MediaSections";
 import { ActivityOfDay, MoreGames } from "@/components/home/ActivityOfDay";
 import { RelaxUnwind } from "@/components/home/RelaxUnwind";
 import { WellnessReads, AllReads } from "@/components/home/WellnessReads";
@@ -135,7 +135,7 @@ export default function StudentHome() {
             <MoreGames />
             <CalmShorts items={shorts} play={play} limit={50} />
             <AllReads reads={allReads} />
-            <Audiobooks media={media} play={play} limit={50} />
+            {user?.programme === "focusedge" ? <AudioVideo media={media} play={play} limit={50} /> : <Audiobooks media={media} play={play} limit={50} />}
           </>)}
           {tab === "support" && (<>
             {latest && (

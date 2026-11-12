@@ -306,7 +306,7 @@ class MediaIn(BaseModel):
     title: str
     duration: str = ""
     url: str
-    programme: str = "all"  # "all" = EquiMind / MindMellow / MindEdge library; "focusedge" = FocusEdge (Grades 6-8) library
+    programme: Optional[str] = None  # "all" = EquiMind / MindMellow / MindEdge library; "focusedge" = FocusEdge (Grades 6-8) library
 
 
 def _media_doc(body: MediaIn) -> dict:
@@ -317,10 +317,12 @@ def _media_doc(body: MediaIn) -> dict:
         raise HTTPException(422, "Please paste a valid YouTube link")
     if not body.title.strip():
         raise HTTPException(422, "Title is required")
-    if body.programme not in ("all", "focusedge"):
+    if body.programme not in (None, "all", "focusedge"):
         raise HTTPException(422, "Library must be all or focusedge")
-    return {"kind": body.kind, "title": body.title.strip()[:80], "duration": body.duration.strip()[:20], "youtube_id": m.group(1) or m.group(2),
-            "programme": body.programme}
+    doc = {"kind": body.kind, "title": body.title.strip()[:80], "duration": body.duration.strip()[:20], "youtube_id": m.group(1) or m.group(2)}
+    if body.programme:
+        doc["programme"] = body.programme
+    return doc
 
 
 @api.get("/media")
@@ -337,7 +339,7 @@ async def list_media(user: dict = Depends(current_user)):
 @api.post("/admin/media")
 async def add_media(body: MediaIn, _: dict = Depends(admin_user)):
     last = await db.media.find_one({}, {"_id": 0, "order": 1}, sort=[("order", -1)])
-    doc = {"id": str(uuid.uuid4()), **_media_doc(body), "order": (last["order"] + 1) if last else 0}
+    doc = {"id": str(uuid.uuid4()), "programme": "all", **_media_doc(body), "order": (last["order"] + 1) if last else 0}
     await db.media.insert_one(doc)
     doc.pop("_id", None)
     return doc

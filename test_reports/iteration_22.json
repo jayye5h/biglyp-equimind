@@ -1,0 +1,45 @@
+{
+  "summary": "Tested FocusEdge (Class 6-8) end to end, backend and frontend. Backend: the new test file /app/backend/tests/test_focusedge.py has 13 tests and all 13 pass. They cover demo users; the existing fe-aarav report (10 areas D1-D10, overall equals the mean, 3 priorities, a 5-activity fe-* plan starting with fe-wake, priority pages with theory and 2 activities each, a narrative with no clinical words); POST /assessments/start (40 items, one per sub-theme, ids like D1.1-03, never two from the same segment in a row); wrong item set gives 422 mentioning 40; wellness/today and reads (20 FE reads, FE area names); games/enabled (the 9 FE ids, and [sudoku, memory, zerokata] for EquiMind); media scoping (16 FocusEdge items for FE students, 14 general items for EquiMind, MindEdge and MindMellow students, all for admin); admin media add and delete with programme=focusedge, and invalid programme gives 422; admin items (300 items, 40 sub-themes), activities, stats, product doc (300 ids); counsellors mm-neha and me-rahul see the 3 FE students; cou-kavya does not. I also submitted one full check-in for fe-vihaan, which you allowed: it returned 200 in about 5s with a Claude narrative and no clinical words, the plan [fe-wake, fe-pomo, fe-phone, fe-phonebed, fe-2min], and resubmitting gave 400. Frontend (Playwright): the /focusedge landing (indigo brand, 4 product tabs, 40/10 stats, 10 area cards, 3 swatches); login order is fe-aarav, fe-meher, fe-vihaan, mm-neha, me-rahul, adm-platform. On the fe-aarav dashboard the DailyLog popup shows the 5 FE plan questions, including 'Did your phone stay in another room while you studied today?'. Activity of the Day shows 5-4-3-2-1 Calm Senses and Echo Pattern, and the game opens and plays. Toolkit shows the 9 FE brain games, FE Calm Shorts, FE Audiobooks and 20 FE reads. The report has every requested element (cover eyebrow, 40 items, 3 Needs care first areas, 10-axis radar, area-score-D1..D10, What's Happening, fe_d* art, Week 1 Notice / Week 2 Start small, 4 help tiers, 3 scripts, Childline 1098, Eye check row, FE About copy, Week 1 progress page). Download PDF works (FocusEdge-Report-Aarav-Sharma.pdf, 4.9MB). me-rahul and mm-neha see Aarav, Meher and Vihaan under All students and Needs attention, and the Meher report opens with FocusEdge branding. Admin: the FocusEdge switch, overview stats and bar chart, question bank ('300 of 300 items ... 40 per check-in'), activities, the Media library switch and product doc all render. Regression: the EquiMind admin and student dashboards (own games and media) and the MindEdge landing keep their own colours. Problems found: FE videos never reach students, plus a few UX and copy issues.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "PUT /api/admin/media/{mid}", "issue": "MediaIn.programme defaults to 'all'. Any client that updates without sending programme silently moves a FocusEdge item into the general library. The current MediaManager does send it, so this is a latent risk only."},
+      {"endpoint": "tests (old regression)", "issue": "test_mindedge.py and test_iter20_programme_scope.py hardcode report ids from the old DB, so 7 of their tests fail with 404 on the fresh DB. This is expected test drift, not an app bug."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "StudentHome / Toolkit media", "issue": "No Videos section anywhere for students. StudentHome only renders <Audiobooks>; the AudioVideo/Videos ListCard is unused since an earlier checkpoint. The 7 FocusEdge videos (e.g. 'The Power of 'Yet'', 'Growth Mindset — Your Brain Can Grow', 'Pomo-25 timer') can only be reached by admins. The review request expects students to see FE Videos.", "selector": "[data-testid=videos-section] (not rendered)", "priority": "MEDIUM"},
+      {"component": "DailyLog yes/no step", "issue": "'Yes, I did' always has a solid primary fill, even before an answer or after 'Not this time' is picked. The selected state is ambiguous, and Next stays disabled although Yes looks selected.", "selector": "[data-testid=daily-checkin-yes-btn]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Counsellor portal + report viewed by counsellor", "issues": ["mm-neha's header shows the MindMellow brand and me-rahul's shows MindEdge, even after signing in from /focusedge/login. The FE report body has FocusEdge branding but the header and accent stay MindMellow, so the brands are mixed."]},
+      {"screen": "Mobile /focusedge (390px)", "issues": ["The product tab bar overflows and the active FocusEdge tab is off-screen; it should scroll the active tab into view. The palette swatches are hidden on mobile."]},
+      {"screen": "FE student dashboard journey card", "issues": ["Journey phases still use the stress-product names (e.g. 'Phase 3: Connecting, Engaging & Enjoying', 'Finding Calm'). Acceptable since the dashboard is meant to be shared, but consider FE wording."]},
+      {"screen": "FocusEdge Product Document (copy)", "issues": ["The subtitle says 'Student stress & wellbeing platform ... measures focus ... not stress'. The overview says 'non-diagnostic stress check-in ... not stress' and 'three areas under most pressure'. Both contradict themselves. Section heading 'Games library (26 games)' while FE students get 9."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_focusedge.py", "/app/backend/tests/fe_submit_once.py", "/app/test_reports/pytest/pytest_focusedge.xml"],
+  "action_items": [
+    "Render a Videos list for students (at least FocusEdge) on Home and Toolkit, e.g. bring back AudioVideo or add <Videos>; the 7 FE videos are unreachable today",
+    "Fix the FocusEdge product-doc copy: remove 'stress' wording in the subtitle and overview, and clarify the games count",
+    "Optional: show the selected state on the DailyLog yes/no buttons",
+    "Optional: when a counsellor views a FocusEdge report, use FocusEdge branding in the header too",
+    "Optional: make programme required (or keep the existing value) on PUT /api/admin/media",
+    "Optional: auto-scroll the active product tab into view on mobile"
+  ],
+  "critical_code_review_comments": [
+    "server.py: _media_doc applies the default programme 'all' on update, so editing without the field would move an item to the wrong library",
+    "MediaSections.AudioVideo is dead code; the Videos kind is admin-only in practice",
+    "content_fe.py is 556 lines and server.py 450, both under the 700-line limit",
+    "Narrative safety: narrative.py filters adhd/disorder/diagnos and the live LLM output was clean"
+  ],
+  "updated_files": ["/app/backend/tests/test_focusedge.py", "/app/backend/tests/fe_submit_once.py"],
+  "success_rate": {"backend": "100% (13/13 FocusEdge tests + full submit flow)", "frontend": "~92% (all requested flows work; FE Videos not shown to students)"},
+  "seed_data_creation": "One new FocusEdge report for fe-vihaan (id 5e93df47-376f-4970-a3a1-794415b69c9b, kind retake_excluding_previous) created through the API as you allowed, so Vihaan's latest report and journey are now this new check-in. fe-aarav: the day-9 mood (Steady) and 'Not this time' answers were probably saved while I stepped through the DailyLog popup; I did not press 'Submit today's check-in'. A TEST_ media item was created and then deleted.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run pytest /app/backend/tests/test_focusedge.py -n0. The DB is fresh, so old tests with hardcoded report ids (test_mindedge, test_iter20) fail with 404; ignore or update them. Vihaan now has a second report (5e93df47...). The FE report id for Aarav is 51bb3056-88e9-4ba7-85e1-d03da373e2b8 and for Meher 03d7171c-914a-44b3-9c51-eafc754980f8. The server clock is Nov 2026.",
+  "test_credentials": "Demo login, no passwords, from /app/memory/test_credentials.md (fe-aarav, fe-meher, fe-vihaan, mm-neha, me-rahul, adm-platform, stu-ananya)"
+}

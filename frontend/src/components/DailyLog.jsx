@@ -113,7 +113,7 @@ const ActivityStep = ({ a, idx, total, answer, stage, bounce, onAnswer, onBack, 
           </div>
         )}
         <div className="mt-5 grid grid-cols-2 gap-3">
-          <button data-testid="daily-checkin-yes-btn" onClick={() => onAnswer(true)} className={`h-12 rounded-2xl font-medium inline-flex items-center justify-center gap-2 transition-colors ${answer === true ? "bg-eq-dark text-white ring-2 ring-offset-2 ring-eq" : "bg-eq text-white hover:bg-eq-dark"}`}><Check className="h-4 w-4" /> Yes, I did</button>
+          <button data-testid="daily-checkin-yes-btn" onClick={() => onAnswer(true)} className={`h-12 rounded-2xl font-medium inline-flex items-center justify-center gap-2 transition-colors ${answer === true ? "bg-eq-dark text-white ring-2 ring-offset-2 ring-eq" : "border border-eq/30 bg-white text-eq-dark hover:bg-eq-bg"}`}><Check className="h-4 w-4" /> Yes, I did</button>
           <button data-testid="daily-checkin-no-btn" onClick={() => onAnswer(false)} className={`h-12 rounded-2xl font-medium border transition-colors ${answer === false ? "border-eq bg-eq-soft text-eq-dark" : "border-eq/30 text-eq-dark hover:bg-eq-bg"}`}>Not this time</button>
         </div>
       </div>
