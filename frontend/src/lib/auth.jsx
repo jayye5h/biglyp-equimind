@@ -8,9 +8,11 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
   const { setBrand } = useTheme();
+  // Apply the student's/counsellor's programme brand once when they sign in (not on every render —
+  // that used to override public pages like the Biglyp product switcher and product landing tabs).
   useEffect(() => {
     if (user?.programme && user.role !== "admin") setBrand(user.programme);
-  }, [user, setBrand]);
+  }, [user?.id, user?.programme]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!localStorage.getItem("eq_token")) {

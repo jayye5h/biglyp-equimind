@@ -24,7 +24,7 @@ const BiglypMark = () => (
     </span>
     <span className="leading-none">
       <span className="font-serif text-2xl font-semibold text-slate-900">Biglyp</span>
-      <span className="block font-mono text-[9px] uppercase tracking-[0.25em] text-slate-500 mt-1">Student wellbeing</span>
+      <span data-testid="biglyp-logo-sub" className="block font-mono text-[9px] uppercase tracking-[0.25em] text-slate-500 mt-1">Wellbeing</span>
     </span>
   </Link>
 );
@@ -49,7 +49,7 @@ const CommonHero = () => (
         </div>
       </div>
       <div className="relative">
-        <img src="/how/biglyp_hero.webp" alt="Students of different ages relaxing together with books, a tablet and a laptop" data-testid="biglyp-hero-art" draggable={false} className="w-full h-auto select-none mix-blend-multiply" />
+        <img src="/how/biglyp_hero.webp?v=3" alt="Students of different ages relaxing together with books, a tablet and a laptop" data-testid="biglyp-hero-art" draggable={false} className="w-full h-auto select-none mix-blend-multiply" />
         <div className="absolute bottom-4 left-2 sm:left-6 rounded-2xl bg-white/90 backdrop-blur shadow-lg border border-slate-100 px-4 py-3 flex items-center gap-3">
           <CalendarCheck className="h-5 w-5 text-[#2d8a7c]" />
           <div className="text-xs"><div className="font-semibold text-slate-800">One check-in, one plan</div><div className="text-slate-500">Tiny steps, tracked daily</div></div>

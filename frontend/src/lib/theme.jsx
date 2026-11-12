@@ -46,7 +46,7 @@ export const ThemeProvider = ({ children }) => {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem(`eq_theme_${brand}`, theme);
     localStorage.setItem("eq_brand", brand);
-    document.title = window.location.pathname === "/" ? "Biglyp — Student wellbeing check-ins" : `${BRANDS[brand].name} — ${BRANDS[brand].tagline}`;
+    document.title = window.location.pathname === "/" ? "Biglyp Wellbeing" : `${BRANDS[brand].name} — ${BRANDS[brand].tagline}`;
   }, [theme, brand]);
   const palettes = pick(brand);
   return (

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Heart, Flower2, Sailboat, Sunrise, LogOut, UserCog } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useTheme, useBrand, ALL_PALETTES } from "@/lib/theme";
@@ -69,6 +69,11 @@ export const AppHeader = ({ children }) => {
   const nav = useNavigate();
   const [contact, setContact] = useState(false);
   const B = useBrand();
+  const { setBrand } = useTheme();
+  // Signed-in app pages always use the user's own programme brand (they may have browsed other products first)
+  useEffect(() => {
+    if (user?.programme && user.role !== "admin") setBrand(user.programme);
+  }, [user?.programme]); // eslint-disable-line react-hooks/exhaustive-deps
   const out = async () => {
     await logout();
     nav(B.home);
