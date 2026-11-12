@@ -80,7 +80,7 @@ export const RelaxUnwind = () => {
                     <span className="text-[11px] sm:text-sm lg:text-base font-medium drop-shadow">{s.name}</span>
                   </button>
                   <button data-testid={`sound-info-${s.id}`} onClick={() => setInfo(s)} aria-label={`About ${s.name}`}
-                    className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 h-6 w-6 grid place-items-center rounded-full text-white/70 hover:text-white sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-opacity">
+                    className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 h-6 w-6 grid place-items-center rounded-full text-white/70 hover:text-white [@media(hover:hover)]:sm:opacity-0 [@media(hover:hover)]:sm:group-hover:opacity-100 focus:opacity-100 transition-opacity">
                     <Info className="h-4 w-4" />
                   </button>
                   {st === "loading" && <Loader2 data-testid={`sound-loading-${s.id}`} className="absolute top-2 left-2 h-4 w-4 text-white animate-spin" />}
@@ -101,7 +101,7 @@ export const RelaxUnwind = () => {
       <p className="mt-2 text-[11px] text-slate-400">Sounds adapted from MindMelo (open source).</p>
 
       <Dialog open={!!info} onOpenChange={(o) => { if (!o) setInfo(null); }}>
-        <DialogContent data-testid="sound-info-dialog" className="w-[calc(100%-2rem)] max-w-2xl rounded-3xl p-6 max-h-[92vh] overflow-y-auto">
+        <DialogContent data-testid="sound-info-dialog" onOpenAutoFocus={(e) => e.preventDefault()} className="w-[calc(100%-2rem)] max-w-2xl rounded-3xl p-6 max-h-[92vh] overflow-y-auto">
           <DialogTitle className="font-serif text-2xl pr-6">{info?.title}</DialogTitle>
           <DialogDescription className="text-xs text-slate-500">By: {info?.source}</DialogDescription>
           <p className="text-sm text-slate-700 leading-relaxed">{info?.desc}</p>
