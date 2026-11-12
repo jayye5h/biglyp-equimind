@@ -1,7 +1,7 @@
 /** Programme branding. Both programmes share one engine and report format; only content, words and colours differ. */
 export const BRANDS = {
   equimind: {
-    key: "equimind", name: "EquiMind", tagline: "Student stress check-in", home: "/", login: "/login",
+    key: "equimind", name: "EquiMind", tagline: "Student stress check-in", home: "/equimind", login: "/login",
     audience: "university students", counsellor: "campus counsellor", counsellorTitle: "Campus counsellor",
     palettes: ["sky", "mint"], pdfPrefix: "EquiMind", school: false,
   },

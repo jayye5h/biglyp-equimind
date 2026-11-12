@@ -117,7 +117,7 @@ const HeroCard = () => {
   );
 };
 
-const Hero = () => (
+export const Hero = () => (
   <section className="relative overflow-hidden">
     <div className="absolute inset-0 eq-grain opacity-60" />
     <div className="relative max-w-6xl mx-auto px-4 sm:px-8 pt-12 pb-20 lg:pt-20 lg:pb-28 grid lg:grid-cols-[1.1fr_0.9fr] gap-14 items-center">
@@ -150,7 +150,7 @@ const Hero = () => (
   </section>
 );
 
-const AreasSection = () => (
+export const AreasSection = () => (
   <section id="areas" className="max-w-6xl mx-auto px-4 sm:px-8 py-20">
     <p className="font-mono text-xs uppercase tracking-[0.25em] text-eq">{COPY[useBrand().key].areasEyebrow || "Six areas of student life"}</p>
     <h2 className="mt-3 font-serif text-3xl sm:text-4xl font-bold text-slate-900 max-w-2xl">{COPY[useBrand().key].areasTitle || "Stress rarely lives in one place. We look at all six."}</h2>
@@ -166,10 +166,12 @@ const AreasSection = () => (
   </section>
 );
 
-const HowSection = () => (
+export const HowSection = () => (
   <section id="how" className="bg-white/60 border-y border-eq/10">
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-20 grid lg:grid-cols-2 gap-14 items-center">
-      <img src="https://images.unsplash.com/photo-1514369118554-e20d93546b30?crop=entropy&cs=srgb&fm=jpg&q=80&w=1200" alt="Student writing in a journal" className="rounded-[2rem] w-full h-[420px] object-cover" />
+      <div className="rounded-[2rem] bg-white border border-eq/10 shadow-[0_24px_60px_-36px_rgb(var(--eq-p)/0.5)] p-6 grid place-items-center">
+        <img data-testid="how-it-works-art" src={`/how/${useBrand().key}.webp`} alt={`${useBrand().name} check-in illustration`} draggable={false} className="w-full max-w-[420px] h-[380px] object-contain select-none" />
+      </div>
       <div>
         <p className="font-mono text-xs uppercase tracking-[0.25em] text-eq">How it works</p>
         <h2 className="mt-3 font-serif text-3xl sm:text-4xl font-bold text-slate-900">A map to act on — <em className="text-eq">not a verdict.</em></h2>
@@ -186,7 +188,7 @@ const HowSection = () => (
   </section>
 );
 
-const PrivacySection = () => (
+export const PrivacySection = () => (
   <section id="privacy" className="max-w-6xl mx-auto px-4 sm:px-8 py-20 grid md:grid-cols-[1fr_1.2fr] gap-10 items-start">
     <div>
       <span className="h-12 w-12 rounded-2xl bg-[#1b1e3d] grid place-items-center"><Lock className="h-5 w-5 text-[#fbbf24]" /></span>
@@ -199,7 +201,7 @@ const PrivacySection = () => (
   </section>
 );
 
-const Footer = () => (
+export const Footer = () => (
   <footer className="border-t border-eq/10">
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-14 grid sm:grid-cols-[2fr_1fr_1fr] gap-10">
       <div><Logo /><p className="mt-4 text-sm text-slate-500 max-w-sm">Supporting student wellbeing with honest self-reflection and small, doable actions.</p></div>

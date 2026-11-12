@@ -1,4 +1,4 @@
-import { PageShell, Art } from "@/components/report/PageShell";
+import { PageShell, Art, RImg } from "@/components/report/PageShell";
 import { weekStats, week1Writeup, week2Writeup, trendInsights, bandName, nextStepsPlan } from "@/lib/progress";
 import { ArrowUpRight, ArrowDownRight, Minus, Check, CalendarCheck, SquareCheck, CalendarDays, Smile, Target, TrendingUp } from "lucide-react";
 
@@ -18,7 +18,7 @@ const WeekBody = ({ s, prev, w = 1, art = "/report-art/week.webp" }) => (
 
 const Writeup = ({ title, children, clip = "/report-art/week_clip.webp", testid }) => (
   <div data-testid={testid} className="mt-7 rounded-2xl bg-eq-soft p-6 grid sm:grid-cols-[120px_1fr] gap-5 items-center">
-    <img src={clip} alt="" draggable={false} className="hidden sm:block w-full h-auto" />
+    <RImg src={clip} alt="" draggable={false} className="hidden sm:block w-full h-auto" />
     <div className="sm:border-l sm:border-eq/20 sm:pl-5">
       <h3 className="font-mono text-[11px] uppercase tracking-widest text-eq-dark">{title}</h3>
       {children}
@@ -95,7 +95,7 @@ export const NextStepsPage = ({ r, n, total }) => {
           return (
             <div key={k} data-testid={`next-option-${k}`} data-recommended={on} className={`relative rounded-2xl p-5 sm:p-6 border-2 ${o.tint} ${on ? "border-[#6d5ce7]" : "border-transparent"}`}>
               {on && <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#6d5ce7] text-white text-[11px] leading-4 font-semibold px-3 py-1">Recommended for you</span>}
-              <img src={o.art} alt="" draggable={false} className="block mx-auto h-24 w-auto object-contain select-none" />
+              <RImg src={o.art} alt="" draggable={false} className="block mx-auto h-24 w-auto object-contain select-none" />
               <h3 className="mt-4 font-serif text-xl font-bold leading-snug text-slate-900">{o.title}</h3>
               <p className="mt-2 text-[15px] leading-relaxed text-slate-700">{o.body}</p>
             </div>
@@ -103,7 +103,7 @@ export const NextStepsPage = ({ r, n, total }) => {
         })}
       </div>
       <div data-testid="next-steps-list" className="mt-6 flow-root rounded-2xl bg-white border border-eq/15 p-5 sm:p-6">
-        <img src="/report-art/next_study.webp" alt="" data-testid="next-steps-list-art" draggable={false} className="hidden md:block float-right w-[36%] max-w-[340px] ml-6 mb-2 select-none" />
+        <RImg src="/report-art/next_study.webp" alt="" data-testid="next-steps-list-art" draggable={false} className="hidden md:block float-right w-[36%] max-w-[340px] ml-6 mb-2 select-none" />
         <h3 className="font-mono text-[12px] uppercase tracking-widest text-eq-dark">{ns.listTitle}</h3>
         <ul className="mt-4 space-y-4">
           {ns.items.map((a) => (

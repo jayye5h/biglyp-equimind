@@ -5,6 +5,15 @@ import { useBrand } from "@/lib/theme";
 /** Brand of the report being shown (may differ from the viewer's brand for shared counsellors). */
 export const ReportBrandCtx = createContext(null);
 
+/** FocusEdge reports use their own 3D illustration set (public/report-art/fe/). */
+export const useArtSrc = () => {
+  const B = useContext(ReportBrandCtx);
+  return (src) => (B?.key === "focusedge" && typeof src === "string" ? src.replace(/^\/report-art\/(fe_)?/, "/report-art/fe/") : src);
+};
+
+/** <img> for report illustrations (maps to the programme's art set). */
+export const RImg = ({ src, ...rest }) => <img src={useArtSrc()(src)} {...rest} />;
+
 const MOTIFS = [Sun, Mountain, Waves, Leaf, Sprout, Feather, Moon, Cloud, Wind, Flower2, Star];
 
 export const PageShell = ({ n, total, title, eyebrow, id, children, dark, testid, art, artAlt = "", inline, side, headExtra }) => {
@@ -26,7 +35,7 @@ export const PageShell = ({ n, total, title, eyebrow, id, children, dark, testid
           {headExtra && <div className="mt-8">{headExtra}</div>}
         </div>
         {side && <div className="min-w-0">{side}</div>}
-        {art && <img src={art} alt={artAlt} data-testid={`${testid}-art`} draggable={false} className="h-24 w-24 sm:h-36 sm:w-36 shrink-0 rounded-3xl object-cover ring-1 ring-eq/10 shadow-[0_12px_30px_-18px_rgb(var(--eq-p)/0.6)]" />}
+        {art && <RImg src={art} alt={artAlt} data-testid={`${testid}-art`} draggable={false} className="h-24 w-24 sm:h-36 sm:w-36 shrink-0 rounded-3xl object-cover ring-1 ring-eq/10 shadow-[0_12px_30px_-18px_rgb(var(--eq-p)/0.6)]" />}
       </div>
       <div className="mt-7">{children}</div>
       <div className={`mt-10 pt-4 border-t text-[10px] font-mono uppercase tracking-widest flex justify-between ${dark ? "ft-line ft-faint" : "border-slate-100 text-slate-400"}`}>
@@ -41,5 +50,5 @@ export const Pill = ({ children, className = "" }) => (
 );
 
 export const Art = ({ src, alt = "", testid, className = "" }) => (
-  <img src={src} alt={alt} data-testid={testid} draggable={false} className={`block w-full h-auto object-contain select-none ${className}`} />
+  <RImg src={src} alt={alt} data-testid={testid} draggable={false} className={`block w-full h-auto object-contain select-none ${className}`} />
 );

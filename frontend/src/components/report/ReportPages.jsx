@@ -1,3 +1,5 @@
+import { ReportBrandCtx } from "@/components/report/PageShell";
+import { BRANDS } from "@/lib/brand";
 import { CoverPage, SnapshotPage } from "@/components/report/CoverSnapshot";
 import { NarrativePage, PriorityPage } from "@/components/report/NarrativePriority";
 import { PlanPage } from "@/components/report/PlanTrack";
@@ -34,5 +36,5 @@ export const ReportPages = ({ r, onSave, print }) => {
     (p) => <AboutPage key="about" r={r} {...p} />,
   ];
   const total = pages.length;
-  return <div className="space-y-6">{pages.map((fn, i) => fn({ n: i + 1, total }))}</div>;
+  return <ReportBrandCtx.Provider value={BRANDS[r.programme] || BRANDS.equimind}><div className="space-y-6">{pages.map((fn, i) => fn({ n: i + 1, total }))}</div></ReportBrandCtx.Provider>;
 };

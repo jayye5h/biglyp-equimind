@@ -1,6 +1,6 @@
 import { Copy, Phone, MessageCircleMore, Sun, Pill, Droplet, HeartPulse, UtensilsCrossed, Footprints, Stethoscope, Eye, Moon } from "lucide-react";
 import { toast } from "sonner";
-import { PageShell, Art } from "@/components/report/PageShell";
+import { PageShell, Art, RImg } from "@/components/report/PageShell";
 import { fmtDate } from "@/lib/api";
 import { brandOf } from "@/lib/brand";
 const isFE = (r) => r?.programme === "focusedge";
@@ -37,7 +37,7 @@ export const HelpContent = ({ r }) => {
       <div className="grid md:grid-cols-2 gap-4">
         {tiers(r).map((x, i) => (
           <div key={x.t} data-testid={`help-tier-${i + 1}`} className={`rounded-2xl p-5 grid grid-cols-[96px_1fr] sm:grid-cols-[120px_1fr] gap-4 items-center ${x.c}`}>
-            <img src={`/report-art/${x.art}.webp`} alt="" draggable={false} className="w-full h-auto" data-testid={`help-tier-art-${i + 1}`} />
+            <RImg src={`/report-art/${x.art}.webp`} alt="" draggable={false} className="w-full h-auto" data-testid={`help-tier-art-${i + 1}`} />
             <div className="border-l border-current/20 pl-4" style={{ borderColor: "rgba(100,116,139,0.25)" }}>
               <div className="flex items-center justify-between gap-2"><h3 className="font-semibold">{x.t}</h3>{x.strong && <span className="text-[10px] font-mono uppercase bg-white/25 rounded-full px-2 py-0.5">Strongly suggested</span>}</div>
               <p className="mt-2 text-sm opacity-90 leading-relaxed">{x.d}</p>
@@ -83,10 +83,10 @@ export const BodyPage = ({ r, n, total }) => (
     </div>
     <div className="mt-6 grid md:grid-cols-2 gap-4 text-sm">
       <div className="rounded-2xl bg-eq-soft p-5"><h4 className="font-semibold text-eq-dark">What a basic health check-up looks like</h4>
-        <div className="mt-3 grid grid-cols-[90px_1fr] gap-4 items-center"><img src="/report-art/body_check.webp" alt="" draggable={false} className="w-full h-auto" />
+        <div className="mt-3 grid grid-cols-[90px_1fr] gap-4 items-center"><RImg src="/report-art/body_check.webp" alt="" draggable={false} className="w-full h-auto" />
         {isFE(r) ? <ul data-testid="body-checkup-fe" className="border-l border-slate-300/60 pl-4 space-y-1.5 text-slate-700"><li>Ask a parent to book a 15-minute visit to a family doctor. Tell them: &lsquo;I&apos;ve been having trouble focusing and feeling tired for weeks.&rsquo;</li><li>Common checks for your age: CBC, ferritin / iron, Vitamin D, Vitamin B12, thyroid (TSH), and a simple eye check.</li><li>If focus problems have been there for a long time and clearly affect school, the doctor may suggest a paediatrician or psychologist. That&apos;s routine — not something to worry about.</li></ul> :
         <ul className="border-l border-slate-300/60 pl-4 space-y-1.5 text-slate-700"><li>A 15-minute visit to your {brandOf(r).school ? "school" : "campus"} health centre or a GP. Tell them: &lsquo;I&apos;ve been tired, sleeping poorly and finding it hard to focus for weeks.&rsquo;</li><li>A common basic panel: CBC, ferritin / iron studies, Vitamin D (25-OH), Vitamin B12, thyroid (TSH). The doctor decides which tests fit.</li></ul>}</div></div>
-      <div className="rounded-2xl bg-[#fef3c7] p-5"><h4 className="font-semibold text-[#92400e]">Both can be true</h4><div className="mt-3 grid grid-cols-[90px_1fr] gap-4 items-center"><img src="/report-art/body_scale.webp" alt="" draggable={false} className="w-full h-auto" /><p className="border-l border-amber-300/70 pl-4 text-slate-700">{isFE(r) ? "Focus problems can come from the body AND from habits — usually both. Fix the body, keep the plan, and keep talking to your parents and teachers." : <>Stress is real AND a physical shortfall can make it harder to cope. Rule out the physical, keep going with the plan{r.path === 2 ? ", and keep your counsellor appointment" : ""}. This report never prescribes supplements or doses.</>}</p></div></div>
+      <div className="rounded-2xl bg-[#fef3c7] p-5"><h4 className="font-semibold text-[#92400e]">Both can be true</h4><div className="mt-3 grid grid-cols-[90px_1fr] gap-4 items-center"><RImg src="/report-art/body_scale.webp" alt="" draggable={false} className="w-full h-auto" /><p className="border-l border-amber-300/70 pl-4 text-slate-700">{isFE(r) ? "Focus problems can come from the body AND from habits — usually both. Fix the body, keep the plan, and keep talking to your parents and teachers." : <>Stress is real AND a physical shortfall can make it harder to cope. Rule out the physical, keep going with the plan{r.path === 2 ? ", and keep your counsellor appointment" : ""}. This report never prescribes supplements or doses.</>}</p></div></div>
     </div>
   </PageShell>
 );

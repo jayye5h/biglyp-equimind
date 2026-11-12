@@ -1,9 +1,12 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { STAGES } from "@/lib/stages";
+import { STAGES, stageSrc } from "@/lib/stages";
+import { useBrand } from "@/lib/theme";
 
 /** Progress avatar: shows the student's growth stage (1-14). Stages only move forward. */
-export const Student = ({ stage = 1, bounce, dim, size = "h-44 w-44", testid = "student-avatar" }) => {
-  const s = STAGES[Math.max(1, Math.min(14, stage)) - 1];
+export const Student = ({ stage = 1, bounce, dim, size = "h-44 w-44", testid = "student-avatar", programme }) => {
+  const B = useBrand();
+  const s0 = STAGES[Math.max(1, Math.min(14, stage)) - 1];
+  const s = { ...s0, src: stageSrc(s0.n, programme || B?.key) };
   return (
     <motion.div data-testid={testid} data-stage={s.n} className={`relative mx-auto ${size}`}
       animate={bounce ? { y: [0, -12, 0], scale: [1, 1.05, 1] } : { y: 0 }} transition={{ duration: 0.6 }}>

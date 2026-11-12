@@ -1,5 +1,5 @@
 import { Clock, CalendarDays, Lightbulb, ListChecks } from "lucide-react";
-import { PageShell, Art } from "@/components/report/PageShell";
+import { PageShell, Art, RImg } from "@/components/report/PageShell";
 
 const ICON_BY_ID = { "fe-wake": "ic_wake", "fe-pomo": "ic_laptop", "fe-2min": "ic_laptop", "fe-checkin": "ic_breath", "fe-478": "ic_breath", "fe-askhelp": "ic_chat", "fe-buddy": "ic_chat", "fe-phone": "ic_check", "b-phone": "ic_check", "b-dump": "ic_check", "e-three": "ic_check", "b-wake": "ic_wake", "a-10min": "ic_laptop", "c-breath": "ic_breath", "f-money": "ic_chat", "c-checkin": "ic_check" };
 const ICON_BY_AREA = { a: "ic_laptop", b: "ic_wake", c: "ic_breath", d: "ic_chat", e: "ic_check", f: "ic_chat" };
@@ -17,7 +17,7 @@ export const planIcons = (plan) => {
 const Activity = ({ a, i, icon }) => (
   <div data-testid={`plan-activity-${i}`} className="rounded-3xl border border-eq/10 bg-gradient-to-r from-eq-bg/70 to-white grid md:grid-cols-[1fr_1.25fr] overflow-hidden" style={{ breakInside: "avoid" }}>
     <div className="p-5 flex items-center gap-4">
-      <img src={icon} alt="" data-testid={`plan-activity-icon-${i}`} draggable={false} className="h-24 w-24 sm:h-28 sm:w-28 shrink-0 object-contain" />
+      <RImg src={icon} alt="" data-testid={`plan-activity-icon-${i}`} draggable={false} className="h-24 w-24 sm:h-28 sm:w-28 shrink-0 object-contain" />
       <div className="min-w-0">
         <div className="flex items-start gap-3">
           <span className="h-8 w-8 shrink-0 rounded-lg bg-eq text-white font-semibold grid place-items-center">{i + 1}</span>

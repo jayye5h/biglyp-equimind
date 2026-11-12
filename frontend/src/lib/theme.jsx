@@ -20,7 +20,7 @@ const pick = (brand) => Object.fromEntries(BRANDS[brand].palettes.map((k) => [k,
 export const PALETTES = pick("equimind");
 
 const initialBrand = () => {
-  const byPath = Object.values(BRANDS).find((b) => b.home !== "/" && window.location.pathname.startsWith(b.home));
+  const byPath = Object.values(BRANDS).find((b) => window.location.pathname.startsWith(b.home));
   if (byPath) return byPath.key;
   const b = localStorage.getItem("eq_brand");
   return BRANDS[b] ? b : "equimind";

@@ -1,7 +1,7 @@
 import { Flame } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { elapsedDays } from "@/lib/progress";
-import { PHASES, STAGES, currentStage, toNextStage, PER_STAGE } from "@/lib/stages";
+import { PHASES, STAGES, currentStage, toNextStage, PER_STAGE, stageSrc } from "@/lib/stages";
 
 export const BADGES = [
   { name: "First Step", msg: "You showed up for yourself. Every journey starts exactly like this." },
@@ -80,7 +80,7 @@ export const StreakCard = ({ r, onOpenDaily, pending }) => {
                   <button data-testid={`streak-badge-${i + 1}`} data-earned={got} aria-label={`${b.name}: ${st.caption}`}
                     className="group flex flex-col items-center focus:outline-none">
                     <span className={`relative h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden transition-transform duration-300 group-hover:-translate-y-0.5 ${got ? "ring-2 ring-eq shadow-[0_6px_16px_-6px_rgb(var(--eq-p)/0.7)]" : next ? "outline-dashed outline-2 outline-eq/50 outline-offset-2" : "ring-1 ring-slate-200"}`}>
-                      <img src={st.src} alt={st.caption} draggable={false} className={`h-full w-full object-cover ${got ? "" : "grayscale opacity-40"}`} />
+                      <img src={stageSrc(st.n, r?.programme)} alt={st.caption} draggable={false} className={`h-full w-full object-cover ${got ? "" : "grayscale opacity-40"}`} />
                     </span>
                     <span className={`mt-1.5 h-4 min-w-4 px-1 rounded-full text-[10px] font-semibold grid place-items-center ${got ? "bg-eq text-white" : "bg-slate-100 text-slate-400"}`}>{i + 1}</span>
                   </button>

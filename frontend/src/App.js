@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { ThemeProvider, useBrand } from "@/lib/theme";
+import BiglypHome from "@/pages/BiglypHome";
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import StudentHome from "@/pages/StudentHome";
@@ -31,7 +32,8 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Landing />} />
+            <Route path="/" element={<BiglypHome />} />
+            <Route path="/equimind" element={<Landing brand="equimind" />} />
             <Route path="/login" element={<Login />} />
             <Route path="/mindmellow" element={<Landing brand="mindmellow" />} />
             <Route path="/mindmellow/login" element={<Login brand="mindmellow" />} />

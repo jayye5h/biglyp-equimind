@@ -14,6 +14,9 @@ export const STAGES = [
   "More social and self-assured", "Confident, happy and ready for what's next",
 ].map((caption, i) => ({ n: i + 1, caption, src: `/avatars/stages/stage${i + 1}.webp` }));
 
+/** Avatar image for a stage; FocusEdge has its own 3D avatar set. */
+export const stageSrc = (n, programme) => (programme === "focusedge" ? `/avatars/fe/stage${n}.webp` : `/avatars/stages/stage${n}.webp`);
+
 export const phaseOf = (stage) => PHASES.find((p) => stage >= p.from && stage <= p.to) || PHASES[0];
 
 const clamp = (n) => Math.max(1, Math.min(14, n));
