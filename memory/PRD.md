@@ -116,3 +116,4 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 ## 2026-06 Update
 - MindMellow report help copy: "Get help today" and "If something feels urgent" now say "your school counsellor" for MindMellow students; EquiMind keeps "campus health". Verified via screenshot.
 - Resend email key still pending (user chose to keep emails off for now).
+- Product tabs bar (ProductTabs in Shell.jsx) on both homepages and login pages: icon + name per product, auto-lists everything in BRANDS (lib/brand.js) so 2 future products only need a BRANDS entry + icon. Verified via screenshot.

@@ -2,7 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Heart, Flower2, LogOut, UserCog } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-import { useTheme, useBrand } from "@/lib/theme";
+import { useTheme, useBrand, ALL_PALETTES } from "@/lib/theme";
+import { BRANDS } from "@/lib/brand";
 import { NotificationBell } from "@/components/NotificationBell";
 import { ContactDialog } from "@/components/ContactDialog";
 
@@ -20,9 +21,36 @@ export const ThemeToggle = () => {
   );
 };
 
+const BRAND_ICONS = { equimind: Heart, mindmellow: Flower2 };
+
+/* Product switcher; new products appear automatically once added to BRANDS. */
+export const ProductTabs = ({ target = "home" }) => {
+  const B = useBrand();
+  return (
+    <div data-testid="product-tabs-bar" className="border-b border-slate-200/70 bg-white/70 backdrop-blur-md">
+      <nav role="tablist" aria-label="Products" className="max-w-6xl mx-auto px-4 sm:px-8 h-12 flex items-center gap-1 overflow-x-auto">
+        <span className="hidden sm:inline font-mono text-[10px] uppercase tracking-[0.25em] text-slate-400 mr-3">Biglyp products</span>
+        {Object.values(BRANDS).map((b) => {
+          const Icon = BRAND_ICONS[b.key] || Heart;
+          const c = ALL_PALETTES[b.palettes[0]].p;
+          const on = b.key === B.key;
+          return (
+            <Link key={b.key} to={b[target]} role="tab" aria-selected={on} data-testid={`product-tab-${b.key}`}
+              className={`relative h-12 px-3 inline-flex items-center gap-2 text-sm font-medium whitespace-nowrap transition-colors ${on ? "text-slate-900" : "text-slate-500 hover:text-slate-800"}`}>
+              <span className="h-6 w-6 rounded-lg grid place-items-center transition-transform duration-200 hover:scale-110" style={{ background: c }}><Icon className="h-3.5 w-3.5 text-white" strokeWidth={2.4} /></span>
+              {b.name}
+              {on && <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full" style={{ background: c }} />}
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
+  );
+};
+
 export const Logo = ({ to, small }) => {
   const B = useBrand();
-  const Icon = B.key === "mindmellow" ? Flower2 : Heart;
+  const Icon = BRAND_ICONS[B.key] || Heart;
   return (
   <Link to={to || B.home} data-testid="brand-logo-link" className="flex items-center gap-2.5 group">
     <span className={`${small ? "h-9 w-9" : "h-11 w-11"} rounded-2xl bg-eq grid place-items-center shadow-sm transition-transform duration-300 group-hover:rotate-[-6deg]`}>

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTheme, useBrand } from "@/lib/theme";
 import { Sparkles, BookOpen, Moon, HeartPulse, Users, Fingerprint, Wallet, ClipboardList, FileText, CalendarCheck, Lock, ArrowRight } from "lucide-react";
-import { Logo, SafetyStrip, ThemeToggle } from "@/components/Shell";
+import { Logo, SafetyStrip, ThemeToggle, ProductTabs } from "@/components/Shell";
 import { AREA_COLORS } from "@/lib/api";
 
 const AREAS_EQ = [
@@ -165,6 +165,7 @@ export default function Landing({ brand = "equimind" }) {
   if (B.key !== brand) return null;
   return (
     <div data-testid="landing-page">
+      <ProductTabs />
       <header className="max-w-6xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
         <Logo />
         <nav className="hidden md:flex gap-8 text-sm text-slate-600">

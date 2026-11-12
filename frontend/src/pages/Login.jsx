@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GraduationCap, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { Logo, ThemeToggle } from "@/components/Shell";
+import { Logo, ThemeToggle, ProductTabs } from "@/components/Shell";
 import { api, errMsg } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { useTheme } from "@/lib/theme";
@@ -36,6 +36,7 @@ export default function Login({ brand = "equimind" }) {
 
   return (
     <div data-testid="login-page" className="min-h-screen eq-grain">
+      <ProductTabs target="login" />
       <div className="max-w-3xl mx-auto px-4 sm:px-8 py-10">
         <div className="flex items-center justify-between gap-4"><Logo /><ThemeToggle /></div>
         <div className="mt-16 eq-rise">
