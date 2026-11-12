@@ -12,8 +12,7 @@ import { CalmShorts, Audiobooks, AudioVideo, usePlayer } from "@/components/home
 import { ActivityOfDay, MoreGames } from "@/components/home/ActivityOfDay";
 import { RelaxUnwind } from "@/components/home/RelaxUnwind";
 import { WellnessReads, AllReads } from "@/components/home/WellnessReads";
-import { StreakCard, streakInfo, BADGES } from "@/components/home/CalmStreak";
-import { STAGES } from "@/lib/stages";
+import { StreakCard, streakInfo, badgeFor } from "@/components/home/CalmStreak";
 import { RemindersCard } from "@/components/home/Reminders";
 import { CounsellorCard } from "@/components/home/CounsellorCard";
 import { PlanProgress, MoodWeek } from "@/components/DashboardActions";
@@ -82,8 +81,8 @@ export default function StudentHome() {
     api.patch(`/reports/${latest.id}/progress`, patch).then(() => {
       if (patch.moods) { setPlanTick((t) => t + 1); setAllReads(null); }
       if (patch.logged_days && after.stage > before) {
-        const b = BADGES[after.stage - 1];
-        toast.success(`New stage unlocked: ${b.name}`, { description: `${STAGES[after.stage - 1].caption} — ${b.msg}` });
+        const b = badgeFor(after.stage, latest.programme);
+        toast.success(`New stage unlocked: ${b.name}`, { description: b.msg });
       } else toast.success(patch.logged_days ? "Saved to your plan" : "Mood logged");
     }).catch(() => toast.error("Could not save. Please try again."));
   };

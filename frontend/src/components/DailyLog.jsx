@@ -4,7 +4,8 @@ import { Check, ArrowLeft, ArrowRight, CalendarDays, Sun, Sprout, Clock, Leaf, A
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Student } from "@/components/Avatar";
 import { elapsedDays } from "@/lib/progress";
-import { currentStage, toNextStage, STAGES, phaseOf } from "@/lib/stages";
+import { currentStage, toNextStage } from "@/lib/stages";
+import { phaseFor, captionFor } from "@/lib/journeyCopy";
 
 const MOODS = [
   { v: 0, l: "Struggling", icon: Frown }, { v: 1, l: "Rough", icon: Annoyed }, { v: 2, l: "Mixed", icon: Meh },
@@ -68,12 +69,12 @@ const Dots = ({ n, total }) => (
   </div>
 );
 
-const MoodStep = ({ todayNo, mood, glow, stage, setMood, onNext, onLater }) => (
+const MoodStep = ({ todayNo, mood, glow, stage, programme, setMood, onNext, onLater }) => (
   <div className="text-center">
     <h2 className="font-serif text-2xl sm:text-3xl font-bold text-slate-900">Good to see you again!</h2>
     <p className="mt-1 text-sm text-slate-500">Let&apos;s take another small step together.</p>
     <div className="mt-5"><AvatarRing stage={stage} /></div>
-    <p data-testid="daily-log-stage" className="mt-3 text-xs text-slate-500">Phase {phaseOf(stage).n} · {phaseOf(stage).name} — <span className="font-medium text-eq-dark">{STAGES[stage - 1].caption}</span></p>
+    <p data-testid="daily-log-stage" className="mt-3 text-xs text-slate-500">Phase {phaseFor(stage, programme).n} · {phaseFor(stage, programme).name} — <span className="font-medium text-eq-dark">{captionFor(stage, programme)}</span></p>
     <div data-testid="daily-log-glow" className="mt-5 mx-auto max-w-sm rounded-full bg-white shadow-sm px-4 py-2 flex items-center gap-3 text-xs text-slate-600">
       <Sun className="h-4 w-4 text-amber-500" /> Your Glow
       <div className="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden"><motion.div className="h-full bg-eq rounded-full" animate={{ width: `${glow * 100}%` }} /></div>
@@ -212,7 +213,7 @@ export const DailyLog = ({ r, day, open, onClose, onSave }) => {
           <AnimatePresence mode="wait">
             <motion.div key={step} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.25 }} className="mt-4">
               {step < 0 ? (
-                <MoodStep todayNo={todayIdx + 1} mood={mood} glow={glow} stage={stage} setMood={setMood} onNext={() => setStep(0)} onLater={onClose} />
+                <MoodStep todayNo={todayIdx + 1} mood={mood} glow={glow} stage={stage} programme={r.programme} setMood={setMood} onNext={() => setStep(0)} onLater={onClose} />
               ) : step >= total ? (
                 <FeedbackStep yes={yes} total={total} stage={stage} fb={fb} setFb={setFb} onBack={() => setStep(total - 1)} onSubmit={submit} />
               ) : (

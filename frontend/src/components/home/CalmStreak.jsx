@@ -1,7 +1,14 @@
 import { Flame } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { elapsedDays } from "@/lib/progress";
-import { PHASES, STAGES, currentStage, toNextStage, PER_STAGE, stageSrc } from "@/lib/stages";
+import { PHASES, currentStage, toNextStage, PER_STAGE, stageSrc } from "@/lib/stages";
+import { journeyCopy } from "@/lib/journeyCopy";
+
+/** Stage badge (name + message) worded for the student's programme. */
+export const badgeFor = (n, programme) => {
+  const C = journeyCopy(programme);
+  return { name: C.badges[n - 1], caption: C.captions[n - 1], msg: programme === "equimind" || !programme ? BADGES[n - 1].msg : `${C.captions[n - 1]} — you earned this, one step at a time.` };
+};
 
 export const BADGES = [
   { name: "First Step", msg: "You showed up for yourself. Every journey starts exactly like this." },
@@ -44,25 +51,26 @@ const cheer = (s) => {
 
 export const StreakCard = ({ r, onOpenDaily, pending }) => {
   const s = streakInfo(r);
+  const C = journeyCopy(r?.programme);
   return (
     <section data-testid="calm-streak-section" className="rounded-[2rem] bg-white border border-eq/10 p-5 sm:p-7">
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
         <div className="flex items-center gap-4">
           <span className="h-14 w-14 shrink-0 rounded-2xl bg-gradient-to-br from-eq-soft to-white border border-eq/15 grid place-items-center"><Flame className="h-7 w-7 text-eq" /></span>
           <div>
-            <h2 className="font-serif text-2xl font-bold text-slate-900">Calm Streak</h2>
+            <h2 data-testid="streak-title" className="font-serif text-2xl font-bold text-slate-900">{C.streak}</h2>
             <p data-testid="streak-cheer" className="text-sm text-slate-600 max-w-md">{cheer(s)}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="rounded-2xl bg-eq-bg/70 px-4 py-2 text-center"><div data-testid="streak-current" className="font-serif text-2xl font-bold text-eq-dark leading-none">{s.current}</div><div className="mt-1 text-[11px] text-slate-500">day streak</div></div>
+          <div className="rounded-2xl bg-eq-bg/70 px-4 py-2 text-center"><div data-testid="streak-current" className="font-serif text-2xl font-bold text-eq-dark leading-none">{s.current}</div><div className="mt-1 text-[11px] text-slate-500">{C.streakUnit}</div></div>
           <div className="rounded-2xl bg-eq-bg/70 px-4 py-2 text-center"><div data-testid="streak-earned" className="font-serif text-2xl font-bold text-slate-800 leading-none">{s.stage}<span className="text-sm text-slate-400">/14</span></div><div className="mt-1 text-[11px] text-slate-500">stage</div></div>
           {pending !== null && <button data-testid="streak-checkin-btn" onClick={onOpenDaily} className="hidden md:inline-flex h-11 px-4 rounded-xl bg-eq text-white text-sm font-medium items-center hover:bg-eq-dark transition-colors">Check in now</button>}
         </div>
       </div>
       <div className="mt-6 hidden lg:grid grid-cols-[repeat(14,minmax(0,1fr))] gap-3 mb-3">
-        {PHASES.map((p) => (
-          <div key={p.n} title={`Phase ${p.n}: ${p.name}`} style={{ gridColumn: `span ${p.to - p.from + 1}` }}
+        {PHASES.map((p0) => ({ ...p0, name: C.phases[p0.n - 1][0], short: C.phases[p0.n - 1][1] })).map((p) => (
+          <div key={p.n} data-testid={`streak-phase-${p.n}`} title={`Phase ${p.n}: ${p.name}`} style={{ gridColumn: `span ${p.to - p.from + 1}` }}
             className={`rounded-full px-3 py-1.5 text-center text-[11px] font-semibold truncate ${p.n % 2 ? "bg-eq-soft text-eq-dark" : "bg-violet-50 text-violet-700"} ${s.stage >= p.from ? "" : "opacity-50"}`}>
             Phase {p.n} · {p.short}
           </div>
@@ -70,17 +78,18 @@ export const StreakCard = ({ r, onOpenDaily, pending }) => {
       </div>
       <TooltipProvider delayDuration={100}>
         <div className="mt-6 lg:mt-0 grid grid-cols-7 lg:grid-cols-[repeat(14,minmax(0,1fr))] gap-2 sm:gap-3">
-          {BADGES.map((b, i) => {
+          {BADGES.map((_, i) => {
+            const b = badgeFor(i + 1, r?.programme);
             const got = i < s.stage;
             const next = i === s.stage;
-            const st = STAGES[i];
+            const st = { caption: b.caption };
             return (
               <Tooltip key={i}>
                 <TooltipTrigger asChild>
                   <button data-testid={`streak-badge-${i + 1}`} data-earned={got} aria-label={`${b.name}: ${st.caption}`}
                     className="group flex flex-col items-center focus:outline-none">
                     <span className={`relative h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden transition-transform duration-300 group-hover:-translate-y-0.5 ${got ? "ring-2 ring-eq shadow-[0_6px_16px_-6px_rgb(var(--eq-p)/0.7)]" : next ? "outline-dashed outline-2 outline-eq/50 outline-offset-2" : "ring-1 ring-slate-200"}`}>
-                      <img src={stageSrc(st.n, r?.programme)} alt={st.caption} draggable={false} className={`h-full w-full object-cover ${got ? "" : "grayscale opacity-40"}`} />
+                      <img src={stageSrc(i + 1, r?.programme)} alt={st.caption} draggable={false} className={`h-full w-full object-cover ${got ? "" : "grayscale opacity-40"}`} />
                     </span>
                     <span className={`mt-1.5 h-4 min-w-4 px-1 rounded-full text-[10px] font-semibold grid place-items-center ${got ? "bg-eq text-white" : "bg-slate-100 text-slate-400"}`}>{i + 1}</span>
                   </button>

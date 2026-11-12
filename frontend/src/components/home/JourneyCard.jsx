@@ -4,26 +4,9 @@ import { HELPFUL_L, FEEL_L, FEEL_TONE } from "@/lib/feedback";
 import { Student } from "@/components/Avatar";
 import { BANDS } from "@/components/report/PlanTrack";
 import { elapsedDays } from "@/lib/progress";
-import { stageAt, currentStage, doneUpTo, toNextStage, PER_STAGE, STAGES, phaseOf } from "@/lib/stages";
+import { stageAt, currentStage, doneUpTo, toNextStage, PER_STAGE } from "@/lib/stages";
+import { journeyCopy, phaseFor, captionFor } from "@/lib/journeyCopy";
 
-const TITLES = ["Taking It Slow", "Hanging In There", "Finding Your Feet", "Feeling More Calm", "Feeling Bright"];
-const SHORT = ["Struggling", "Rough day", "Settling", "Calmer", "More Open"];
-const DESC = [
-  "Today feels heavy. That's okay — one small step from your plan is enough.",
-  "A tough day, and you're still showing up. Be gentle with yourself.",
-  "Things are settling. Small habits are starting to hold you steady.",
-  "You feel less stressed, a bit more focused, and more open to connecting with others.",
-  "You're feeling strong today. Notice what helped, so you can repeat it.",
-];
-const QUOTES = [
-  "Small, consistent steps quietly create a happier you.",
-  "Progress, not perfection.",
-  "Rest is part of the work.",
-  "You don't have to do it all today.",
-  "One honest sentence can lighten the load.",
-  "Your pace is still progress.",
-  "Tomorrow is the restart, not next Monday.",
-];
 
 const doneOn = (r, d) => r.plan.map((_, i) => (r.ticks || []).includes(`${i}-${d}`));
 
@@ -37,7 +20,7 @@ const dayInfo = (r, d, today) => {
   const prev = d > 0 ? stageAt(r, d - 1) : 1;
   const base = { stage, grew: stage > prev, mood, done, marks, logged };
   if (logged) return { ...base, label: `${done}/${r.plan.length} done` };
-  if (BANDS[mood]) return { ...base, label: SHORT[mood] };
+  if (BANDS[mood]) return { ...base, label: journeyCopy(r.programme).moodShort[mood] };
   return { ...base, label: d === today ? "Today" : "Not logged" };
 };
 
@@ -62,19 +45,19 @@ const SideCard = ({ r, d, today, side }) => {
   );
 };
 
-const titleFor = (info, isToday) => {
+const titleFor = (info, isToday, C) => {
   if (info.future) return "Locked";
-  if (info.mood !== undefined && info.mood !== null && BANDS[info.mood]) return TITLES[info.mood];
-  if (info.logged) return info.done >= 4 ? "A Strong Day" : info.done >= 2 ? "Small Steps Taken" : info.done === 1 ? "One Step Forward" : "Checked In";
-  return isToday ? "How are you today?" : "Not logged";
+  if (info.mood !== undefined && info.mood !== null && BANDS[info.mood]) return C.moodTitles[info.mood];
+  if (info.logged) return info.done >= 4 ? C.strong : info.done >= 2 ? C.some : info.done === 1 ? C.one : C.none;
+  return isToday ? C.ask : "Not logged";
 };
 
-const descFor = (info, isToday, total, d, start) => {
+const descFor = (info, isToday, total, d, start, C) => {
   if (info.future) {
     const on = new Date(new Date(start).getTime() + d * 864e5).toLocaleDateString(undefined, { day: "numeric", month: "short" });
     return `This day unlocks on ${on}. Your avatar grows only with the activities you complete — it can't skip ahead.`;
   }
-  const mood = info.mood !== undefined && info.mood !== null && BANDS[info.mood] ? `${DESC[info.mood]} ` : "";
+  const mood = info.mood !== undefined && info.mood !== null && BANDS[info.mood] ? `${C.moodDesc[info.mood]} ` : "";
   if (info.logged) {
     if (!info.done) return `${mood}You checked in but no plan activities were done this day — your avatar stayed where it was. That's okay, the next one counts.`;
     return `${mood}You completed ${info.done} of ${total} plan activities${info.grew ? " — and your avatar grew to a new stage!" : "."}`;
@@ -87,21 +70,23 @@ const MainCard = ({ r, d, today, onSave, pending, onOpenDaily }) => {
   const info = dayInfo(r, d, today);
   const moods = r.moods || {};
   const isToday = d === today && elapsedDays(r) <= 13;
+  const C = journeyCopy(r.programme);
+  const todo = r.plan.filter((_, i) => !info.marks[i]);
   return (
     <div data-testid="journey-main-card" data-state={info.future ? "locked" : info.logged ? "logged" : "open"} className={`rounded-3xl border-2 p-5 sm:p-6 ${info.future ? "bg-slate-50 border-slate-200" : "bg-white border-eq/20 shadow-[0_20px_60px_-30px_rgb(var(--eq-p)/0.5)]"}`}>
       <div className="grid sm:grid-cols-[auto_1fr] gap-5 items-center">
         <div className="text-center">
           <Avatar info={info} size="h-36 w-36 sm:h-40 sm:w-40" testid="journey-main-avatar" bounce={false} />
-          <p data-testid="journey-main-stage" className={`mt-2 text-xs font-medium max-w-[11rem] mx-auto ${info.future ? "text-slate-400" : "text-eq-dark"}`}>{info.future ? "Not unlocked yet" : `Stage ${info.stage} · ${STAGES[info.stage - 1].caption}`}</p>
+          <p data-testid="journey-main-stage" className={`mt-2 text-xs font-medium max-w-[11rem] mx-auto ${info.future ? "text-slate-400" : "text-eq-dark"}`}>{info.future ? "Not unlocked yet" : `Stage ${info.stage} · ${captionFor(info.stage, r.programme)}`}</p>
         </div>
         <div className="sm:border-l sm:border-slate-100 sm:pl-5">
           <div className="flex flex-wrap gap-2">
             <span className={`rounded-full text-xs font-semibold px-3 py-1 ${info.future ? "bg-slate-100 text-slate-500" : "bg-eq-soft text-eq-dark"}`}>Day {d + 1}{isToday ? " · Today" : ""}</span>
-            {!info.future && <span data-testid="journey-main-phase" className="rounded-full bg-violet-50 text-violet-700 text-xs font-semibold px-3 py-1">Phase {phaseOf(info.stage).n}: {phaseOf(info.stage).name}</span>}
+            {!info.future && <span data-testid="journey-main-phase" className="rounded-full bg-violet-50 text-violet-700 text-xs font-semibold px-3 py-1">Phase {phaseFor(info.stage, r.programme).n}: {phaseFor(info.stage, r.programme).name}</span>}
             {info.grew && <span data-testid="journey-main-grew" className="rounded-full bg-amber-50 text-amber-700 text-xs font-semibold px-3 py-1 inline-flex items-center gap-1"><Sparkles className="h-3 w-3" /> New stage</span>}
           </div>
-          <h3 data-testid="journey-main-title" className={`mt-3 font-serif text-2xl sm:text-3xl font-bold ${info.future ? "text-slate-400" : "text-slate-900"}`}>{titleFor(info, isToday)}</h3>
-          <p data-testid="journey-main-desc" className="mt-2 text-sm text-slate-600 leading-relaxed">{descFor(info, isToday, r.plan.length, d, r.created_at)}</p>
+          <h3 data-testid="journey-main-title" className={`mt-3 font-serif text-2xl sm:text-3xl font-bold ${info.future ? "text-slate-400" : "text-slate-900"}`}>{titleFor(info, isToday, C)}</h3>
+          <p data-testid="journey-main-desc" className="mt-2 text-sm text-slate-600 leading-relaxed">{descFor(info, isToday, r.plan.length, d, r.created_at, C)}</p>
           {!info.future && (info.logged || info.done > 0) && (
             <ul data-testid="journey-main-activities" className="mt-3 flex flex-wrap gap-1.5">
               {r.plan.map((a, i) => (
@@ -124,19 +109,25 @@ const MainCard = ({ r, d, today, onSave, pending, onOpenDaily }) => {
           )}
         </div>
       </div>
+      {isToday && !info.logged && todo.length > 0 && (
+        <div data-testid="journey-next-up" className="mt-5 rounded-2xl border border-eq/15 bg-eq-bg/60 px-4 py-3">
+          <div className="text-xs font-semibold text-eq-dark">{C.nextLabel}</div>
+          <ul className="mt-2 flex flex-wrap gap-1.5">{todo.map((a) => <li key={a.id} className="rounded-full bg-white border border-eq/15 px-2.5 py-1 text-[11px] text-slate-700">{a.short} · <span className="text-slate-400">{a.time}</span></li>)}</ul>
+        </div>
+      )}
       {isToday && (
         <div className="mt-5 flex flex-wrap gap-2" data-testid="journey-mood-buttons">
           {BANDS.map((b) => (
             <button key={b.v} data-testid={`journey-mood-${b.v}`} onClick={() => onSave({ moods: { ...moods, [d]: b.v } })}
               className={`h-9 px-3.5 rounded-full text-sm border transition-colors ${moods[d] === b.v ? "text-white border-transparent" : "bg-white text-slate-700 border-slate-200 hover:border-slate-400"}`}
-              style={moods[d] === b.v ? { background: b.c, color: b.v === 4 ? "#fff" : "#1e293b" } : {}}>{b.l}</button>
+              style={moods[d] === b.v ? { background: b.c, color: b.v === 4 ? "#fff" : "#1e293b" } : {}}>{C.moodShort[b.v]}</button>
           ))}
         </div>
       )}
       <div className="mt-5 flex flex-wrap gap-2">
         {pending !== null && isToday && <button data-testid="journey-log-yesterday-btn" onClick={onOpenDaily} className="h-10 px-4 rounded-xl bg-eq text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-eq-dark transition-colors"><ClipboardCheck className="h-4 w-4" /> Log Day {pending + 1} activities</button>}
       </div>
-      {!info.future && <div className="mt-5 rounded-2xl bg-eq-bg px-4 py-3 flex items-center gap-2 text-sm italic text-eq-dark"><Quote className="h-4 w-4 shrink-0" />{QUOTES[d % QUOTES.length]}</div>}
+      {!info.future && <div className="mt-5 rounded-2xl bg-eq-bg px-4 py-3 flex items-center gap-2 text-sm italic text-eq-dark"><Quote className="h-4 w-4 shrink-0" />{C.quotes[d % C.quotes.length]}</div>}
     </div>
   );
 };
@@ -173,15 +164,16 @@ export const JourneyCard = ({ r, onSave, pending, onOpenDaily }) => {
   const done = doneUpTo(r);
   const stage = currentStage(r);
   const need = toNextStage(r);
-  const focus = r.programme === "focusedge";
+  const C = journeyCopy(r.programme);
   const sub = !logged && !done
-    ? "Your journey starts with today's check-in. Every activity you complete helps your avatar grow."
+    ? C.intro
     : `${logged} of 14 days logged · ${done} ${done === 1 ? "activity" : "activities"} done · Stage ${stage} of 14`;
   return (
     <section data-testid="journey-card" className="rounded-[2rem] bg-gradient-to-b from-white to-eq-bg border border-eq/10 p-5 sm:p-7">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 data-testid="journey-title" className="font-serif text-2xl sm:text-3xl font-bold text-slate-900">{e > 13 ? `Your 14-Day ${focus ? "Focus" : "Wellness"} Journey — complete` : `Your 14-Day ${focus ? "Focus" : "Wellness"} Journey`}</h2>
+          <h2 data-testid="journey-title" className="font-serif text-2xl sm:text-3xl font-bold text-slate-900">{e > 13 ? `${C.title} — complete` : C.title}</h2>
+          <div className="mt-1.5 flex flex-wrap items-center gap-2"><span data-testid="journey-grade" className="rounded-full bg-white border border-eq/15 text-eq-dark text-[11px] font-semibold px-2.5 py-0.5">{C.grade}</span><span className="text-xs text-slate-500">{C.focusLine}</span></div>
           <p data-testid="journey-summary" className="mt-1 text-sm text-slate-600">{sub}</p>
         </div>
         <span data-testid="journey-day-badge" className="rounded-full bg-eq-soft text-eq-dark font-semibold text-sm px-4 py-1.5 whitespace-nowrap">{e > 13 ? "Journey complete" : `Day ${today + 1} of 14`}</span>
