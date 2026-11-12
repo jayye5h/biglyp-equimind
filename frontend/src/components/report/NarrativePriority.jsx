@@ -4,9 +4,9 @@ import { LEVEL_STYLE } from "@/lib/api";
 import { BRANDS } from "@/lib/brand";
 
 export const NarrativePage = ({ r, n, total }) => (
-  <PageShell n={n} total={total} eyebrow="Page 3" title="What You May Be Going Through" id="narrative" testid="report-page-narrative" inline>
+  <PageShell n={n} total={total} eyebrow="Page 3" title={r.programme === "focusedge" ? "What's Happening" : "What You May Be Going Through"} id="narrative" testid="report-page-narrative" inline>
     <div className="grid md:grid-cols-[0.8fr_1.2fr] gap-6 md:gap-8 items-center [&>*]:min-w-0">
-      <Art src="/report-art/narrative.webp" alt="A student reflecting" testid="report-page-narrative-art" className="max-w-[340px] mx-auto" />
+      <Art src={r.programme === "focusedge" ? "/report-art/fe_narrative.webp" : "/report-art/narrative.webp"} alt="A student reflecting" testid="report-page-narrative-art" className="max-w-[340px] mx-auto" />
       <div>
         <p data-testid="narrative-text" className="font-serif text-lg sm:text-xl leading-relaxed text-slate-800">{r.narrative.narrative}</p>
         {r.narrative.source === "ai" && <p className="mt-3 text-[11px] text-slate-400 flex items-center gap-1"><Sparkles className="h-3 w-3" /> Written with AI from your own answers, within {(BRANDS[r.programme] || BRANDS.equimind).name}&apos;s safe-wording rules.</p>}
@@ -64,7 +64,8 @@ const Why = ({ p }) => (
 const ART_MAP = { mindmellow: { A: "a", B: "f", C: "f", D: "d", E: "c", F: "b" }, mindedge: { A: "a", B: "f", C: "d", D: "e", E: "c", F: "b" } };
 
 export const PriorityPage = ({ p, idx, n, total, programme }) => {
-  const art = <Art src={`/report-art/area_${ART_MAP[programme]?.[p.area] || p.area.toLowerCase()}.webp`} alt={p.name} testid={`report-page-priority-${idx + 1}-art`} className="max-w-[420px] mx-auto" />;
+  const src = programme === "focusedge" ? `/report-art/fe_${p.area.toLowerCase()}.webp` : `/report-art/area_${ART_MAP[programme]?.[p.area] || p.area.toLowerCase()}.webp`;
+  const art = <Art src={src} alt={p.name} testid={`report-page-priority-${idx + 1}-art`} className="max-w-[420px] mx-auto" />;
   return (
     <PageShell n={n} total={total} eyebrow={`Priority ${idx + 1}`} title={p.name} id={`priority-${idx + 1}`} testid={`report-page-priority-${idx + 1}`} inline
       side={idx === 0 ? art : null} headExtra={idx === 0 ? <Score p={p} /> : null}>

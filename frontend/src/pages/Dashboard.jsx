@@ -14,7 +14,8 @@ const levelOf = (s) => (s < 35 ? "Needs care first" : s < 50 ? "Watch" : s < 65 
 
 export const LatestCard = ({ r }) => {
   const done = r.ticks?.length || 0;
-  const retake = new Date(new Date(r.created_at).getTime() + 30 * 864e5);
+  const rd = r.programme === "focusedge" ? 14 : 30;
+  const retake = new Date(new Date(r.created_at).getTime() + rd * 864e5);
   return (
     <div data-testid="latest-report-card" className="rounded-[2rem] bg-white border border-eq/10 p-6 sm:p-8 grid md:grid-cols-[auto_1fr] gap-8">
       <div className="h-36 w-36 rounded-full border-[10px] border-eq-soft grid place-items-center">
@@ -34,7 +35,7 @@ export const LatestCard = ({ r }) => {
           <Link to={`/report/${r.id}`} data-testid="view-latest-report-btn" className="h-11 px-5 rounded-xl bg-eq text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-eq-dark transition-colors"><FileText className="h-4 w-4" /> Open report</Link>
           <Link to={`/report/${r.id}#plan`} data-testid="view-plan-btn" className="h-11 px-5 rounded-xl bg-[#fff0ee] text-[#c2410c] text-sm font-medium inline-flex items-center gap-2 hover:bg-[#ffe4e0] transition-colors"><CalendarCheck className="h-4 w-4" /> 14-day plan · {done}/70 ticks</Link>
         </div>
-        <p className="mt-4 text-xs text-slate-500 flex items-center gap-1.5"><RotateCcw className="h-3.5 w-3.5" /> Scheduled Day-30 retake: <b data-testid="day30-date">{fmtDate(retake.toISOString())}</b> (same 24 items for a fair comparison)</p>
+        <p className="mt-4 text-xs text-slate-500 flex items-center gap-1.5"><RotateCcw className="h-3.5 w-3.5" /> Scheduled Day-{rd} retake: <b data-testid="day30-date">{fmtDate(retake.toISOString())}</b> (same 24 items for a fair comparison)</p>
       </div>
     </div>
   );

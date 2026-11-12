@@ -11,6 +11,9 @@ export const ALL_PALETTES = {
   ocean: { label: "Ocean blue", p: "#2f7bab", grid: "#cfe3ef" },
   seafoam: { label: "Seafoam", p: "#3e9e8a", grid: "#d2ebe4" },
   palegold: { label: "Pale gold", p: "#94712a", grid: "#f1e6c8" },
+  indigo: { label: "Soft indigo", p: "#5a5fc8", grid: "#dedff8" },
+  coral: { label: "Warm coral", p: "#d66c5c", grid: "#f8ded8" },
+  mintleaf: { label: "Mint leaf", p: "#409c7e", grid: "#d6eee4" },
 };
 const pick = (brand) => Object.fromEntries(BRANDS[brand].palettes.map((k) => [k, ALL_PALETTES[k]]));
 // Back-compat export (EquiMind palettes)

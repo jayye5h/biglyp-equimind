@@ -15,6 +15,11 @@ export const BRANDS = {
     audience: "Class 9–10 students", counsellor: "school counsellor", counsellorTitle: "School counsellor",
     palettes: ["ocean", "seafoam", "palegold"], pdfPrefix: "MindEdge", school: true,
   },
+  focusedge: {
+    key: "focusedge", name: "FocusEdge", tagline: "Focus & study-habit check-in for Grades 6–8", home: "/focusedge", login: "/focusedge/login",
+    audience: "Class 6–8 students", counsellor: "school counsellor", counsellorTitle: "School counsellor",
+    palettes: ["indigo", "coral", "mintleaf"], pdfPrefix: "FocusEdge", school: true, focus: true, retakeDay: 14,
+  },
 };
 /** Brand for a report / user programme (defaults to EquiMind). */
 export const brandOf = (x) => BRANDS[x?.programme] || BRANDS.equimind;

@@ -1,0 +1,612 @@
+[
+ {
+  "key": "D1",
+  "name": "Attention & Focus",
+  "short": "Attention",
+  "subthemes": [
+   {
+    "key": "D1.1",
+    "name": "Sustained attention",
+    "items": [
+     "I find it hard to pay attention for a whole lesson.",
+     "I zone out during class and miss what the teacher said.",
+     "I can only focus for a short time before my mind wanders.",
+     "I lose my place when I'm reading.",
+     "I need to re-read things many times to understand them.",
+     "I space out even in lessons I like.",
+     "I find it hard to sit through a long task.",
+     "My attention feels like it keeps slipping away."
+    ]
+   },
+   {
+    "key": "D1.2",
+    "name": "Selective attention",
+    "items": [
+     "I notice every small sound around me when I study.",
+     "I can't tune out people talking nearby when I need to focus.",
+     "I get pulled by things happening outside my study space.",
+     "I find background noise distracting even when it's quiet to others.",
+     "I can't pick out the important part of what my teacher is saying.",
+     "My eyes keep jumping around when I should be looking at one thing.",
+     "I notice movement in the room and lose track of what I was doing.",
+     "Even small things pull my attention away."
+    ]
+   },
+   {
+    "key": "D1.3",
+    "name": "Working memory",
+    "items": [
+     "I forget instructions right after my teacher tells me.",
+     "I lose track of what I was going to say.",
+     "I forget what I came into a room to do.",
+     "I can't remember the first part of the question by the time I get to the end.",
+     "I need instructions written down or I'll forget them.",
+     "I forget steps in my own plan while I'm doing it.",
+     "Numbers or facts slip out of my head quickly."
+    ]
+   },
+   {
+    "key": "D1.4",
+    "name": "Cognitive fatigue",
+    "items": [
+     "I feel mentally tired after a short time of study.",
+     "My brain feels foggy by the middle of the day.",
+     "I feel wiped out after one hour of homework.",
+     "Focus gets harder as the day goes on.",
+     "I feel more tired reading than doing physical activity.",
+     "I need lots of breaks just to keep going.",
+     "By evening, I can't focus on study at all."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "D2",
+  "name": "Getting Started",
+  "short": "Getting Started",
+  "subthemes": [
+   {
+    "key": "D2.1",
+    "name": "Task initiation",
+    "items": [
+     "I take a long time to actually start my homework.",
+     "I open my book and just stare at it.",
+     "I keep putting off starting even when I know I should.",
+     "I feel stuck at the beginning of tasks.",
+     "I need someone to remind me again and again to start.",
+     "I find other things to do instead of starting the real task.",
+     "Starting feels like the hardest part.",
+     "Even an easy task feels hard to begin."
+    ]
+   },
+   {
+    "key": "D2.2",
+    "name": "First-step paralysis",
+    "items": [
+     "I don't know where to begin with my homework.",
+     "I feel frozen when I look at a big task.",
+     "I feel confused about what step to take first.",
+     "I can't break my homework into smaller pieces.",
+     "I feel scared I'll do the first step wrong.",
+     "I need an adult to tell me exactly how to start.",
+     "I keep re-reading the task instead of starting it.",
+     "My mind goes blank when I need to begin."
+    ]
+   },
+   {
+    "key": "D2.3",
+    "name": "Mental warm-up",
+    "items": [
+     "I need a long time to settle into a task before I can focus.",
+     "I can't 'switch on' my study brain quickly.",
+     "I take ages to find my groove even after I've started.",
+     "I feel slow at the start of every study session.",
+     "I need to scroll or chat before I can begin studying.",
+     "I feel sleepy or fuzzy when I sit down to start.",
+     "The first 15 minutes of study are the hardest."
+    ]
+   },
+   {
+    "key": "D2.4",
+    "name": "Transition difficulty",
+    "items": [
+     "I find it hard to switch from play to study.",
+     "I get annoyed when I'm asked to stop one activity to start another.",
+     "I keep thinking about the thing I just stopped doing.",
+     "I need extra time to adjust to a new task.",
+     "I lose focus when I switch between subjects.",
+     "Going from screen time to study takes me a long time.",
+     "I need a 'buffer' between activities to feel okay."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "D3",
+  "name": "Distraction & Delay Management",
+  "short": "Distraction Mgmt",
+  "subthemes": [
+   {
+    "key": "D3.1",
+    "name": "External distractions",
+    "items": [
+     "My phone keeps pulling me away from my work.",
+     "I check my phone every few minutes while studying.",
+     "Notifications on my devices break my focus.",
+     "TV or music in the background distracts me.",
+     "I can't resist opening YouTube, games or chat while I should be working.",
+     "My siblings or family moving around breaks my focus.",
+     "I get distracted by things on my study table.",
+     "Even small sounds or movements pull me away."
+    ]
+   },
+   {
+    "key": "D3.2",
+    "name": "Internal distractions",
+    "items": [
+     "My own thoughts take me away from the task.",
+     "I start daydreaming when I should be studying.",
+     "I think about plans, games or shows during study.",
+     "I remember other things I want to do while I'm working.",
+     "I feel restless and have to get up often.",
+     "My mind jumps to random thoughts I can't control.",
+     "I worry about other things while I'm supposed to focus.",
+     "I keep humming, doodling or fidgeting instead of doing the task."
+    ]
+   },
+   {
+    "key": "D3.3",
+    "name": "Procrastination patterns",
+    "items": [
+     "I say 'in 5 minutes' and then don't start for an hour.",
+     "I do easy things first to avoid hard things.",
+     "I keep finding reasons to delay.",
+     "I wait until the last minute to do things.",
+     "I promise myself I'll start tomorrow, and I don't.",
+     "I only work when I'm scared of the deadline.",
+     "I avoid homework until someone gets angry."
+    ]
+   },
+   {
+    "key": "D3.4",
+    "name": "Urge management",
+    "items": [
+     "I give in to the urge to check my phone even when I know I shouldn't.",
+     "I feel strong urges to get up and do something else.",
+     "I can't stop myself from switching tasks.",
+     "I have to act on an idea right when I think of it.",
+     "I find it very hard to wait when I want something.",
+     "I can't resist snacks or games during study time.",
+     "I get a 'bored' feeling that makes me need to do something else."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "D4",
+  "name": "Planning & Organisation",
+  "short": "Planning",
+  "subthemes": [
+   {
+    "key": "D4.1",
+    "name": "Task breakdown",
+    "items": [
+     "I don't know how to break a big project into smaller parts.",
+     "I try to do everything at once.",
+     "My plan is just 'do the homework', with no steps.",
+     "I start in the middle of a task without thinking about the beginning.",
+     "I struggle to know what to do first, second, third.",
+     "I can't guess how long tasks will take.",
+     "I run out of time because I planned badly.",
+     "I feel overwhelmed by big tasks I haven't broken down."
+    ]
+   },
+   {
+    "key": "D4.2",
+    "name": "Time awareness",
+    "items": [
+     "I lose track of time easily.",
+     "I think something will take 10 minutes but it takes an hour.",
+     "I don't notice time passing when I'm on my phone.",
+     "I'm late for things because I misjudge time.",
+     "I don't look at the clock when I should.",
+     "I miss deadlines because I forget what day it is.",
+     "I start tasks too late in the day.",
+     "I feel surprised when time is up."
+    ]
+   },
+   {
+    "key": "D4.3",
+    "name": "Materials & workspace",
+    "items": [
+     "I lose my pencil, book or diary often.",
+     "My school bag is messy and I can't find things.",
+     "I forget to pack what I need for tomorrow.",
+     "My study table is cluttered.",
+     "I waste time looking for things I need to study.",
+     "I don't remember where I left my homework.",
+     "I need to start over because I can't find notes."
+    ]
+   },
+   {
+    "key": "D4.4",
+    "name": "Deadline tracking",
+    "items": [
+     "I forget when homework is due.",
+     "I don't write down my test dates.",
+     "I remember a deadline only when the teacher mentions it.",
+     "I can't tell which task is most important this week.",
+     "I miss projects because I don't track them.",
+     "I don't look at my planner even when I have one.",
+     "I rely on someone else to remind me of dates."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "D5",
+  "name": "Learning Confidence & Help-Seeking",
+  "short": "Confidence",
+  "subthemes": [
+   {
+    "key": "D5.1",
+    "name": "Confidence in abilities",
+    "items": [
+     "I don't think I'm smart enough for my grade.",
+     "I feel most other students understand things faster than me.",
+     "I'm scared to try things I think I'll fail at.",
+     "I give up on something if I don't understand it quickly.",
+     "I feel I can't learn new things like my classmates can.",
+     "I think my brain doesn't work the way school expects.",
+     "I feel 'slow' compared to friends.",
+     "I believe I'm bad at certain subjects for good."
+    ]
+   },
+   {
+    "key": "D5.2",
+    "name": "Asking for help",
+    "items": [
+     "I'm scared to ask my teacher a question in class.",
+     "I'd rather stay stuck than ask for help.",
+     "I worry others will laugh if I say I don't understand.",
+     "I don't tell my parents when I'm struggling.",
+     "I don't put my hand up even when I want to.",
+     "I pretend to understand when I don't.",
+     "I feel it's weak to need help.",
+     "I wait for someone to notice I'm stuck, instead of asking."
+    ]
+   },
+   {
+    "key": "D5.3",
+    "name": "Fear of mistakes",
+    "items": [
+     "I feel really bad when I make a mistake.",
+     "I'm scared to try answers I'm not sure about.",
+     "I don't like being corrected in front of others.",
+     "I think making mistakes means I'm bad at something.",
+     "I replay mistakes in my head long after.",
+     "I'd rather leave an answer blank than get it wrong.",
+     "I'm embarrassed to try in front of classmates."
+    ]
+   },
+   {
+    "key": "D5.4",
+    "name": "Academic self-concept",
+    "items": [
+     "I think of myself as 'not a study person'.",
+     "I feel I'm 'bad at maths / English / science'.",
+     "I decided long ago I'm not good at school.",
+     "I believe some kids are 'born smart' and I'm not.",
+     "I don't see myself doing well academically ever.",
+     "I feel my label at school is 'the one who struggles'.",
+     "I don't try my best because I don't believe it will help."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "D6",
+  "name": "Learning Motivation & Meaning",
+  "short": "Motivation",
+  "subthemes": [
+   {
+    "key": "D6.1",
+    "name": "Interest & curiosity",
+    "items": [
+     "I find my school subjects boring.",
+     "I don't feel curious about what I'm learning.",
+     "I don't ask questions even when I wonder about things.",
+     "Nothing in class really excites me.",
+     "I don't read anything outside of textbooks.",
+     "I don't look up topics I find interesting on my own.",
+     "I just do what I'm told, I don't explore.",
+     "I don't feel joy in learning anymore."
+    ]
+   },
+   {
+    "key": "D6.2",
+    "name": "Boredom & disengagement",
+    "items": [
+     "I feel bored for most of the class.",
+     "I stare out the window during lessons.",
+     "Class feels slow or pointless.",
+     "I don't take part in class discussions.",
+     "I'm just waiting for the day to end.",
+     "I feel disconnected from what the teacher is teaching.",
+     "I just go through the motions in class.",
+     "I feel my mind is somewhere else during class."
+    ]
+   },
+   {
+    "key": "D6.3",
+    "name": "Reward & recognition",
+    "items": [
+     "I need someone to praise me to keep working.",
+     "I only do tasks if there's a reward.",
+     "I don't feel good about my work unless someone else says so.",
+     "If no one checks my work, I don't try my best.",
+     "Grades feel like the only reason to study.",
+     "I don't feel proud of myself when I do well.",
+     "I need constant 'well done' to keep going."
+    ]
+   },
+   {
+    "key": "D6.4",
+    "name": "Long-term meaning",
+    "items": [
+     "I don't understand why school matters for my future.",
+     "I feel what I'm learning isn't useful.",
+     "I can't picture how studies connect to my goals.",
+     "I don't know what I'm working towards.",
+     "School feels like something I have to do, not want to do.",
+     "I don't connect lessons to real life.",
+     "I don't feel excited about anything I'm learning for the future."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "D7",
+  "name": "Persistence & Recovery After Mistakes",
+  "short": "Persistence",
+  "subthemes": [
+   {
+    "key": "D7.1",
+    "name": "Response to failure",
+    "items": [
+     "I get upset when I get a question wrong.",
+     "A bad mark ruins my whole day.",
+     "I feel like a failure after a mistake.",
+     "I avoid looking at my mistakes.",
+     "I feel angry at myself when I get something wrong.",
+     "A mistake makes me want to give up on the subject.",
+     "I feel embarrassed to see my low scores.",
+     "I throw away or hide work I did badly on."
+    ]
+   },
+   {
+    "key": "D7.2",
+    "name": "Giving up early",
+    "items": [
+     "I stop trying if something is hard.",
+     "I say 'I can't do this' before I've really tried.",
+     "I give up after one wrong answer.",
+     "I quit when things get difficult.",
+     "I don't attempt questions I don't know right away.",
+     "I don't stay with hard problems long enough.",
+     "When I'm stuck, I just stop.",
+     "I move to the next task without trying."
+    ]
+   },
+   {
+    "key": "D7.3",
+    "name": "Self-criticism",
+    "items": [
+     "I'm hard on myself when I mess up.",
+     "I call myself 'stupid' in my head.",
+     "I compare myself to others and feel bad.",
+     "I'm meaner to myself than to friends.",
+     "I keep replaying what went wrong.",
+     "I feel ashamed of my mistakes.",
+     "I think one bad result means I'm bad."
+    ]
+   },
+   {
+    "key": "D7.4",
+    "name": "Learning from mistakes",
+    "items": [
+     "I don't look at corrections, I just move on.",
+     "I don't understand why I got something wrong.",
+     "I make the same mistakes again and again.",
+     "I don't ask the teacher to explain mistakes.",
+     "I don't practise the parts I got wrong.",
+     "I avoid thinking about tests I did badly in.",
+     "I don't see mistakes as something to learn from."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "D8",
+  "name": "Energy, Rest & Study Balance",
+  "short": "Energy & Rest",
+  "subthemes": [
+   {
+    "key": "D8.1",
+    "name": "Sleep patterns",
+    "items": [
+     "I sleep less than I should on school nights.",
+     "I stay up late on screens.",
+     "I feel sleepy during school.",
+     "I take ages to fall asleep after lying down.",
+     "I sleep at very different times each night.",
+     "I only catch up on sleep at weekends.",
+     "I wake up tired no matter how long I slept.",
+     "I watch videos in bed before sleeping."
+    ]
+   },
+   {
+    "key": "D8.2",
+    "name": "Physical energy & nutrition",
+    "items": [
+     "I skip breakfast on school days.",
+     "I eat a lot of junk food.",
+     "I feel weak or low-energy during class.",
+     "I don't drink enough water.",
+     "I get tired quickly during PE or play.",
+     "I feel heavy or sluggish after meals.",
+     "I don't eat proper meals most days.",
+     "I feel tired all the time."
+    ]
+   },
+   {
+    "key": "D8.3",
+    "name": "Screen time balance",
+    "items": [
+     "I spend too many hours on screens every day.",
+     "I lose study time to videos, games or chats.",
+     "I stare at screens even when I'm not enjoying it.",
+     "I use my phone for hours after school.",
+     "My eyes feel tired from screens.",
+     "I use screens right until bedtime.",
+     "I pick up my phone even in the middle of study."
+    ]
+   },
+   {
+    "key": "D8.4",
+    "name": "Rest & downtime",
+    "items": [
+     "I don't take proper breaks between study sessions.",
+     "My breaks are just more screens.",
+     "I don't get any time outside for play.",
+     "I feel I'm either studying or on a screen, nothing else.",
+     "I don't relax properly during the day.",
+     "I feel like I never fully rest.",
+     "My weekends feel busier than weekdays."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "D9",
+  "name": "Emotional Readiness for Learning",
+  "short": "Emotional Readiness",
+  "subthemes": [
+   {
+    "key": "D9.1",
+    "name": "Anxiety before study",
+    "items": [
+     "I feel nervous when I sit down to study.",
+     "I feel my stomach tight before homework.",
+     "I worry about getting things wrong before I start.",
+     "I feel tense before tests even days ahead.",
+     "I feel scared opening my maths / science book.",
+     "My heart beats fast when teachers announce a test.",
+     "I feel panicky when homework is hard.",
+     "I feel knots in my chest at exam time."
+    ]
+   },
+   {
+    "key": "D9.2",
+    "name": "Frustration & anger during tasks",
+    "items": [
+     "I get angry when I can't solve a problem.",
+     "I slam my books or pen when frustrated.",
+     "I cry when work feels too hard.",
+     "I snap at my parents when they ask about homework.",
+     "I feel like throwing my book across the room sometimes.",
+     "I feel like giving up in anger.",
+     "I lose my temper quickly when studying.",
+     "Frustration takes over before I can think."
+    ]
+   },
+   {
+    "key": "D9.3",
+    "name": "Mood and learning",
+    "items": [
+     "I can't study if I'm in a bad mood.",
+     "I feel sad while studying.",
+     "I feel irritated by small things in class.",
+     "My mood changes a lot during the school day.",
+     "I feel low after school most days.",
+     "I don't enjoy going to school anymore.",
+     "Studying makes me feel heavy and tired."
+    ]
+   },
+   {
+    "key": "D9.4",
+    "name": "Overwhelm",
+    "items": [
+     "I feel like it's all too much at once.",
+     "I feel like crying when I see pending work.",
+     "My mind feels full of worry I can't name.",
+     "I can't focus because I'm feeling too much.",
+     "I feel like running away from it all.",
+     "I feel scared about everything piling up.",
+     "I feel too tired and too stressed at the same time."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "D10",
+  "name": "Study Environment & Support",
+  "short": "Environment",
+  "subthemes": [
+   {
+    "key": "D10.1",
+    "name": "Physical workspace",
+    "items": [
+     "I don't have a quiet place to study at home.",
+     "I study where there's too much noise.",
+     "I don't have my own desk or chair for study.",
+     "My study space is cluttered.",
+     "I share my study area with too many people.",
+     "The light where I study is not good.",
+     "I keep my phone near me when I study.",
+     "My study space feels uncomfortable."
+    ]
+   },
+   {
+    "key": "D10.2",
+    "name": "Family support at home",
+    "items": [
+     "My family interrupts me while I study.",
+     "I feel no one at home can help me with homework.",
+     "My parents are too busy to sit with me.",
+     "Nobody checks my timetable or homework.",
+     "I get scolded for studying the 'wrong' way.",
+     "My family argues about my studies.",
+     "My parents don't encourage me enough.",
+     "I don't have a routine my family supports."
+    ]
+   },
+   {
+    "key": "D10.3",
+    "name": "Teacher relationships",
+    "items": [
+     "I don't feel comfortable with some of my teachers.",
+     "I'm scared to ask my teacher questions.",
+     "I feel my teachers don't notice when I'm struggling.",
+     "My teachers scold more than they help.",
+     "I feel invisible in class.",
+     "I don't like most of my teachers.",
+     "My teachers don't know what I need."
+    ]
+   },
+   {
+    "key": "D10.4",
+    "name": "Peer learning context",
+    "items": [
+     "I don't have a study buddy or group.",
+     "My friends don't study together with me.",
+     "I feel lonely doing homework.",
+     "My classmates distract me when we work together.",
+     "I feel I can't learn from my classmates.",
+     "My friends don't take studies seriously.",
+     "There's no one at school I can study with."
+    ]
+   }
+  ]
+ }
+]

@@ -6,9 +6,11 @@ import { thumb } from "@/components/home/MediaSections";
 
 const KINDS = [["short", "Calm Shorts"], ["audiobook", "Audiobooks"], ["video", "Videos"]];
 const blank = { kind: "short", title: "", duration: "", url: "" };
+const LIBS = [["all", "EquiMind · MindMellow · MindEdge"], ["focusedge", "FocusEdge (Grades 6–8)"]];
+const libOf = (m) => (m.programme === "focusedge" ? "focusedge" : "all");
 
 const Row = ({ m, onSaved, onDeleted }) => {
-  const [f, setF] = useState({ kind: m.kind, title: m.title, duration: m.duration, url: `https://www.youtube.com/watch?v=${m.youtube_id}` });
+  const [f, setF] = useState({ kind: m.kind, title: m.title, duration: m.duration, url: `https://www.youtube.com/watch?v=${m.youtube_id}`, programme: libOf(m) });
   const save = () => api.put(`/admin/media/${m.id}`, f).then((r) => { onSaved(r.data); toast.success("Saved"); }).catch((e) => toast.error(errMsg(e)));
   const del = () => api.delete(`/admin/media/${m.id}`).then(() => { onDeleted(m.id); toast.success("Removed"); }).catch((e) => toast.error(errMsg(e)));
   const inp = "h-9 rounded-lg bg-eq-bg px-3 text-sm outline-none focus:ring-2 focus:ring-eq min-w-0";
@@ -31,14 +33,21 @@ const Row = ({ m, onSaved, onDeleted }) => {
 export const MediaManager = () => {
   const [items, setItems] = useState(null);
   const [n, setN] = useState(blank);
+  const [lib, setLib] = useState("all");
   useEffect(() => {
     api.get("/media").then((r) => setItems(r.data));
   }, []);
-  const add = () => api.post("/admin/media", n).then((r) => { setItems([...items, r.data]); setN({ ...blank, kind: n.kind }); toast.success("Added"); }).catch((e) => toast.error(errMsg(e)));
+  const add = () => api.post("/admin/media", { ...n, programme: lib }).then((r) => { setItems([...items, r.data]); setN({ ...blank, kind: n.kind }); toast.success("Added"); }).catch((e) => toast.error(errMsg(e)));
   if (!items) return <div className="h-60 rounded-2xl bg-white/60 animate-pulse" />;
   const inp = "h-10 rounded-xl bg-eq-bg px-3 text-sm outline-none focus:ring-2 focus:ring-eq min-w-0";
   return (
     <div className="space-y-6">
+      <div data-testid="media-library-switch" className="inline-flex rounded-2xl bg-white border border-eq/15 p-1">
+        {LIBS.map(([k, l]) => (
+          <button key={k} data-testid={`media-lib-${k}`} onClick={() => setLib(k)} className={`rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${lib === k ? "bg-eq text-white" : "text-slate-600 hover:bg-eq-soft"}`}>{l}</button>
+        ))}
+      </div>
+      <p className="-mt-3 text-xs text-slate-500">{lib === "focusedge" ? "Shown only to FocusEdge students (ages 11–13): focus, calm and growth-mindset videos for this age group." : "Shown to EquiMind, MindMellow and MindEdge students."}</p>
       <div data-testid="media-add-form" className="rounded-2xl bg-white border border-eq/10 p-5 grid sm:grid-cols-[140px_1.2fr_0.6fr_1.6fr_auto] gap-2">
         <select data-testid="media-new-kind" className={inp} value={n.kind} onChange={(e) => setN({ ...n, kind: e.target.value })}>{KINDS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
         <input data-testid="media-new-title" className={inp} placeholder="Title" value={n.title} onChange={(e) => setN({ ...n, title: e.target.value })} />
@@ -50,7 +59,7 @@ export const MediaManager = () => {
         <div key={k} className="rounded-2xl bg-white border border-eq/10 p-5">
           <h3 className="font-serif text-xl font-semibold">{l}</h3>
           <div className="mt-2 divide-y divide-slate-100">
-            {items.filter((m) => m.kind === k).map((m) => (
+            {items.filter((m) => m.kind === k && libOf(m) === lib).map((m) => (
               <Row key={m.id} m={m} onSaved={(u) => setItems(items.map((x) => (x.id === u.id ? u : x)))} onDeleted={(id) => setItems(items.filter((x) => x.id !== id))} />
             ))}
           </div>

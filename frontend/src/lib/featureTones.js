@@ -18,6 +18,12 @@ export const FEATURE_TONES = {
   ocean: { label: "Ocean", bg: "#2f7bab", fg: "#ffffff", muted: W(0.86), faint: W(0.64), accent: "#f6e7b8", alert: "#ffd2ca", glass: W(0.12), line: W(0.22) },
   deepsea: { label: "Deep sea", bg: "#1d5578", fg: "#ffffff", muted: W(0.82), faint: W(0.58), accent: "#f1d98f", alert: "#ffb4a8", glass: W(0.1), line: W(0.18) },
   abyss: { label: "Abyss", bg: "#10304a", fg: "#ffffff", muted: W(0.8), faint: W(0.52), accent: "#9fd8d2", alert: "#ffa597", glass: W(0.08), line: W(0.15) },
+  // FocusEdge (indigo family)
+  periwinkle: { label: "Periwinkle", bg: "#dfe0fa", fg: "#1f2260", muted: D("31,34,96", 0.75), faint: D("31,34,96", 0.5), accent: "#4a4fc0", alert: "#b42318", glass: W(0.45), line: D("31,34,96", 0.15) },
+  iris: { label: "Iris", bg: "#a9acec", fg: "#1a1c55", muted: D("26,28,85", 0.78), faint: D("26,28,85", 0.55), accent: "#33379c", alert: "#9f1d13", glass: W(0.3), line: D("26,28,85", 0.18) },
+  indigo: { label: "Indigo", bg: "#4b4fb8", fg: "#ffffff", muted: W(0.86), faint: W(0.64), accent: "#ffd7a8", alert: "#ffd2ca", glass: W(0.12), line: W(0.22) },
+  deepindigo: { label: "Deep indigo", bg: "#373a9a", fg: "#ffffff", muted: W(0.82), faint: W(0.58), accent: "#fdba9e", alert: "#ffb4a8", glass: W(0.1), line: W(0.18) },
+  starry: { label: "Starry night", bg: "#1f2160", fg: "#ffffff", muted: W(0.8), faint: W(0.52), accent: "#a8e6cf", alert: "#ffa597", glass: W(0.08), line: W(0.15) },
   midnight: { label: "Midnight", bg: "#13294b", fg: "#ffffff", muted: W(0.8), faint: W(0.52), accent: "#8ec5ff", alert: "#ffa597", glass: W(0.08), line: W(0.15) },
 };
 
@@ -25,6 +31,7 @@ export const TONE_SETS = {
   equimind: ["powder", "cornflower", "azure", "cobalt", "midnight"],
   mindmellow: ["lilac", "wisteria", "violet", "plum", "dusk"],
   mindedge: ["shoal", "lagoon", "ocean", "deepsea", "abyss"],
+  focusedge: ["periwinkle", "iris", "indigo", "deepindigo", "starry"],
 };
 export const brandNow = () => (TONE_SETS[localStorage.getItem("eq_brand")] ? localStorage.getItem("eq_brand") : "equimind");
 export const toneStoreKey = (brand = brandNow()) => (brand === "equimind" ? "eq_feature_tone" : `eq_feature_tone_${brand}`);

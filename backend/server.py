@@ -170,8 +170,10 @@ async def start_assessment(user: dict = Depends(student_user)):
         prev = None
     if prev:
         days = (now() - datetime.fromisoformat(prev["completed_at"])).days
-        if 28 <= days <= 35 and prev["kind"] != "day30":
-            kind, items = "day30", prev["items"]
+        lo, hi = getattr(C, "SAME_WINDOW", (28, 35))
+        same_kind = getattr(C, "SAME_KIND", "day30")
+        if lo <= days <= hi and prev["kind"] != same_kind:
+            kind, items = same_kind, prev["items"]
         elif days < 7:
             kind, items = "retake_excluding_previous", pick_items(seed, set(prev["items"]), C)
         else:
@@ -193,7 +195,7 @@ async def submit_assessment(aid: str, body: SubmitIn, user: dict = Depends(stude
         raise HTTPException(400, "Already submitted")
     resp = body.responses
     if set(resp.keys()) != set(a["items"]) or any(v not in (0, 1, 2, 3, 4) for v in resp.values()):
-        raise HTTPException(422, "Please answer all 24 questions with a value from 0 to 4")
+        raise HTTPException(422, f"Please answer all {len(a['items'])} questions with a value from 0 to 4")
     locked = await db.assessments.find_one_and_update({"id": aid, "status": "in_progress"}, {"$set": {"status": "submitting"}})
     if not locked:
         raise HTTPException(400, "Already submitted")
@@ -220,7 +222,7 @@ async def submit_assessment(aid: str, body: SubmitIn, user: dict = Depends(stude
 @api.get("/reports")
 async def list_reports(user: dict = Depends(student_user)):
     rows = await db.reports.find({"user_id": user["id"]}, {"_id": 0, "id": 1, "created_at": 1, "overall": 1, "path": 1,
-                                                           "areas": 1, "priorities": 1, "ticks": 1, "kind": 1}).sort("created_at", -1).to_list(100)
+                                                           "areas": 1, "priorities": 1, "ticks": 1, "kind": 1, "programme": 1}).sort("created_at", -1).to_list(100)
     return rows
 
 
@@ -291,12 +293,12 @@ def _brand_labels(user, data):
 
 @api.get("/wellness/today")
 async def wellness_today(user: dict = Depends(student_user)):
-    return _brand_labels(user, today_plan(await _latest_report(user["id"]), await games_lib.disabled_ids(db)))
+    return _brand_labels(user, today_plan(await _latest_report(user["id"]), await games_lib.disabled_ids(db), user.get("programme")))
 
 
 @api.get("/wellness/reads")
 async def wellness_reads(user: dict = Depends(student_user)):
-    return _brand_labels(user, all_reads(await _latest_report(user["id"])))
+    return _brand_labels(user, all_reads(await _latest_report(user["id"]), user.get("programme")))
 
 
 class MediaIn(BaseModel):
@@ -304,6 +306,7 @@ class MediaIn(BaseModel):
     title: str
     duration: str = ""
     url: str
+    programme: str = "all"  # "all" = EquiMind / MindMellow / MindEdge library; "focusedge" = FocusEdge (Grades 6-8) library
 
 
 def _media_doc(body: MediaIn) -> dict:
@@ -314,12 +317,21 @@ def _media_doc(body: MediaIn) -> dict:
         raise HTTPException(422, "Please paste a valid YouTube link")
     if not body.title.strip():
         raise HTTPException(422, "Title is required")
-    return {"kind": body.kind, "title": body.title.strip()[:80], "duration": body.duration.strip()[:20], "youtube_id": m.group(1) or m.group(2)}
+    if body.programme not in ("all", "focusedge"):
+        raise HTTPException(422, "Library must be all or focusedge")
+    return {"kind": body.kind, "title": body.title.strip()[:80], "duration": body.duration.strip()[:20], "youtube_id": m.group(1) or m.group(2),
+            "programme": body.programme}
 
 
 @api.get("/media")
-async def list_media(_: dict = Depends(current_user)):
-    return await db.media.find({}, {"_id": 0}).sort("order", 1).to_list(500)
+async def list_media(user: dict = Depends(current_user)):
+    if user["role"] == "admin":
+        q = {}
+    elif user.get("programme") == "focusedge":  # age-appropriate (11-13) library only
+        q = {"programme": "focusedge"}
+    else:
+        q = {"programme": {"$in": [None, "all"]}}
+    return await db.media.find(q, {"_id": 0}).sort("order", 1).to_list(500)
 
 
 @api.post("/admin/media")
@@ -414,8 +426,13 @@ async def seed_users():
             await counselling.seed_slots(db, u["id"])
     await notify.seed_contacts(db)
     if not await db.media.count_documents({}):
-        await db.media.insert_many([{"id": str(uuid.uuid4()), "kind": k, "title": t, "duration": d, "youtube_id": y, "order": i}
+        await db.media.insert_many([{"id": str(uuid.uuid4()), "kind": k, "title": t, "duration": d, "youtube_id": y, "order": i, "programme": "all"}
                                     for i, (k, t, d, y) in enumerate(SEED_MEDIA)])
+    if not await db.media.count_documents({"programme": "focusedge"}):
+        import content_fe
+        base = await db.media.count_documents({})
+        await db.media.insert_many([{"id": str(uuid.uuid4()), "kind": k, "title": t, "duration": d, "youtube_id": y, "order": base + i, "programme": "focusedge"}
+                                    for i, (k, t, d, y) in enumerate(content_fe.SEED_MEDIA)])
 
 
 @app.on_event("startup")

@@ -1,11 +1,12 @@
 import { elapsedDays } from "@/lib/progress";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
 import { PageShell, Pill, Art } from "@/components/report/PageShell";
-import { GraduationCap, BedDouble, Heart, Users, Flower2, Coins } from "lucide-react";
+import { GraduationCap, BedDouble, Heart, Users, Flower2, Coins, Focus, Rocket, Smartphone, ListTodo, Hand, Lightbulb, Mountain, Moon, HeartPulse, Home } from "lucide-react";
 import { fmtDate, LEVEL_STYLE } from "@/lib/api";
 import { useTheme } from "@/lib/theme";
 import { BRANDS } from "@/lib/brand";
 const brandOf = (r) => BRANDS[r?.programme] || BRANDS.equimind;
+export const isFE = (r) => r?.programme === "focusedge";
 
 const nameOf = (r, k) => r.areas.find((a) => a.key === k);
 export const nextStep = (r) => (r.path === 2 ? `Start the 14-day plan today and book a ${brandOf(r).counsellor} this week` : "Start the 14-day plan today and protect your strengths");
@@ -13,7 +14,7 @@ export const nextStep = (r) => (r.path === 2 ? `Start the 14-day plan today and 
 export const CoverPage = ({ r, n, total }) => {
   const low = nameOf(r, r.priorities[0]);
   return (
-    <PageShell n={n} total={total} dark eyebrow="Your stress check-in" id="cover" testid="report-page-cover">
+    <PageShell n={n} total={total} dark eyebrow={isFE(r) ? "Your focus check-in" : "Your stress check-in"} id="cover" testid="report-page-cover">
       <div className="relative">
         <div className="absolute -right-24 -top-40 h-80 w-80 rounded-full bg-white/25 blur-2xl" />
         <div className="absolute -right-10 -top-20 h-44 w-44 rounded-full bg-white/20 blur-xl" />
@@ -21,15 +22,15 @@ export const CoverPage = ({ r, n, total }) => {
         <p className="relative mt-3 font-serif italic text-xl ft-accent">Understand it. Act on it.</p>
         <div className="relative mt-10 grid sm:grid-cols-2 gap-6 text-sm">
           <div><div className="ft-faint font-mono text-[11px] uppercase tracking-widest">Prepared for</div><div data-testid="cover-student-name" className="mt-1 text-xl font-semibold">{r.student.name}</div><div className="ft-muted">{[r.student.program, r.student.year, r.student.institution].filter(Boolean).join(" · ")}</div></div>
-          <div><div className="ft-faint font-mono text-[11px] uppercase tracking-widest">Check-in</div><div className="mt-1 text-xl font-semibold">{fmtDate(r.created_at)}</div><div className="ft-muted">24 items · two-week recall · ID {r.student.student_code}</div></div>
+          <div><div className="ft-faint font-mono text-[11px] uppercase tracking-widest">Check-in</div><div className="mt-1 text-xl font-semibold">{fmtDate(r.created_at)}</div><div className="ft-muted">{r.areas.length * 4} items · two-week recall · ID {r.student.student_code}</div></div>
         </div>
         <div className="relative mt-10 rounded-2xl ft-glass backdrop-blur-md border p-5 grid grid-cols-2 lg:grid-cols-4 gap-5">
           <div><div className="text-[11px] font-mono uppercase ft-faint">Overall</div><div data-testid="cover-overall" className="font-serif text-3xl font-bold">{r.overall}<span className="text-base ft-faint">/100</span></div></div>
-          <div><div className="text-[11px] font-mono uppercase ft-faint">Needs care first</div><div className="font-semibold mt-1">{low.short} {low.score}</div></div>
+          <div><div className="text-[11px] font-mono uppercase ft-faint">Needs care first</div><div data-testid="cover-needs-care" className="font-semibold mt-1">{isFE(r) ? r.priorities.map((k) => `${nameOf(r, k).short} ${nameOf(r, k).score}`).join(" · ") : `${low.short} ${low.score}`}</div></div>
           <div><div className="text-[11px] font-mono uppercase ft-faint">Your resources</div><div className="font-semibold mt-1">{r.resources.length ? r.resources.map((k) => `${nameOf(r, k).short} ${nameOf(r, k).score}`).join(" · ") : "Still building"}</div></div>
           <div><div className="text-[11px] font-mono uppercase ft-faint">Next step</div><div className="font-semibold mt-1 ft-accent">{elapsedDays(r) >= 14 ? "See your next steps" : r.path === 2 ? "Plan + counsellor" : "Start the plan"}</div></div>
         </div>
-        <p className="relative mt-8 text-sm ft-muted">This is a self-reflection and action report — not a diagnosis.</p>
+        <p className="relative mt-8 text-sm ft-muted">{isFE(r) ? "A reflection and wellbeing-support report — not a diagnosis, ranking or academic record." : "This is a self-reflection and action report — not a diagnosis."}</p>
       </div>
     </PageShell>
   );
@@ -49,7 +50,8 @@ const RadarTick = ({ x, y, payload, textAnchor }) => {
   );
 };
 
-const AREA_ICON = { A: GraduationCap, B: BedDouble, C: Heart, D: Users, E: Flower2, F: Coins };
+const AREA_ICON = { A: GraduationCap, B: BedDouble, C: Heart, D: Users, E: Flower2, F: Coins,
+  D1: Focus, D2: Rocket, D3: Smartphone, D4: ListTodo, D5: Hand, D6: Lightbulb, D7: Mountain, D8: Moon, D9: HeartPulse, D10: Home };
 
 export const SnapshotPage = ({ r, n, total, print }) => {
   const { palette } = useTheme();
@@ -59,7 +61,7 @@ export const SnapshotPage = ({ r, n, total, print }) => {
     <PageShell n={n} total={total} eyebrow="Page 2" title="Your Snapshot" id="snapshot" testid="report-page-snapshot" inline>
       <div className="grid lg:grid-cols-[1.55fr_1fr] gap-6 items-center [&>*]:min-w-0">
         <div className="grid sm:grid-cols-[0.85fr_1.15fr] items-center gap-2">
-          <Art src="/report-art/snapshot.webp" alt="Student studying calmly" testid="report-page-snapshot-art" className="max-w-[260px] mx-auto" />
+          <Art src={isFE(r) ? "/report-art/fe_snapshot.webp" : "/report-art/snapshot.webp"} alt="Student studying calmly" testid="report-page-snapshot-art" className="max-w-[260px] mx-auto" />
           <div className="w-full min-w-0 h-[280px] sm:h-[300px]" data-testid="radar-chart">
             <ResponsiveContainer width="100%" height="100%">
             <RadarChart data={data} outerRadius={print ? "64%" : "62%"} margin={{ top: 14, right: 34, bottom: 14, left: 34 }}>

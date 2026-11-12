@@ -43,6 +43,19 @@ body {
     --eq-p: 148 113 42; --eq-dark: 118 89 30; --eq-soft: 250 245 230;
     --eq-softer: 243 233 204; --eq-bg: 253 251 244; --eq-mid: 216 189 128;
 }
+/* FocusEdge (Grades 6-8): soft indigo / warm coral / mint leaf */
+[data-theme="indigo"] {
+    --eq-p: 90 95 200; --eq-dark: 68 72 166; --eq-soft: 236 237 251;
+    --eq-softer: 222 223 248; --eq-bg: 246 246 254; --eq-mid: 160 163 228;
+}
+[data-theme="coral"] {
+    --eq-p: 214 108 92; --eq-dark: 176 82 68; --eq-soft: 252 238 235;
+    --eq-softer: 248 222 216; --eq-bg: 255 248 246; --eq-mid: 236 165 152;
+}
+[data-theme="mintleaf"] {
+    --eq-p: 64 156 126; --eq-dark: 46 124 99; --eq-soft: 232 246 240;
+    --eq-softer: 214 238 228; --eq-bg: 244 251 248; --eq-mid: 135 200 175;
+}
 [data-theme="teal"] {
     --eq-p: 42 157 143; --eq-dark: 31 122 111; --eq-soft: 230 245 243;
     --eq-softer: 210 238 234; --eq-bg: 242 251 250; --eq-mid: 110 196 185;
@@ -84,6 +97,18 @@ body {
     [data-theme="palegold"] {
         --background: 45 70% 97%; --primary: 40 56% 37%; --ring: 40 56% 37%; --secondary: 44 65% 93%;
         --muted: 44 40% 93%; --accent: 44 65% 93%; --border: 44 35% 85%; --input: 44 35% 85%;
+    }
+    [data-theme="indigo"] {
+        --background: 240 70% 98%; --primary: 237 50% 57%; --ring: 237 50% 57%; --secondary: 238 65% 95%;
+        --muted: 238 40% 95%; --accent: 238 65% 95%; --border: 238 40% 89%; --input: 238 40% 89%;
+    }
+    [data-theme="coral"] {
+        --background: 10 100% 98%; --primary: 8 60% 60%; --ring: 8 60% 60%; --secondary: 10 75% 95%;
+        --muted: 10 55% 95%; --accent: 10 75% 95%; --border: 10 50% 89%; --input: 10 50% 89%;
+    }
+    [data-theme="mintleaf"] {
+        --background: 155 50% 97%; --primary: 161 42% 43%; --ring: 161 42% 43%; --secondary: 156 42% 93%;
+        --muted: 156 30% 93%; --accent: 156 42% 93%; --border: 156 25% 86%; --input: 156 25% 86%;
     }
     [data-theme="teal"] {
         --background: 174 55% 97%; --primary: 173 58% 39%; --ring: 173 58% 39%; --secondary: 172 45% 93%;

@@ -7,7 +7,7 @@ import { elapsedDays } from "@/lib/progress";
 
 export const reportSections = (r) => {
   const s = [
-    { id: "cover", label: "Cover" }, { id: "snapshot", label: "Your snapshot" }, { id: "narrative", label: "What you may be going through" },
+    { id: "cover", label: "Cover" }, { id: "snapshot", label: "Your snapshot" }, { id: "narrative", label: r.programme === "focusedge" ? "What's happening" : "What you may be going through" },
     ...r.priority_pages.map((p, i) => ({ id: `priority-${i + 1}`, label: `Priority ${i + 1}: ${p.name}` })),
     { id: "plan", label: "Your 14-day plan" },
     ...(elapsedDays(r) >= 7 ? [{ id: "week-1", label: "Week 1 progress" }] : []),

@@ -252,15 +252,27 @@ AREA_NAMES = {"A": "Academic & Workload", "B": "Body & Sleep", "C": "Emotional L
 DEFAULT_PRI = ["C", "B", "A"]
 
 
-def _ctx(report):
+def _lib(report, programme=None):
+    """Wellness library for the report's programme: its own (FocusEdge) or the shared EquiMind one."""
+    import programmes
+    W = getattr(programmes.get((report or {}).get("programme") or programme), "WELLNESS", None)
+    if W:
+        return {**W, "own": True}
+    return {"EXERCISES": EXERCISES, "GAMES": GAMES, "ARTICLES": ARTICLES, "AREA_NUDGE": AREA_NUDGE, "MOOD_NUDGE": MOOD_NUDGE,
+            "AREA_NAMES": AREA_NAMES, "DEFAULT_PRI": DEFAULT_PRI, "own": False}
+
+
+def _ctx(report, L=None):
     """Return (day_index, mood_or_None, priorities) for the student."""
+    L = L or _lib(report)
+    default = L["DEFAULT_PRI"]
     today = datetime.now(timezone.utc)
     if not report:
-        return int(today.timestamp() // 86400), None, DEFAULT_PRI
+        return int(today.timestamp() // 86400), None, default
     elapsed = (today - datetime.fromisoformat(report["created_at"])).days
     mood = (report.get("moods") or {}).get(str(min(max(elapsed, 0), 13)))
-    pri = report.get("priorities") or DEFAULT_PRI
-    if report.get("programme") in ("mindmellow", "mindedge"):  # map school-programme areas onto the shared libraries' areas
+    pri = report.get("priorities") or default
+    if not L["own"] and report.get("programme") in ("mindmellow", "mindedge"):  # map school-programme areas onto the shared libraries' areas
         import programmes
         WELLNESS_MAP = programmes.get(report["programme"]).WELLNESS_MAP
         pri = list(dict.fromkeys(WELLNESS_MAP[k] for k in pri)) + [k for k in DEFAULT_PRI if k not in {WELLNESS_MAP[x] for x in pri}]
@@ -271,7 +283,7 @@ def _tone_for(mood):
     return "calm" if mood is not None and mood <= 1 else "lift" if mood == 2 else "grow" if mood is not None else None
 
 
-def pick_exercise(pri, mood, day):
+def pick_exercise(pri, mood, day, exercises=EXERCISES):
     def score(e):
         s = sum(w for k, w in zip(pri, (3, 2, 1)) if k in e["areas"])
         if mood is not None and mood <= 1 and e["calming"]:
@@ -279,25 +291,26 @@ def pick_exercise(pri, mood, day):
         if mood is not None and mood >= 3 and not e["calming"]:
             s += 1
         return s
-    pool = [e for e in EXERCISES if e["calming"]] if mood is not None and mood <= 1 else EXERCISES
+    pool = [e for e in exercises if e["calming"]] if mood is not None and mood <= 1 else exercises
     ranked = sorted(pool, key=lambda e: -score(e))
     top = ranked[:3]
     return top[day % len(top)]
 
 
-def pick_game(pri, day, disabled=()):
+def pick_game(pri, day, disabled=(), games=GAMES):
     area = pri[day % len(pri)]
-    pool = [g for g in GAMES if g["id"] not in disabled]
+    pool = [g for g in games if g["id"] not in disabled]
     if not pool:
         return None, area
     g = next((g for g in pool if area in g["areas"]), pool[0])
     return g, area
 
 
-def _articles(report):
+def _articles(report, L=None):
     import programmes
-    skip = getattr(programmes.get((report or {}).get("programme")), "SKIP_READS", ())
-    return [a for a in ARTICLES if a["id"] not in skip]
+    L = L or _lib(report)
+    skip = () if L["own"] else getattr(programmes.get((report or {}).get("programme")), "SKIP_READS", ())
+    return [a for a in L["ARTICLES"] if a["id"] not in skip]
 
 
 def pick_reads(pri, mood, day, arts=ARTICLES):
@@ -305,6 +318,8 @@ def pick_reads(pri, mood, day, arts=ARTICLES):
     out = []
     for i, area in enumerate(pri[:3]):
         pool = [a for a in arts if a["area"] == area]
+        if not pool:
+            continue
         if i == 0 and tone:
             pool.sort(key=lambda a: a["tone"] != tone)
             out.append(pool[0])
@@ -313,34 +328,42 @@ def pick_reads(pri, mood, day, arts=ARTICLES):
     return out
 
 
-def _ex_why(e, pri, mood, personalised=True):
+def _ex_why(e, pri, mood, personalised=True, names=AREA_NAMES):
     if not personalised:
         return "A gentle favourite to help you feel calm and clear — your check-in will make this even more personal."
     area = next((k for k in pri if k in e["areas"]), pri[0])
     if mood is not None and mood <= 1:
         return f"Chosen because today feels {MOODS[mood].lower()} — a calming practice to help you feel steadier."
-    return f"Chosen for your {AREA_NAMES[area]} focus from your check-in."
+    return f"Chosen for your {names[area]} focus from your check-in."
 
 
-def today_plan(report, disabled_games=()):
-    day, mood, pri = _ctx(report)
-    ex = pick_exercise(pri, mood, day)
-    game, garea = pick_game(pri, day, disabled_games)
-    reads = pick_reads(pri, mood, day, _articles(report))
-    title, text = MOOD_NUDGE[mood] if mood is not None else NEUTRAL_NUDGE
+def today_plan(report, disabled_games=(), programme=None):
+    L = _lib(report, programme)
+    names = L["AREA_NAMES"]
+    day, mood, pri = _ctx(report, L)
+    ex = pick_exercise(pri, mood, day, L["EXERCISES"])
+    game, garea = pick_game(pri, day, disabled_games, L["GAMES"])
+    reads = pick_reads(pri, mood, day, _articles(report, L))
+    title, text = L["MOOD_NUDGE"][mood] if mood is not None else NEUTRAL_NUDGE
     return {
         "personalised": bool(report),
         "mood": mood, "mood_label": MOODS[mood] if mood is not None else None,
-        "focus_areas": [{"key": k, "name": AREA_NAMES[k]} for k in pri[:3]],
-        "exercise": {**ex, "why": _ex_why(ex, pri, mood, bool(report))},
-        "game": {**game, "tag": "Hustle for Your Brain", "for_area": AREA_NAMES[garea]} if game else None,
-        "nudge": {"title": title, "text": text, "area_tip": AREA_NUDGE[pri[0]]},
-        "reads": [{**a, "area_name": AREA_NAMES[a["area"]]} for a in reads],
+        "focus_areas": [{"key": k, "name": names[k]} for k in pri[:3]],
+        "exercise": {**ex, "why": _ex_why(ex, pri, mood, bool(report), names)},
+        "game": {**game, "tag": "Hustle for Your Brain", "for_area": names[garea]} if game else None,
+        "nudge": {"title": title, "text": text, "area_tip": L["AREA_NUDGE"][pri[0]]},
+        "reads": [{**a, "area_name": names[a["area"]]} for a in reads],
     }
 
 
-def all_reads(report):
-    _, mood, pri = _ctx(report)
+def all_reads(report, programme=None):
+    L = _lib(report, programme)
+    _, mood, pri = _ctx(report, L)
     order = {k: i for i, k in enumerate(pri)}
-    rows = sorted(_articles(report), key=lambda a: (order.get(a["area"], 9), a["id"]))
-    return [{**a, "area_name": AREA_NAMES[a["area"]], "for_you": a["area"] in pri[:3]} for a in rows]
+    rows = sorted(_articles(report, L), key=lambda a: (order.get(a["area"], 99), a["id"]))
+    return [{**a, "area_name": L["AREA_NAMES"][a["area"]], "for_you": a["area"] in pri[:3]} for a in rows]
+
+
+def student_games(programme):
+    """Ordered game ids students of this programme can play (FocusEdge has its own focus-themed set)."""
+    return [g["id"] for g in _lib({"programme": programme})["GAMES"]]

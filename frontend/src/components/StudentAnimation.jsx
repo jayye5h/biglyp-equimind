@@ -17,6 +17,17 @@ export const SCENES = {
   "f-money": { q: "Did you take a step towards your money conversation?", icon: Wallet, anim: { y: [0, -6, 0] } },
 };
 
+Object.assign(SCENES, {
+  "fe-wake": SCENES["b-wake"], "fe-phonebed": SCENES["b-phone"],
+  "fe-phone": { q: "Did your phone stay in another room while you studied?", icon: Smartphone, anim: { x: [0, 26, 0], rotate: [0, 12, 0] } },
+  "fe-2min": { q: "Did you do a 2-minute start on a task?", icon: Timer, anim: { rotate: [0, 360] } },
+  "fe-pomo": { q: "Did you do a 25-minute focus burst?", icon: Timer, anim: { rotate: [0, 360] } },
+  "fe-askhelp": { q: "Did you ask someone for help with one thing?", icon: MessageCircleHeart, anim: { scale: [1, 1.15, 1], y: [0, -4, 0] } },
+  "fe-checkin": { q: "Did you do your 60-second check-in before homework?", icon: HeartPulse, anim: { scale: [1, 1.25, 1] } },
+  "fe-buddy": { q: "Did you study with a buddy?", icon: MessageCircleHeart, anim: { scale: [1, 1.15, 1] } },
+  "fe-colour3": { q: "Did you colour-code your top 3 tasks?", icon: ListChecks, anim: { y: [0, -6, 0] } },
+});
+
 export const sceneFor = (a) => SCENES[a.id] || { q: `Did you do "${a.name}" today?`, icon: Sparkles, anim: { y: [0, -6, 0] } };
 
 const Zzz = () => (

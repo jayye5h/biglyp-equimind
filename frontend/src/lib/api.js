@@ -10,6 +10,8 @@ api.interceptors.request.use((config) => {
 
 export const AREA_COLORS = {
   A: "#2d8a7c", B: "#6366f1", C: "#f07167", D: "#f59e0b", E: "#8b5cf6", F: "#0ea5e9",
+  // FocusEdge segments D1-D10
+  D1: "#5a5fc8", D2: "#e07a5f", D3: "#2a9d8f", D4: "#d4a017", D5: "#8b5cf6", D6: "#0ea5e9", D7: "#d9577a", D8: "#3f9f6f", D9: "#7c6fd6", D10: "#c47f3a",
 };
 
 export const LEVEL_STYLE = {

@@ -8,6 +8,14 @@ def pick_items(seed: int, exclude: set, C=EQ) -> list:
     for skey in C.SUBTHEMES:
         pool = [i for i in C.ITEMS if C.ITEMS[i]["subtheme"] == skey and i not in exclude]
         picked.append(rng.choice(pool))
+    if getattr(C, "INTERLEAVE", False):  # round-robin across areas so items never appear in area blocks
+        order = [a["key"] for a in C.AREAS]
+        rng.shuffle(order)
+        rounds = {}
+        for i in picked:
+            rounds.setdefault(C.ITEMS[i]["area"], []).append(i)
+        n = max(len(v) for v in rounds.values())
+        return [rounds[a][j] for j in range(n) for a in order if j < len(rounds.get(a, []))]
     rng.shuffle(picked)
     return picked
 
@@ -31,14 +39,17 @@ def score_responses(item_ids: list, responses: dict, C=EQ) -> dict:
         score = round(100 - (raw / 16) * 100)
         areas.append({"key": a["key"], "name": a["name"], "short": a["short"], "raw": raw,
                       "high_count": high, "score": score, "level": level_for(score)})
-    overall = round(sum(a["score"] for a in areas) / 6)
+    overall = round(sum(a["score"] for a in areas) / len(areas))
     ranked = sorted(areas, key=lambda a: (a["score"], -a["high_count"]))
     priorities = [a["key"] for a in ranked[:3]]
     resources = [a["key"] for a in sorted(areas, key=lambda a: -a["score"]) if a["key"] not in priorities and a["score"] >= 50][:2]
     path = 2 if (any(a["score"] < 35 for a in areas) or overall < 45) else 1
     by = {a["key"]: a for a in areas}
     fatigue_high = sum(1 for i in item_ids if i in C.FATIGUE_ITEMS and responses[i] >= 3)
-    body_page = by[C.BODY_AREA]["score"] < 50 or by[C.EMO_AREA]["score"] < 55 or fatigue_high >= 3 or path == 2
+    if hasattr(C, "body_trigger"):
+        body_page = C.body_trigger(by, path, fatigue_high)
+    else:
+        body_page = by[C.BODY_AREA]["score"] < 50 or by[C.EMO_AREA]["score"] < 55 or fatigue_high >= 3 or path == 2
     high_items = [C.ITEMS[i]["text"] for i in sorted(item_ids, key=lambda i: -responses[i]) if responses[i] >= 3]
     return {"areas": areas, "overall": overall, "priorities": priorities, "resources": resources,
             "path": path, "body_page": body_page, "high_items": high_items[:8], "fatigue_high": fatigue_high}
@@ -69,13 +80,16 @@ def build_plan(pages: list, C=EQ) -> list:
     add(C.act(C.PLAN_START))
     for p in pages:
         add(p["activities"][0])
-    add(C.act(C.PLAN_CHECKIN))
+    if C.PLAN_CHECKIN:
+        add(C.act(C.PLAN_CHECKIN))
     for fid in C.PLAN_FILLERS:
         add(C.act(fid))
     return plan
 
 
 def body_pattern(result: dict, C=EQ) -> str:
+    if hasattr(C, "body_pattern"):
+        return C.body_pattern(result)
     by = {a["key"]: a for a in result["areas"]}
     b, e = by[C.BODY_AREA], by[C.EMO_AREA]
     bits = [f"{b['name'].split(',')[0]} {b['score']}"]

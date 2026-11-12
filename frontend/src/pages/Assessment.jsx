@@ -5,12 +5,12 @@ import { toast } from "sonner";
 import { AppHeader } from "@/components/Shell";
 import { api, errMsg, AREA_COLORS } from "@/lib/api";
 
-const Intro = ({ kind, onBegin }) => (
+const Intro = ({ kind, onBegin, n }) => (
   <div data-testid="checkin-intro" className="max-w-2xl mx-auto text-center eq-rise">
     <span className="mx-auto h-16 w-16 rounded-full bg-eq-soft grid place-items-center eq-breathe"><Leaf className="h-7 w-7 text-eq" /></span>
     <h1 className="mt-8 font-serif text-4xl sm:text-5xl font-bold text-slate-900">Think about the <em className="text-eq">last two weeks.</em></h1>
-    <p className="mt-5 text-slate-600 leading-relaxed">24 short statements, one at a time. For each, choose how often it has been true for you. There are no right answers — and nothing here is shared without your consent.</p>
-    {kind === "day30" && <p data-testid="day30-notice" className="mt-4 text-sm rounded-xl bg-[#fef3c7] text-[#92400e] px-4 py-2 inline-block">Day-30 retake: you&apos;ll see the same 24 items as last time, for a fair comparison.</p>}
+    <p className="mt-5 text-slate-600 leading-relaxed">{n} short statements, one at a time. For each, choose how often it has been true for you. There are no right answers — and nothing here is shared without your consent.</p>
+    {(kind === "day30" || kind === "day14") && <p data-testid="day30-notice" className="mt-4 text-sm rounded-xl bg-[#fef3c7] text-[#92400e] px-4 py-2 inline-block">Day-{kind === "day14" ? 14 : 30} retake: you&apos;ll see the same {n} items as last time, for a fair comparison.</p>}
     {kind === "retake_excluding_previous" && <p className="mt-4 text-sm rounded-xl bg-[#f3e8ff] text-[#6d28d9] px-4 py-2 inline-block">Retaking within 7 days: you&apos;ll see fresh items.</p>}
     <div><button data-testid="begin-checkin-btn" onClick={onBegin} className="mt-10 h-14 px-8 rounded-2xl bg-eq text-white font-medium inline-flex items-center gap-2 hover:bg-eq-dark transition-colors">Begin <ArrowRight className="h-4 w-4" /></button></div>
   </div>
@@ -140,7 +140,7 @@ export default function Assessment() {
         </div>
       )}
       <main className="px-4 sm:px-8 py-10 sm:py-14">
-        {!a ? <div className="max-w-2xl mx-auto h-80 rounded-[2rem] bg-white/60 animate-pulse" /> : submitting ? <Writing /> : !started ? <Intro kind={a.kind} onBegin={() => setStarted(true)} /> : (
+        {!a ? <div className="max-w-2xl mx-auto h-80 rounded-[2rem] bg-white/60 animate-pulse" /> : submitting ? <Writing /> : !started ? <Intro kind={a.kind} n={a.items.length} onBegin={() => setStarted(true)} /> : (
           <>
             <Question item={a.items[idx]} idx={idx} total={total} scale={a.scale} value={answers[a.items[idx].id]} onPick={pick} />
             <div className="max-w-2xl mx-auto mt-6 flex justify-between">

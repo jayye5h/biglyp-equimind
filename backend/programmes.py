@@ -1,11 +1,13 @@
-"""Programme registry: EquiMind (university), MindMellow (Grades 11-12) and MindEdge (Grades 9-10) share one engine, different content."""
+"""Programme registry: EquiMind (university), MindMellow (Grades 11-12), MindEdge (Grades 9-10) and FocusEdge (Grades 6-8)
+share one engine, different content."""
 import content as EQ
 import content_mm as MM
 import content_me as ME
+import content_fe as FE
 
-PROGRAMMES = {"equimind": EQ, "mindmellow": MM, "mindedge": ME}
+PROGRAMMES = {"equimind": EQ, "mindmellow": MM, "mindedge": ME, "focusedge": FE}
 # Programmes that share counsellors (school programmes share one school counselling team)
-GROUPS = [["equimind"], ["mindmellow", "mindedge"]]
+GROUPS = [["equimind"], ["mindmellow", "mindedge", "focusedge"]]
 DEMO_USERS = [u for P in PROGRAMMES.values() for u in P.DEMO_USERS]
 
 

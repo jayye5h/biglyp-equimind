@@ -29,6 +29,13 @@ def build(P=EQ) -> str:
     today = datetime.now(timezone.utc).strftime("%d %B %Y")
 
     mm = P.PROGRAMME != "equimind"
+    fe = P.PROGRAMME == "focusedge"
+    n_sit, n_areas = len(P.SUBTHEMES), len(P.AREAS)
+    aw = "ten focus segments" if fe else "six life areas"
+    kid = P.PROGRAMME in ("mindedge", "focusedge")
+    lo, hi = getattr(P, "SAME_WINDOW", (28, 35))
+    WL = getattr(P, "WELLNESS", None) or {"EXERCISES": W.EXERCISES, "ARTICLES": W.ARTICLES, "AREA_NAMES": W.AREA_NAMES, "GAMES": W.GAMES}
+    _an = lambda k: WL["AREA_NAMES"].get(k, k)
     w(f"# {P.NAME} — Product Document")
     w(f"*By Biglyp · Student stress & wellbeing platform for {P.AUDIENCE} · Generated {today} from the live platform*")
     w("")
@@ -42,7 +49,7 @@ def build(P=EQ) -> str:
     # 1
     w("\n## 1. Product overview")
     w(f"{P.NAME} is a private, non-diagnostic stress check-in and habit-building platform for {P.AUDIENCE}. "
-      f"A student answers **24 short statements** (drawn from a bank of **{n_items}**) about the last two weeks. It scores six life areas, "
+      f"A student answers **{n_sit} short statements** (drawn from a bank of **{n_items}**) about the last two weeks. It scores {aw}, "
       "writes a warm personal report, and turns the three areas under most pressure into a **14-day plan of five small daily activities**. "
       "A daily check-in, mood tracking, progress pages at Day 7 and Day 14, calming exercises, games, sounds and short reads keep the student engaged, "
       f"while a {'school' if mm else 'campus'} counsellor can see who may need support and book sessions.")
@@ -50,7 +57,7 @@ def build(P=EQ) -> str:
     for b in ["**Reflect, don't diagnose** — tentative, student-friendly language; no medical or psychological labels; no risk scores.",
               "**Small steps beat big plans** — every recommendation is a short, concrete activity with a reason it helps.",
               "**Private by default** — the report is the student's; counsellors see records only to offer support and act in severe cases.",
-              f"**Safety floor everywhere** — Tele-MANAS 14416 / 1800-891-4416 (24/7), {'Childline 1098, ' if P.PROGRAMME == 'mindedge' else ''}112 and {'the school counsellor' if mm else 'campus health'} are always visible.",
+              f"**Safety floor everywhere** — Tele-MANAS 14416 / 1800-891-4416 (24/7), {'Childline 1098, ' if kid else ''}112 and {'the school counsellor' if mm else 'campus health'} are always visible.",
               "**Warm and calm** — soft colours, illustrations, growth-stage avatars and encouraging copy."]:
         w(f"- {b}")
 
@@ -61,7 +68,11 @@ def build(P=EQ) -> str:
     w("| Counsellor | Sees sessions & requests, a ‘Needs attention’ list, every student's record and progress; manages availability slots |")
     w("| Admin | Views cohort numbers, the question bank, activity library, media, games, notifications and this document |")
     w("\nDemo sign-in (no password): " + ", ".join(f"{u['name']} ({u['role']})" for u in P.DEMO_USERS) + (", Platform Admin (admin, shared with EquiMind)" if mm else "") + ".")
-    if P.PROGRAMME == "mindedge":
+    if fe:
+        w("\nFocusEdge has its own landing page and sign-in (/focusedge). Unlike the three stress reports, it measures **attention, self-regulation and learning-habit patterns** for Grades 6-8 across ten segments (D1-D10), with a 300-item bank and 40 items per sitting. "
+          "It shares the school counselling team with MindMellow and MindEdge, and the engine, report format, sounds and notifications with EquiMind; it has its own theory, activity library, guided exercises, focus-themed brain games, wellness reads and age-appropriate shorts / audiobooks / videos. "
+          "Items in D1-D3 are drawn from recognised attention patterns but framed strictly non-clinically — no condition (ADHD, ADD, LD or similar) is ever named or implied. Parents are a core support tier; Childline 1098 is on the safety floor.")
+    elif P.PROGRAMME == "mindedge":
         w("\nMindEdge has its own landing page and sign-in (/mindedge). It shares its school counselling team with MindMellow (school counsellors see both Grade 9-10 and Grade 11-12 students) and shares the engine, report format, games, sounds, videos and notifications with EquiMind; only the theory, stress areas, question bank, activities and scripts differ. "
           "It focuses on the six stressors of the 9-10 age window — academics & study habits, parents & family, peer pressure, self-esteem (puberty-linked), emotional regulation and digital / social-media stress — and deliberately leaves career, breakup and financial themes to MindMellow. Parents are the primary trusted-adult tier and Childline 1098 is added to the safety floor.")
     elif mm:
@@ -70,9 +81,9 @@ def build(P=EQ) -> str:
 
     # 3
     w("\n## 3. Theoretical framework")
-    w(f"{P.NAME} models student stress across **six life areas**, each split into **four sub-themes** (24 in total). "
+    w(f"{P.NAME} models {'focus and study habits' if fe else 'student stress'} across **{aw}**, each split into **four sub-themes** ({n_sit} in total). "
       "The report explains *why* each pressure feels the way it does, then offers activities that target the easiest link to change.")
-    w("\n### 3.1 Six life areas and 24 sub-themes")
+    w(f"\n### 3.1 {aw.capitalize()} and {n_sit} sub-themes")
     w("| Area | Sub-themes |\n|---|---|")
     for a in P.AREAS:
         subs = [s for s in P.SUBTHEMES.values() if s["area"] == a["key"]]
@@ -81,7 +92,7 @@ def build(P=EQ) -> str:
     for a in P.AREAS:
         w(f"\n**{a['name']}** — {P.THEORY[a['key']]}")
     w("\n### 3.3 The stress loop")
-    w("Stress is presented as a self-reinforcing cycle of four links (e.g. " + " → ".join(P.LOOP_FRAGMENTS[k] for k in "ABC") + " → Less energy to cope). "
+    w("Stress is presented as a self-reinforcing cycle of four links (e.g. " + " → ".join(P.LOOP_FRAGMENTS[a["key"]] for a in P.AREAS[:3]) + f" → {getattr(P, 'LOOP_END', 'Less energy to cope')}). "
       "The report names the student's loop from their own high-frequency answers and points to the link that is easiest to change first.")
     w("\n### 3.4 Why the activities work")
     w("Each activity is grounded in well-established behavioural principles — lowering the activation energy to start, protecting attention, "
@@ -101,10 +112,10 @@ def build(P=EQ) -> str:
 
     # 4
     w("\n## 4. The assessment")
-    w(f"- **Format:** 24 statements, one from each sub-theme, picked at random from the {n_items}-item bank and shuffled.")
+    w(f"- **Format:** {n_sit} statements, one from each sub-theme, picked at random from the {n_items}-item bank and {'interleaved across segments' if fe else 'shuffled'}.")
     w("- **Recall window:** the last two weeks.")
-    w("- **Answer scale:** " + ", ".join(f"{s['value']} = {s['label']}" for s in P.SCALE) + " (higher = more stress).")
-    w("- **Retakes:** Day 28–35 after the last check-in → the *same* 24 statements (a true comparison); within 7 days → fresh statements that exclude the previous ones; otherwise a fresh random set.")
+    w("- **Answer scale:** " + ", ".join(f"{s['value']} = {s['label']}" for s in P.SCALE) + (" (higher = more of the difficulty)." if fe else " (higher = more stress)."))
+    w(f"- **Retakes:** Day {lo}–{hi} after the last check-in → the *same* {n_sit} statements (a true comparison); within 7 days → fresh statements that exclude the previous ones; otherwise a fresh random set.")
     w("- **While the report is written** the student sees 20 rotating calming statements and mini-exercises.")
 
     # 5
@@ -122,8 +133,8 @@ def build(P=EQ) -> str:
     w("\n## 6. Scoring & decision rules")
     w("| Rule | Definition |\n|---|---|")
     rules = [
-        ("Area score", "Each area has 4 statements (max raw 16). **Score = round(100 − raw ÷ 16 × 100)** — higher means less stress."),
-        ("Overall score", "Average of the six area scores."),
+        ("Area score", "Each area has 4 statements (max raw 16). **Score = round(100 − raw ÷ 16 × 100)** — " + ("higher means more consistent, supportive habits." if fe else "higher means less stress.")),
+        ("Overall score", f"Average of the {n_areas} area scores."),
         ("Levels", "< 35 **Needs care first** · 35–49 **Watch** · 50–64 **Steady** · 65+ **Strength**"),
         ("Priority areas", "The three lowest-scoring areas (ties broken by more ‘Often/Almost always’ answers). Each gets its own report page."),
         ("Strengths / resources", "Up to two of the highest remaining areas scoring 50+."),
@@ -170,7 +181,7 @@ def build(P=EQ) -> str:
     # 9
     w("\n## 9. The 14-day plan & daily check-in")
     names = lambda ids: ", ".join(P.act(i)["name"].lower() for i in ids)
-    w(f"- **Plan construction:** {P.act(P.PLAN_START)['name']} → the first activity of each priority area → {P.act(P.PLAN_CHECKIN)['name']} → fillers ({names(P.PLAN_FILLERS)}) until there are five.")
+    w(f"- **Plan construction:** {P.act(P.PLAN_START)['name']} → the first activity of each priority area → {(P.act(P.PLAN_CHECKIN)['name'] + ' → ') if P.PLAN_CHECKIN else ''}fillers ({names(P.PLAN_FILLERS)}) until there are five.")
     w("- **Daily check-in pop-up** (once a day, from 24 h after the report): greeting + glow meter + today's mood (5 faces) → one step per activity (Yes / Not this time) → stress rating & feeling → a short feedback step.")
     w("- **Moods:** " + " · ".join(f"{i} {m}" for i, m in enumerate(MOOD_LABELS)) + ".")
     w("- **Calm Streak:** 14 named day badges, current and best streak, warm messages.")
@@ -203,11 +214,15 @@ def build(P=EQ) -> str:
     ]:
         w(f"- {b}")
     w("\n**Guided exercises**\n\n| Exercise | Type | Minutes | Areas | Calming |\n|---|---|---|---|---|")
-    for e in W.EXERCISES:
-        w(f"| {e['name']} | {'Breathing' if e['kind'] == 'breath' else 'Step-by-step'} | {e['minutes']} | {_areas(e['areas'])} | {'Yes' if e['calming'] else 'No'} |")
+    for e in WL["EXERCISES"]:
+        w(f"| {e['name']} | {'Breathing' if e['kind'] == 'breath' else 'Step-by-step'} | {e['minutes']} | {', '.join(_an(k) for k in e['areas'])} | {'Yes' if e['calming'] else 'No'} |")
     w("\n**Wellness reads**\n\n| Area | Title | Minutes |\n|---|---|---|")
-    for a in W.ARTICLES:
-        w(f"| {_area(a['area'])} | {a['title']} | {a['minutes']} |")
+    for a in WL["ARTICLES"]:
+        w(f"| {_an(a['area'])} | {a['title']} | {a['minutes']} |")
+    if fe:
+        w("\n**FocusEdge brain games (student-live)**\n\n| Game | Skill | Segments |\n|---|---|---|")
+        for g in WL["GAMES"]:
+            w(f"| {g['name']} | {g['skill']} | {', '.join(_an(k) for k in g['areas'])} |")
 
     # 12
     w("\n## 12. Counsellor portal")
@@ -240,7 +255,7 @@ def build(P=EQ) -> str:
     # 16
     w("\n## 16. Safety, privacy & ethics")
     for b in ["Non-diagnostic by design: wording rules + AI blocklist + template fallback.",
-              f"Safety floor on the help page, report and About page: Tele-MANAS 14416 / 1800-891-4416 (24/7, toll-free, confidential), {'Childline 1098, ' if P.PROGRAMME == 'mindedge' else ''}112, {'school counsellor' if mm else 'campus health'}.",
+              f"Safety floor on the help page, report and About page: Tele-MANAS 14416 / 1800-891-4416 (24/7, toll-free, confidential), {'Childline 1098, ' if kid else ''}112, {'school counsellor' if mm else 'campus health'}.",
               "Reports are private to the student; counsellors may review records to offer support and act in severe cases (stated on the About page).",
               "No ads or tracking; demo sign-in only in this build."]:
         w(f"- {b}")

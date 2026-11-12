@@ -119,8 +119,11 @@ def build_router(db, admin_user, current_user):
         return {"id": gid, "enabled": body.enabled}
 
     @r.get("/games/enabled")
-    async def enabled_student_games(_: dict = Depends(current_user)):
+    async def enabled_student_games(user: dict = Depends(current_user)):
+        import wellness
         off = await disabled_ids(db)
+        if user.get("programme") == "focusedge":  # FocusEdge students get their own focus-themed game set
+            return [g for g in wellness.student_games("focusedge") if g not in off]
         return [g["id"] for g in GAMES if g.get("student") and g["id"] not in off]
 
     return r

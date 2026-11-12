@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { ArrowRight, Grid3x3, Network, Wind, Brain, Clock } from "lucide-react";
+import { ArrowRight, Grid3x3, Network, Wind, Brain, Clock, Repeat, Palette, ScanEye, Puzzle, Shapes, Calculator, CircleDot } from "lucide-react";
+import { GAME_COMPONENTS } from "@/components/games/registry";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Sudoku } from "@/components/games/Sudoku";
 import { ZeroKata } from "@/components/games/ZeroKata";
@@ -13,7 +14,16 @@ export const GAMES = [
   { id: "zerokata", name: "Zero-Kata", icon: ZK, C: ZeroKata },
   { id: "memory", name: "Memory Match", icon: Network, C: MemoryMatch },
 ];
-const GAME = Object.fromEntries(GAMES.map((g) => [g.id, g]));
+// Extra student-live games (FocusEdge's focus-themed set) — playable components come from the shared registry
+const EXTRA = {
+  simon: ["Echo Pattern", Repeat], "odd-colour": ["Odd Colour Out", Palette], "pattern-recall": ["Pattern Recall", ScanEye],
+  "slide-puzzle": ["Slide Puzzle", Puzzle], "count-shapes": ["Count the Shapes", Shapes], "quick-sums": ["Quick Sums", Calculator],
+  "breath-balloon": ["Breath Balloon", CircleDot],
+};
+const GAME = {
+  ...Object.fromEntries(Object.entries(EXTRA).map(([id, [name, icon]]) => [id, { id, name, icon, C: GAME_COMPONENTS[id] }])),
+  ...Object.fromEntries(GAMES.map((g) => [g.id, g])),
+};
 
 const GameDialog = ({ g, onClose }) => {
   const Game = g?.C;
@@ -75,12 +85,12 @@ export const MoreGames = () => {
   useEffect(() => {
     api.get("/games/enabled").then((r) => setOn(r.data)).catch(() => setOn(GAMES.map((x) => x.id)));
   }, []);
-  const list = GAMES.filter((x) => !on || on.includes(x.id));
+  const list = (on || GAMES.map((x) => x.id)).map((id) => GAME[id]).filter((x) => x && x.C);
   if (on && !list.length) return null;
   return (
     <section data-testid="more-games-section" className="rounded-[2rem] bg-white border border-eq/10 p-5 sm:p-7">
       <div className="flex items-center gap-3"><h2 className="font-serif text-2xl font-bold text-slate-900">Brain Games</h2><span className="rounded-full bg-eq-soft text-eq-dark text-[11px] font-semibold px-3 py-1">Hustle for Your Brain</span></div>
-      <div className="mt-5 grid sm:grid-cols-3 gap-4">
+      <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {list.map((x) => (
           <button key={x.id} data-testid={`game-card-${x.id}`} onClick={() => setG(x)} className="group rounded-2xl border border-eq/10 bg-eq-bg/50 p-4 flex items-center gap-4 text-left hover:border-eq/40 hover:shadow-md transition-[border-color,box-shadow]">
             <span className="h-14 w-14 shrink-0 rounded-xl border-2 border-eq/30 bg-white grid place-items-center text-eq"><x.icon className="h-7 w-7" /></span>

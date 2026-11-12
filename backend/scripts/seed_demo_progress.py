@@ -82,7 +82,8 @@ async def main():
     now = datetime.now(timezone.utc)
     for uid, rows, age in (("stu-ananya", ANANYA, 8), ("stu-rohan", ROHAN, 14), ("stu-meera", MEERA, 5),
                            ("mm-diya", ANANYA, 8), ("mm-aarav", ROHAN, 14), ("mm-kabir", MEERA, 5),
-                           ("me-arjun", ANANYA, 8), ("me-riya", ROHAN, 14), ("me-sana", MEERA, 5)):  # EquiMind + MindMellow + MindEdge
+                           ("me-arjun", ANANYA, 8), ("me-riya", ROHAN, 14), ("me-sana", MEERA, 5),
+                           ("fe-aarav", ANANYA, 8), ("fe-vihaan", ROHAN, 14), ("fe-meher", MEERA, 5)):  # EquiMind + MindMellow + MindEdge + FocusEdge
         r = await db.reports.find_one({"user_id": uid}, {"_id": 0, "id": 1, "plan": 1}, sort=[("created_at", -1)])
         if not r:
             print(f"{uid}: no report found - take a check-in first")

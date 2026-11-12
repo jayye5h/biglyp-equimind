@@ -24,6 +24,22 @@ const COPY = {
   "c-checkin": ["Let's pause and check in with ourselves.", "A quick check-in can help you understand your stress levels and how you're feeling.", "Did you do your 60-second pause today?", "It's a short check-in to understand your stress and name one feeling, which can help you feel more balanced."],
   "f-money": ["One conversation at a time.", "Talking it through usually shrinks the worry to its real size.", "Did you take a step towards your money conversation today?", "Even planning when to talk counts as a step."],
 };
+Object.assign(COPY, {
+  "fe-wake": ["Let's keep your rhythm going.", "Same bedtime, same wake time — your brain loves a routine.", "Did you wake up at your fixed time today?", "Good sleep is the biggest boost to focus at your age."],
+  "fe-phone": ["Out of sight, out of mind.", "A phone in another room makes focus so much easier.", "Did your phone stay in another room while you studied today?", "Even one phone-free session counts."],
+  "fe-2min": ["Tiny starts win.", "Starting is the hardest part — 2 minutes is enough.", "Did you do a 2-minute start on a task today?", "Open the book, write the date — that counts!"],
+  "fe-pomo": ["Focus in bursts.", "25 minutes of focus, then a real 5-minute break.", "Did you do a 25-minute focus burst today?", "One burst is a big win. Two is amazing."],
+  "fe-askhelp": ["Asking is a superpower.", "Smart learners ask for help all the time.", "Did you ask someone for help with one thing today?", "A parent, teacher, sibling or friend — all count."],
+  "fe-checkin": ["Let's check in with how you feel.", "Naming a feeling makes it smaller.", "Did you do your 60-second check-in before homework?", "One word is enough — calm, tired, worried, cross."],
+  "fe-phonebed": ["Sleep is where you recharge.", "Phone away 30 minutes before bed protects your sleep.", "Did your phone stay across the room before sleep last night?", "Less late-night screen time means a fresher brain."],
+  "fe-breakfast": ["Fuel up for focus.", "Your brain needs breakfast and water to work well.", "Did you eat breakfast before school today?", "Even fruit or milk counts."],
+  "fe-buddy": ["Better together.", "Working next to a friend makes starting easier.", "Did you study with a buddy today?", "In person or on a quiet call — both count."],
+  "fe-3breath": ["Pause before you switch.", "Three slow breaths help an urge pass.", "Did you try a three-breath pause when you wanted to switch tasks?", "In for 4, out for 6."],
+  "fe-colour3": ["Know your top 3.", "Red first, then yellow, then green.", "Did you colour-code your top 3 tasks today?", "A short list keeps the day doable."],
+  "fe-handup": ["Be brave in class.", "One question is all it takes.", "Did you raise your hand or ask one question in class today?", "Every question makes the next one easier."],
+  "fe-whylink": ["Find the 'why'.", "Linking a lesson to real life switches curiosity on.", "Did you find one real-life link for your homework today?", "Cricket, cooking, games — any link counts."],
+  "fe-onemore": ["One more try.", "Most learning happens right after a mistake.", "Did you give it one more try after a mistake today?", "Trying again is the real win."],
+});
 const copyFor = (a) => COPY[a.id] || ["Keep going.", "Every small step counts.", `Did you do "${a.name}" today?`, a.when || ""];
 
 const partOfDay = () => { const h = new Date().getHours(); return h < 12 ? "Morning" : h < 17 ? "Afternoon" : "Evening"; };
@@ -90,7 +106,7 @@ const ActivityStep = ({ a, idx, total, answer, stage, bounce, onAnswer, onBack, 
       <div className="relative mt-8 rounded-3xl bg-white/90 shadow-sm border border-eq/10 p-5 sm:p-6">
         <p data-testid="daily-checkin-question" className="font-serif text-xl sm:text-2xl font-bold text-slate-900 leading-snug">{q}</p>
         <p className="mt-2 text-sm text-slate-500">{desc}</p>
-        {a.id === "c-checkin" && (
+        {(a.id === "c-checkin" || a.id === "fe-checkin") && (
           <div className="mt-4 rounded-2xl bg-eq-bg p-3 grid grid-cols-2 gap-3 text-left text-xs">
             <label className="flex items-center gap-2"><Activity className="h-4 w-4 text-eq shrink-0" /><span className="flex-1">Rate your stress (0–10)<input data-testid="daily-stress-input" type="number" min={0} max={10} value={note.stress ?? ""} onChange={(e) => setNote({ ...note, stress: e.target.value === "" ? undefined : Math.max(0, Math.min(10, Number(e.target.value))) })} className="mt-1 w-full h-8 rounded-lg bg-white px-2 outline-none focus:ring-2 focus:ring-eq" /></span></label>
             <label className="flex items-center gap-2 border-l border-slate-200 pl-3"><Smile className="h-4 w-4 text-eq shrink-0" /><span className="flex-1">Name one feeling<input data-testid="daily-feeling-input" maxLength={30} placeholder="e.g. calm, anxious, hopeful" value={note.feeling || ""} onChange={(e) => setNote({ ...note, feeling: e.target.value })} className="mt-1 w-full h-8 rounded-lg bg-white px-2 outline-none focus:ring-2 focus:ring-eq" /></span></label>

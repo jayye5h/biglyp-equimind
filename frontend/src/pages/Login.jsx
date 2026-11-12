@@ -7,6 +7,8 @@ import { api, errMsg } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { useTheme } from "@/lib/theme";
 
+const ROLE_ORDER = { student: 0, counsellor: 1, admin: 2 };
+
 export default function Login({ brand = "equimind" }) {
   const [users, setUsers] = useState([]);
   const { setBrand, B } = useTheme();
@@ -17,7 +19,7 @@ export default function Login({ brand = "equimind" }) {
 
   useEffect(() => {
     // each programme login lists its own students + counsellor; the shared platform admin appears on all
-    api.get("/auth/demo-users").then((r) => setUsers(r.data.filter((u) => u.role === "admin" || (u.programme || "equimind") === brand)));
+    api.get("/auth/demo-users").then((r) => setUsers(r.data.filter((u) => u.role === "admin" || (u.programme || "equimind") === brand || (brand === "focusedge" && u.role === "counsellor" && ["mindmellow", "mindedge"].includes(u.programme))).sort((a, b) => (brand === "focusedge" ? ROLE_ORDER[a.role] - ROLE_ORDER[b.role] : 0))));
   }, [brand]);
 
   useEffect(() => {
