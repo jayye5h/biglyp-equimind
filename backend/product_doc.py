@@ -282,7 +282,7 @@ def build(P=EQ) -> str:
     for a, b in [("Path 1 / Path 2", "Self-help first vs counsellor strongly suggested."),
                  ("Priority area", "One of the three lowest-scoring life areas."),
                  ("Full day", "A day on which all five plan activities were ticked."),
-                 ("Growth stage", "One of 14 avatar illustrations; advances with each daily check-in."),
+                 ("Growth stage", "One of 14 avatar illustrations; advances one stage for every 5 plan activities completed (\"Yes, I did\"), never goes back; future days stay locked."),
                  ("Stress loop", "Four linked pressures that feed each other, from the student's own answers.")]:
         w(f"- **{a}** — {b}")
     w(f"\n---\n*This document is generated from the live {P.NAME} content and rules, so it updates automatically when the platform changes.*")

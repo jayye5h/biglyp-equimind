@@ -18,12 +18,19 @@ export const phaseOf = (stage) => PHASES.find((p) => stage >= p.from && stage <=
 
 const clamp = (n) => Math.max(1, Math.min(14, n));
 
-/** Progress stage reached by journey day d (0-based). Grows only with completed daily check-ins, never goes back. */
-export const stageAt = (r, d) => clamp(1 + (r?.logged_days || []).filter((k) => k <= d).length);
+/** "Yes, I did" activities needed to grow one stage. */
+export const PER_STAGE = 5;
+
+/** Plan activities the student actually completed ("Yes" answers) on or before journey day d. */
+export const doneUpTo = (r, d = 13) => (r?.ticks || []).filter((t) => Number(String(t).split("-")[1]) <= d).length;
+
+/** Progress stage reached by journey day d (0-based). Grows bit by bit with completed activities (every PER_STAGE = one stage);
+ *  days with little or no progress keep the stage where it is — it never goes back. */
+export const stageAt = (r, d) => clamp(1 + Math.floor(doneUpTo(r, d) / PER_STAGE));
 
 export const todayIndex = (r) => Math.min(Math.max(elapsedDays(r), 0), 13);
 
-export const currentStage = (r) => (r ? clamp(1 + (r.logged_days || []).length) : 1);
+export const currentStage = (r) => (r ? stageAt(r, 13) : 1);
 
-/** For future days: the stage the student reaches if they keep checking in. */
-export const projectedStage = (r, d) => clamp(currentStage(r) + (d - todayIndex(r)));
+/** Completed activities still needed to reach the next stage (0 once the final stage is reached). */
+export const toNextStage = (r) => (currentStage(r) >= 14 ? 0 : PER_STAGE - (doneUpTo(r) % PER_STAGE));

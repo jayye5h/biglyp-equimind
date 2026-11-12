@@ -4,7 +4,7 @@ import { Check, ArrowLeft, ArrowRight, CalendarDays, Sun, Sprout, Clock, Leaf, A
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Student } from "@/components/Avatar";
 import { elapsedDays } from "@/lib/progress";
-import { currentStage, STAGES, phaseOf } from "@/lib/stages";
+import { currentStage, toNextStage, STAGES, phaseOf } from "@/lib/stages";
 
 const MOODS = [
   { v: 0, l: "Struggling", icon: Frown }, { v: 1, l: "Rough", icon: Annoyed }, { v: 2, l: "Mixed", icon: Meh },
@@ -95,7 +95,7 @@ const MoodStep = ({ todayNo, mood, glow, stage, setMood, onNext, onLater }) => (
   </div>
 );
 
-const ActivityStep = ({ a, idx, total, answer, stage, bounce, onAnswer, onBack, onNext, note, setNote, willFeedback }) => {
+const ActivityStep = ({ a, idx, total, answer, stage, need, bounce, onAnswer, onBack, onNext, note, setNote, willFeedback }) => {
   const [head, sub, q, desc] = copyFor(a);
   const last = idx === total - 1;
   return (
@@ -103,7 +103,8 @@ const ActivityStep = ({ a, idx, total, answer, stage, bounce, onAnswer, onBack, 
       <h2 data-testid="daily-log-heading" className="font-serif text-2xl sm:text-3xl font-bold text-slate-900">{head}</h2>
       <p className="mt-1 text-sm text-slate-500">{sub}</p>
       <div className="mt-5"><AvatarRing stage={stage} bounce={bounce} sparkle><Dots n={idx + 1} total={total} /></AvatarRing></div>
-      <div className="relative mt-8 rounded-3xl bg-white/90 shadow-sm border border-eq/10 p-5 sm:p-6">
+      <p data-testid="daily-log-next-stage" className="mt-6 text-xs text-slate-500">Stage {stage} · {stage >= 14 ? "final stage reached" : `${need} more "Yes" ${need === 1 ? "answer" : "answers"} to grow to Stage ${stage + 1}`}</p>
+      <div className="relative mt-3 rounded-3xl bg-white/90 shadow-sm border border-eq/10 p-5 sm:p-6">
         <p data-testid="daily-checkin-question" className="font-serif text-xl sm:text-2xl font-bold text-slate-900 leading-snug">{q}</p>
         <p className="mt-2 text-sm text-slate-500">{desc}</p>
         {(a.id === "c-checkin" || a.id === "fe-checkin") && (
@@ -178,16 +179,22 @@ export const DailyLog = ({ r, day, open, onClose, onSave }) => {
   const no = Object.values(answers).length - yes;
   const glow = Math.max(0.1, Math.min(1, (mood === null ? 0.45 : BASE[mood]) + yes * 0.06 - no * 0.04));
   const total = r.plan.length;
-  const stage = currentStage(r);
+  // Live preview: the avatar grows during the check-in only when "Yes" answers cross a stage threshold
+  const liveTicks = () => {
+    const t = new Set(r.ticks || []);
+    r.plan.forEach((_, i) => (answers[i] ? t.add(`${i}-${day}`) : t.delete(`${i}-${day}`)));
+    return [...t];
+  };
+  const live = { ...r, ticks: liveTicks() };
+  const stage = currentStage(live);
+  const need = toNextStage(live);
 
   const answer = (v) => {
     setAnswers({ ...answers, [step]: v });
     if (v) setBounce((b) => b + 1);
   };
   const submit = (withFeedback = false) => {
-    const ticks = new Set(r.ticks || []);
-    r.plan.forEach((_, i) => (answers[i] ? ticks.add(`${i}-${day}`) : ticks.delete(`${i}-${day}`)));
-    const patch = { ticks: [...ticks], logged_days: [...new Set([...(r.logged_days || []), day])], moods: { ...(r.moods || {}), [todayIdx]: mood } };
+    const patch = { ticks: liveTicks(), logged_days: [...new Set([...(r.logged_days || []), day])], moods: { ...(r.moods || {}), [todayIdx]: mood } };
     if (note.stress !== undefined || note.feeling) patch.daily_notes = { ...(r.daily_notes || {}), [day]: note };
     if (withFeedback && fb.helpful && fb.feel) patch.feedback = { ...(r.feedback || {}), [day]: { ...fb, comment: (fb.comment || "").trim() } };
     onSave(patch);
@@ -209,7 +216,7 @@ export const DailyLog = ({ r, day, open, onClose, onSave }) => {
               ) : step >= total ? (
                 <FeedbackStep yes={yes} total={total} stage={stage} fb={fb} setFb={setFb} onBack={() => setStep(total - 1)} onSubmit={submit} />
               ) : (
-                <ActivityStep a={r.plan[step]} idx={step} total={total} answer={answers[step]} stage={stage} bounce={bounce} onAnswer={answer} willFeedback={yes > 0}
+                <ActivityStep a={r.plan[step]} idx={step} total={total} answer={answers[step]} stage={stage} need={need} bounce={bounce} onAnswer={answer} willFeedback={yes > 0}
                   onBack={() => setStep(step - 1)} onNext={step === total - 1 ? (yes > 0 ? () => setStep(total) : () => submit(false)) : () => setStep(step + 1)} note={note} setNote={setNote} />
               )}
             </motion.div>

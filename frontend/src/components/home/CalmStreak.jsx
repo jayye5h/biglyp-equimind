@@ -1,7 +1,7 @@
 import { Flame } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { elapsedDays } from "@/lib/progress";
-import { PHASES, STAGES, currentStage } from "@/lib/stages";
+import { PHASES, STAGES, currentStage, toNextStage, PER_STAGE } from "@/lib/stages";
 
 export const BADGES = [
   { name: "First Step", msg: "You showed up for yourself. Every journey starts exactly like this." },
@@ -32,14 +32,14 @@ export const streakInfo = (r) => {
 };
 
 const cheer = (s) => {
-  if (s.cur < 0) return "Your journey has begun. Check in tomorrow to grow into your next stage — something lovely to look forward to.";
+  if (s.cur < 0) return "Your journey has begun. Complete your plan activities to grow into your next stage — something lovely to look forward to.";
   if (s.over) return "Your 14-day journey is complete. Take a New Assessment whenever you are ready for the next chapter.";
   if (s.stage >= 14) return "You reached the final stage. What a journey — be proud of yourself.";
   if (s.current >= 7) return "You're on a beautiful run. Keep this gentle rhythm going.";
   if (s.current >= 3) return "You're building real momentum. One more check-in keeps your streak glowing.";
   if (s.current >= 1) return "Lovely start! Check in again tomorrow to grow your streak.";
   if (s.earned) return "Missed a day? That's okay. Your progress is safe — you never move backwards. A new streak can begin today.";
-  return "Complete today's check-in to grow into your next stage.";
+  return "Complete today's plan activities to grow into your next stage.";
 };
 
 export const StreakCard = ({ r, onOpenDaily, pending }) => {
@@ -88,14 +88,14 @@ export const StreakCard = ({ r, onOpenDaily, pending }) => {
                 <TooltipContent className="max-w-[220px] text-center">
                   <p className="font-semibold">{b.name}</p>
                   <p className="text-xs font-medium">{st.caption}</p>
-                  <p className="mt-0.5 text-xs opacity-80">{got ? b.msg : next ? "Your next stage — just one check-in away." : "Waiting for you along the journey."}</p>
+                  <p className="mt-0.5 text-xs opacity-80">{got ? b.msg : next ? `Your next stage — ${toNextStage(r)} more ${toNextStage(r) === 1 ? "activity" : "activities"} to go.` : "Waiting for you along the journey."}</p>
                 </TooltipContent>
               </Tooltip>
             );
           })}
         </div>
       </TooltipProvider>
-      <p className="mt-4 text-xs text-slate-500">Best streak: <span data-testid="streak-best" className="font-semibold text-slate-700">{s.best} {s.best === 1 ? "day" : "days"}</span> · Every daily check-in unlocks your next growth stage — you only ever move forward.</p>
+      <p className="mt-4 text-xs text-slate-500">Best streak: <span data-testid="streak-best" className="font-semibold text-slate-700">{s.best} {s.best === 1 ? "day" : "days"}</span> · Every {PER_STAGE} plan activities you complete unlock your next growth stage — you only ever move forward.</p>
     </section>
   );
 };
