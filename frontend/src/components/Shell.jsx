@@ -1,7 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, LogOut } from "lucide-react";
+import { useState } from "react";
+import { Heart, LogOut, UserCog } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useTheme, PALETTES } from "@/lib/theme";
+import { NotificationBell } from "@/components/NotificationBell";
+import { ContactDialog } from "@/components/ContactDialog";
 
 export const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
@@ -32,6 +35,7 @@ export const Logo = ({ to = "/", small }) => (
 export const AppHeader = ({ children }) => {
   const { user, logout } = useAuth();
   const nav = useNavigate();
+  const [contact, setContact] = useState(false);
   const out = async () => {
     await logout();
     nav("/");
@@ -43,12 +47,19 @@ export const AppHeader = ({ children }) => {
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />
           {children}
+          {user && <NotificationBell />}
+          {user && (
+            <button data-testid="contact-details-btn" onClick={() => setContact(true)} title="Contact details" aria-label="Contact details" className="h-9 w-9 rounded-full hover:bg-white grid place-items-center text-slate-700">
+              <UserCog className="h-5 w-5" />
+            </button>
+          )}
           <span data-testid="header-user-name" className="hidden sm:block text-sm text-slate-600">{user?.name}</span>
           <button data-testid="logout-button" onClick={out} className="h-9 px-3 rounded-full border border-eq/20 text-sm text-slate-700 hover:bg-white hover:text-slate-900 transition-colors flex items-center gap-1.5">
             <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Sign out</span>
           </button>
         </div>
       </div>
+      <ContactDialog open={contact} onOpenChange={setContact} />
     </header>
   );
 };

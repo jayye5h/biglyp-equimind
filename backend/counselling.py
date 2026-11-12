@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
 from plan_theory import enrich_plan, next_activities
+import notify
 
 IST = ZoneInfo("Asia/Kolkata")
 MOOD = ["Struggling", "Rough", "Mixed", "Steady", "Strong"]
@@ -145,6 +146,7 @@ def build_router(db, current_user, student_user):
                "note": body.note.strip(), "preferred": body.preferred.strip(), "report_id": (rep or {}).get("id"),
                "counsellor_note": "", "created_at": _now().isoformat()}
         await db.bookings.insert_one(dict(doc))
+        notify.fire(notify.booking_event("session_booked", doc))
         return await booking_out(doc)
 
     @r.post("/counselling/bookings/{bid}/cancel")
@@ -153,6 +155,7 @@ def build_router(db, current_user, student_user):
                                                  {"$set": {"status": "cancelled"}}, projection={"_id": 0})
         if not b:
             raise HTTPException(404, "Booking not found")
+        notify.fire(notify.booking_event("session_cancelled", {**b, "status": "cancelled"}, by="student"))
         if b.get("slot_id"):
             await db.slots.update_one({"id": b["slot_id"]}, {"$set": {"booked_by": None, "booking_id": None}})
         return {"ok": True}
@@ -249,7 +252,12 @@ def build_router(db, current_user, student_user):
         if not upd:
             raise HTTPException(400, "Nothing to update")
         await db.bookings.update_one({"id": bid}, {"$set": upd})
-        return await booking_out({**b, **upd})
+        nb = {**b, **upd}
+        if upd.get("status") == "cancelled" and b.get("status") != "cancelled":
+            notify.fire(notify.booking_event("session_cancelled", nb, by="counsellor"))
+        elif nb.get("status") == "confirmed" and (upd.get("slot_id") or b.get("status") != "confirmed"):
+            notify.fire(notify.booking_event("session_booked", nb))
+        return await booking_out(nb)
 
     @r.get("/counsellor/students/{uid}")
     async def student_detail(uid: str, user: dict = Depends(counsellor_user)):

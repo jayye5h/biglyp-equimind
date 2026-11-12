@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
-import { Home, ClipboardCheck, BarChart3, PieChart, LayoutGrid, Headset, Bell, LogOut } from "lucide-react";
+import { useState } from "react";
+import { Home, ClipboardCheck, BarChart3, PieChart, LayoutGrid, Headset, LogOut, UserCog } from "lucide-react";
 import { Logo, ThemeToggle } from "@/components/Shell";
+import { NotificationBell } from "@/components/NotificationBell";
+import { ContactDialog } from "@/components/ContactDialog";
 import { useAuth } from "@/lib/auth";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
@@ -22,6 +25,7 @@ const NavButton = ({ n, active, onNav, compact }) => (
 
 export const HomeLayout = ({ tab, onNav, pending, onBell, children }) => {
   const { user, logout } = useAuth();
+  const [contact, setContact] = useState(false);
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-30 bg-eq-bg/85 backdrop-blur-xl">
@@ -29,15 +33,13 @@ export const HomeLayout = ({ tab, onNav, pending, onBell, children }) => {
           <Logo small to="/dashboard" />
           <div className="flex items-center gap-2 sm:gap-3">
             <ThemeToggle />
-            <button data-testid="bell-btn" onClick={onBell} aria-label="Notifications" className="relative h-10 w-10 rounded-full hover:bg-white grid place-items-center transition-colors">
-              <Bell className="h-5 w-5 text-slate-700" />
-              {pending !== null && <span data-testid="bell-dot" className="absolute top-2 right-2.5 h-2.5 w-2.5 rounded-full bg-eq ring-2 ring-white" />}
-            </button>
+            <NotificationBell pending={pending} onPending={onBell} />
             <DropdownMenu>
               <DropdownMenuTrigger data-testid="profile-menu-btn" className="h-10 w-10 rounded-full bg-eq text-white font-semibold grid place-items-center">{user.name[0]}</DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel><div>{user.name}</div><div className="text-xs font-normal text-slate-500">{user.program} · {user.year}</div></DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem data-testid="contact-details-btn" onClick={() => setContact(true)} className="gap-2"><UserCog className="h-4 w-4" /> Contact details</DropdownMenuItem>
                 <DropdownMenuItem data-testid="logout-button" onClick={logout} className="gap-2"><LogOut className="h-4 w-4" /> Sign out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -49,6 +51,7 @@ export const HomeLayout = ({ tab, onNav, pending, onBell, children }) => {
         <aside className="hidden lg:block"><nav className="sticky top-24 space-y-1">{NAV.map((n) => <NavButton key={n.id} n={n} active={tab === n.id} onNav={onNav} />)}</nav></aside>
         <main className="min-w-0 space-y-7 pt-2">{children}</main>
       </div>
+      <ContactDialog open={contact} onOpenChange={setContact} />
     </div>
   );
 };

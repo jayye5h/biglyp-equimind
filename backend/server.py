@@ -29,11 +29,13 @@ import games as games_lib  # noqa: E402
 from plan_theory import enrich_plan, next_activities  # noqa: E402
 import counselling  # noqa: E402
 import push_notify  # noqa: E402
+import notify  # noqa: E402
 
 YT_RE = re.compile(r"^(?:https?://)?(?:www\.|m\.)?(?:youtube\.com/(?:watch\?(?:.*&)?v=|shorts/|embed/)|youtu\.be/)([A-Za-z0-9_-]{11})|^([A-Za-z0-9_-]{11})$")
 
 client = AsyncIOMotorClient(os.environ['MONGO_URL'])
 db = client[os.environ['DB_NAME']]
+notify.init(db)
 
 INDEXES: dict[str, list[IndexModel]] = {
     "users": [IndexModel([("id", ASCENDING)], name="id", unique=True)],
@@ -46,6 +48,11 @@ INDEXES: dict[str, list[IndexModel]] = {
         IndexModel([("id", ASCENDING)], name="id", unique=True),
         IndexModel([("user_id", ASCENDING), ("created_at", DESCENDING)], name="user_created"),
     ],
+    "notification_log": [
+        IndexModel([("key", ASCENDING)], name="key"),
+        IndexModel([("created_at", DESCENDING)], name="created"),
+    ],
+    "notifications": [IndexModel([("user_id", ASCENDING), ("created_at", DESCENDING)], name="user_created")],
 }
 
 
@@ -247,6 +254,9 @@ async def update_progress(rid: str, body: ProgressIn, user: dict = Depends(stude
     res = await db.reports.update_one({"id": rid, "user_id": user["id"]}, {"$set": upd})
     if not res.matched_count:
         raise HTTPException(404, "Report not found")
+    if body.moods is not None:
+        rep = await db.reports.find_one({"id": rid}, {"_id": 0})
+        notify.fire(notify.maybe_low_mood(rep))
     return {"ok": True}
 
 
@@ -346,6 +356,7 @@ _cou_router, counsellor_user = counselling.build_router(db, current_user, studen
 api.include_router(_cou_router)
 api.include_router(push_notify.build_router(db, current_user, student_user))
 api.include_router(games_lib.build_router(db, admin_user, current_user))
+api.include_router(notify.build_router(db, current_user, admin_user))
 app.include_router(api)
 
 app.add_middleware(
@@ -365,6 +376,7 @@ async def seed_users():
     for u in DEMO_USERS:
         if u["role"] == "counsellor":
             await counselling.seed_slots(db, u["id"])
+    await notify.seed_contacts(db)
     if not await db.media.count_documents({}):
         await db.media.insert_many([{"id": str(uuid.uuid4()), "kind": k, "title": t, "duration": d, "youtube_id": y, "order": i}
                                     for i, (k, t, d, y) in enumerate(SEED_MEDIA)])

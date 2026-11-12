@@ -23,3 +23,10 @@ crons:
     method: POST
     # Cron endpoints must ack 2xx immediately; enqueue/background the actual work.
     enabled: true
+  - name: notify-sweep
+    description: "Every 15 min: 1-hour counselling session reminders and Week 1 / Week 2 report unlock notices"
+    cron: "*/15 * * * *"
+    endpoint: "{{BASE_URL}}/api/cron/notify-sweep"
+    method: POST
+    # Cron endpoints must ack 2xx immediately; enqueue/background the actual work.
+    enabled: true

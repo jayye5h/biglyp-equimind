@@ -12,6 +12,8 @@ from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, 
 from pydantic import BaseModel
 from pywebpush import WebPushException, webpush
 
+import notify
+
 IST = ZoneInfo("Asia/Kolkata")
 log = logging.getLogger("push")
 
@@ -79,9 +81,8 @@ def build_router(db, current_user, student_user):
             key = f"{u['id']}:{date}:{slot}"
             if await db.notifications.find_one({"key": key}):
                 continue
-            await db.notifications.insert_one({"key": key, "user_id": u["id"], "title": title, "body": body, "slot": slot, "day": day,
-                                               "run_id": run_id, "read": False, "created_at": datetime.now(timezone.utc).isoformat()})
-            n += await push_user(u["id"], {"title": title, "body": f"Day {day + 1}: {body}", "url": "/dashboard", "tag": f"eq-checkin-{date}"})
+            res = await notify.send("checkin_reminder", u["id"], title, f"Day {day + 1}: {body}", url="/dashboard", key=f"checkin:{key}")
+            n += 1 if res.get("app") == "sent" else 0
         await db.cron_runs.update_one({"run_id": run_id}, {"$set": {"done": True, "pushed": n}})
         log.info("reminders %s (%s): pushed %s", run_id, slot, n)
 

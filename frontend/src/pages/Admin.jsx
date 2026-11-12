@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { api, AREA_COLORS } from "@/lib/api";
 import { MediaManager } from "@/components/admin/MediaManager";
 import { GamesLibrary } from "@/components/admin/GamesLibrary";
+import { NotificationsManager } from "@/components/admin/NotificationsManager";
 
 const Stat = ({ label, value, testid }) => (
   <div data-testid={testid} className="rounded-2xl bg-white border border-eq/10 p-5"><div className="text-xs font-mono uppercase text-slate-400">{label}</div><div className="mt-2 font-serif text-3xl font-bold text-slate-900">{value}</div></div>
@@ -104,12 +105,14 @@ export default function Admin() {
             <TabsTrigger data-testid="admin-tab-activities" value="activities" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Activities</TabsTrigger>
             <TabsTrigger data-testid="admin-tab-media" value="media" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Media</TabsTrigger>
             <TabsTrigger data-testid="admin-tab-games" value="games" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Games</TabsTrigger>
+            <TabsTrigger data-testid="admin-tab-notifications" value="notifications" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Notifications</TabsTrigger>
           </TabsList>
           <TabsContent value="overview" className="mt-6"><Overview /></TabsContent>
           <TabsContent value="items" className="mt-6"><QuestionBank /></TabsContent>
           <TabsContent value="activities" className="mt-6"><Library /></TabsContent>
           <TabsContent value="media" className="mt-6"><MediaManager /></TabsContent>
           <TabsContent value="games" className="mt-6"><GamesLibrary /></TabsContent>
+          <TabsContent value="notifications" className="mt-6"><NotificationsManager /></TabsContent>
         </Tabs>
       </main>
     </div>
