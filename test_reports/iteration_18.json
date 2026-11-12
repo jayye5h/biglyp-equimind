@@ -1,0 +1,26 @@
+{
+  "summary": "Iteration 18: tested the sea-shore Relax & Unwind background, the 15 sound files now stored in the app, and the admin Product Document (API + page + Guard + mobile), and checked the document's facts against the code. Backend pytest: 23/23 passed. Frontend: every requested flow works. One minor layout bug on /admin/product-doc: the app header does not stay at the top when you scroll.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "ProductDoc.jsx sticky header", "issue": "AppHeader is wrapped in <div className='print:hidden'>, so its 'sticky top-0' sticks only inside that 64px wrapper and scrolls away (measured header top = -11150px after a contents jump). The doc toolbar is still 'sticky top-16', so it leaves a 64px see-through strip at the very top where the document text shows above the toolbar. Fix: give the wrapper the 'contents' class (<div className='print:hidden contents'>), or pass the print:hidden class to the header itself, or make the toolbar top-0.", "selector": "[data-testid='product-doc-page'] > div:first-child", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Product doc toolbar", "issues": ["Toolbar background is semi-transparent (bg-eq-bg/90 + blur), so text faintly shows through while scrolling. Minor."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_product_doc_sounds.py", "/app/test_reports/pytest/pytest_iter18.xml"],
+  "action_items": ["Fix the AppHeader sticky wrapper on ProductDoc.jsx (add the 'contents' class to the print:hidden wrapper)."],
+  "critical_code_review_comments": [
+    "The Relax background (RELAX_BG) still loads from images.unsplash.com and is not stored in the repo. That is fine, but it is an outside dependency, unlike the sounds.",
+    "Every sound file is about 4.3MB (6 min at 96kbps), 63MB in total. The user downloads one only when they tap it, but you could add preload='none' or a smaller bitrate to save mobile data.",
+    "Checked the document's facts against the code and they match: scoring.py round(100 - raw/16*100), levels <35/<50/<65, path = 2 if any area <35 or overall <45, body page rule; content.py has 180 items and 26 activities; games has 26; notify.EVENTS has 7; the narrative model is claude-sonnet-5-5."
+  ],
+  "updated_files": ["/app/backend/tests/test_product_doc_sounds.py"],
+  "success_rate": {"backend": "100%", "frontend": "97% (1 low-priority layout bug)"},
+  "seed_data_creation": "None. Did not take any assessment or submit a check-in. The daily check-in was dismissed with 'Remind me later'.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Verified: GET /api/admin/product-doc returns 200 {markdown, generated_at} for admins, 403 for students and counsellors, 401 without login. The markdown has 18 numbered sections, 180 unique item IDs (A1-01...) and a notifications table with 7 rows. All 15 /sounds/<id>.mp3 files return 200 audio/mpeg and their md5 hashes are all different. On Home, playing waves + rain loaded the local /sounds files with zero jukehost requests (loop=true, volume 0.5). The volume slider changed only waves' volume. Pause, stop-all and the info dialog work. Admin: product-doc-link opens /admin/product-doc. It shows 18 contents links, 18 h2s, 180 item codes and 11 tables. Contents links put the heading at 96px from the top. The print button calls window.print and the .md button downloads EquiMind_Product_Document.md (51KB). The back link goes to /admin. At 390px there is no page-wide horizontal scroll (scrollWidth 390), tables scroll inside an overflow-x:auto box and the contents sidebar is hidden. The Guard redirects students to /dashboard and counsellors to /counsellor."
+}

@@ -42,8 +42,8 @@ export default function ProductDoc() {
   };
   return (
     <div data-testid="product-doc-page" className="min-h-screen">
-      <div className="print:hidden"><AppHeader /></div>
-      <div className="print:hidden sticky top-16 z-20 bg-eq-bg/90 backdrop-blur border-b border-eq/10">
+      <div className="print:hidden contents"><AppHeader /></div>
+      <div className="print:hidden sticky top-16 z-20 bg-eq-bg border-b border-eq/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-8 h-14 flex items-center gap-2">
           <Link to="/admin" data-testid="product-doc-back" className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900"><ArrowLeft className="h-4 w-4" /> Admin</Link>
           <span className="mx-2 h-4 w-px bg-eq/20" />

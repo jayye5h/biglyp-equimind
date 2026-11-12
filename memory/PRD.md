@@ -103,3 +103,7 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 
 ## 2026-11-12 (iteration 19) — Relax and Unwind
 - Student Home (below Activity of the Day) + Toolkit: `components/home/RelaxUnwind.jsx` + `lib/sounds.js` — 15 looping ambient sounds ported from github.com/sid-talesara/mindmelo (MIT; audio hosted on audio.jukehost.co.uk, info videos on YouTube). Mix several, per-sound volume, Stop all, info dialog with YouTube embed. Added react-icons.
+
+## 2026-11-12 (iteration 20)
+- Relax and Unwind: sea-shore background; 15 sounds now local at frontend/public/sounds/<id>.mp3 (6-min 96kbps clips cut from jukehost originals, ~62MB total — originals were 1.2GB).
+- Product Document: backend/product_doc.py builds markdown live from content/scoring/games/notify modules → GET /api/admin/product-doc (admin). Page /admin/product-doc (ProductDoc.jsx, react-markdown + remark-gfm, TOC, Save as PDF via print, .md download); link card on Admin page. Static snapshot at docs/EquiMind_Product_Document.md.
