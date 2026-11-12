@@ -9,12 +9,13 @@ import { api, errMsg } from "@/lib/api";
 import { FEATURE_TONES, TONE_SETS, savedTone, toneVars, brandNow, toneStoreKey } from "@/lib/featureTones";
 import { useAuth } from "@/lib/auth";
 import { BRANDS } from "@/lib/brand";
+import { ReportBrandCtx } from "@/components/report/PageShell";
 
-const TonePicker = ({ tone, setTone }) => (
+const TonePicker = ({ tone, setTone, brand }) => (
   <div data-testid="feature-tone-picker" className="mb-6 rounded-2xl bg-white border border-eq/10 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4">
     <div className="sm:w-56 shrink-0"><div className="text-sm font-semibold text-slate-800">Highlight page colour</div><div className="text-xs text-slate-500">Cover, About, loop chips and the help box</div></div>
     <div className="flex flex-wrap gap-2">
-      {TONE_SETS[brandNow()].map((k) => [k, FEATURE_TONES[k]]).map(([k, t]) => (
+      {TONE_SETS[brand].map((k) => [k, FEATURE_TONES[k]]).map(([k, t]) => (
         <button key={k} data-testid={`feature-tone-${k}`} onClick={() => setTone(k)} aria-pressed={tone === k}
           className={`flex items-center gap-2 h-10 pl-1.5 pr-3 rounded-full border text-sm transition-colors ${tone === k ? "border-slate-800 bg-slate-50 text-slate-900" : "border-slate-200 text-slate-600 hover:border-slate-400"}`}>
           <span className="h-7 w-7 rounded-full" style={{ background: t.bg }} />{t.label}
@@ -30,9 +31,11 @@ export default function ReportView() {
   const [r, setR] = useState(null);
   const [exporting, setExporting] = useState(false);
   const [tone, setTone] = useState(() => savedTone());
+  const rb = r && TONE_SETS[r.programme] ? r.programme : r ? "equimind" : brandNow();
+  useEffect(() => { if (r) setTone(savedTone(rb)); }, [rb, r?.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const chooseTone = (k) => {
     setTone(k);
-    localStorage.setItem(toneStoreKey(), k);
+    localStorage.setItem(toneStoreKey(rb), k);
   };
   const printRef = useRef(null);
   const { user } = useAuth();
@@ -76,6 +79,7 @@ export default function ReportView() {
   );
 
   return (
+    <ReportBrandCtx.Provider value={r ? BRANDS[rb] : null}>
     <div data-testid="report-view-page" className="min-h-screen">
       <AppHeader>{download}</AppHeader>
       <main className="max-w-6xl mx-auto px-4 sm:px-8 py-8 grid lg:grid-cols-[220px_1fr] gap-8">
@@ -87,17 +91,18 @@ export default function ReportView() {
             ))}
           </div>
         </aside>
-        <div className="min-w-0" style={toneVars(tone)}>
+        <div className="min-w-0" style={toneVars(tone, rb)}>
           <Link to={backTo} className="lg:hidden mb-4 text-sm text-slate-500 inline-flex items-center gap-1.5"><ArrowLeft className="h-4 w-4" /> {backLabel}</Link>
-          {r && <TonePicker tone={tone} setTone={chooseTone} />}
+          {r && <TonePicker tone={tone} setTone={chooseTone} brand={rb} />}
           {r ? <ReportPages r={r} onSave={onSave} /> : <div className="h-96 rounded-[2rem] bg-white/60 animate-pulse" />}
         </div>
       </main>
       {exporting && r && (
-        <div ref={printRef} aria-hidden className="fixed top-0 -left-[12000px] w-[900px] p-4 bg-eq-bg" style={toneVars(tone)}>
+        <div ref={printRef} aria-hidden className="fixed top-0 -left-[12000px] w-[900px] p-4 bg-eq-bg" style={toneVars(tone, rb)}>
           <ReportPages r={r} onSave={() => {}} print />
         </div>
       )}
     </div>
+    </ReportBrandCtx.Provider>
   );
 }

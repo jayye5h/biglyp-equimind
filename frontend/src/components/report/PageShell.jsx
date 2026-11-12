@@ -1,11 +1,16 @@
 import { Mountain, Waves, Moon, Sun, Leaf, Cloud, Sprout, Feather, Wind, Flower2, Star } from "lucide-react";
+import { createContext, useContext } from "react";
 import { useBrand } from "@/lib/theme";
+
+/** Brand of the report being shown (may differ from the viewer's brand for shared counsellors). */
+export const ReportBrandCtx = createContext(null);
 
 const MOTIFS = [Sun, Mountain, Waves, Leaf, Sprout, Feather, Moon, Cloud, Wind, Flower2, Star];
 
 export const PageShell = ({ n, total, title, eyebrow, id, children, dark, testid, art, artAlt = "", inline, side, headExtra }) => {
   const Motif = MOTIFS[(n - 1) % MOTIFS.length];
-  const B = useBrand();
+  const viewer = useBrand();
+  const B = useContext(ReportBrandCtx) || viewer;
   return (
     <section id={id} data-pdf-page data-testid={testid}
       className={`relative overflow-hidden rounded-[2rem] p-7 sm:p-10 border scroll-mt-24 ${dark ? "ft-bg border-transparent" : "bg-white border-eq/10"}`}>

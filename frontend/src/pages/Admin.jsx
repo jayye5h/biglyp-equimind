@@ -115,7 +115,7 @@ export default function Admin() {
             </button>
           ))}
         </div>
-        <p className="mt-2 text-xs text-slate-500">Overview, Question bank, Activities and the Product Document follow this switch. Media, Games and Notifications are shared by both programmes.</p>
+        <p className="mt-2 text-xs text-slate-500">Overview, Question bank, Activities and the Product Document follow this switch. Media, Games and Notifications are shared by all programmes.</p>
         <Link to={`/admin/product-doc?programme=${prog}`} data-testid="product-doc-link" className="mt-6 flex items-center gap-4 rounded-2xl bg-white border border-eq/15 p-4 sm:p-5 hover:border-eq/40 hover:shadow-sm transition">
           <span className="h-11 w-11 rounded-xl bg-eq-soft text-eq-dark grid place-items-center shrink-0"><FileText className="h-5 w-5" /></span>
           <span className="min-w-0 flex-1">

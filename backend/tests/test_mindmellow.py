@@ -112,7 +112,8 @@ def test_neha_students():
     s, _ = login("mm-neha")
     rows = s.get(f"{BASE_URL}/api/counsellor/students").json()
     ids = {r["student"]["id"] for r in rows}
-    assert ids == {"mm-aarav", "mm-diya", "mm-kabir"}
+    # school counsellors are shared between MindMellow and MindEdge (iteration 21)
+    assert ids == {"mm-aarav", "mm-diya", "mm-kabir", "me-riya", "me-arjun", "me-sana"}
     kab = [r for r in rows if r["student"]["id"] == "mm-kabir"][0]
     assert kab["severity"] > 0
 
@@ -133,10 +134,10 @@ def test_cross_programme_student_detail_404():
 def test_mm_slots_only_neha():
     s, _ = login("mm-diya")
     slots = s.get(f"{BASE_URL}/api/counselling/slots").json()
-    assert slots and all(x["counsellor_name"] == "Ms. Neha Kapoor" for x in slots)
+    assert slots and all(x["counsellor_name"] in ("Ms. Neha Kapoor", "Mr. Rahul Iyer") for x in slots)
     e, _ = login("stu-rohan")
     es = e.get(f"{BASE_URL}/api/counselling/slots").json()
-    assert all(x["counsellor_name"] != "Ms. Neha Kapoor" for x in es)
+    assert all(x["counsellor_name"] not in ("Ms. Neha Kapoor", "Mr. Rahul Iyer") for x in es)
 
 
 # --- isolation leaks (code review)

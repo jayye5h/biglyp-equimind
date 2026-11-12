@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GraduationCap, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
+import { GraduationCap, HeartHandshake, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Logo, ThemeToggle, ProductTabs } from "@/components/Shell";
 import { api, errMsg } from "@/lib/api";
@@ -49,7 +49,7 @@ export default function Login({ brand = "equimind" }) {
             <button key={u.id} data-testid={`demo-login-${u.id}`} onClick={() => pick(u.id)} disabled={!!busy}
               className={`eq-rise eq-d${i + 1} text-left rounded-2xl bg-white border border-eq/10 p-5 sm:p-6 flex items-center gap-5 hover:border-eq/40 hover:shadow-md transition-[border-color,box-shadow] duration-200 disabled:opacity-60`}>
               <span className={`h-12 w-12 rounded-2xl grid place-items-center ${u.role === "admin" ? "bg-[#1b1e3d]" : "bg-eq-soft"}`}>
-                {u.role === "admin" ? <ShieldCheck className="h-5 w-5 text-[#fbbf24]" /> : <GraduationCap className="h-5 w-5 text-eq" />}
+                {u.role === "admin" ? <ShieldCheck className="h-5 w-5 text-[#fbbf24]" /> : u.role === "counsellor" ? <HeartHandshake className="h-5 w-5 text-eq" /> : <GraduationCap className="h-5 w-5 text-eq" />}
               </span>
               <span className="flex-1">
                 <span className="block font-semibold text-slate-800">{u.name}</span>

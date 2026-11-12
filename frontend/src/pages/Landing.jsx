@@ -192,8 +192,8 @@ export default function Landing({ brand = "equimind" }) {
           <a href="#how" data-testid="nav-how-link" className="hover:text-slate-900">How it works</a>
           <a href="#privacy" data-testid="nav-privacy-link" className="hover:text-slate-900">Privacy</a>
         </nav>
-        <div className="flex items-center gap-3"><ThemeToggle />
-        <Link to={B.login} data-testid="nav-sign-in-btn" className="h-10 px-5 rounded-full bg-slate-900 text-white text-sm inline-flex items-center hover:bg-slate-700 transition-colors">Sign in</Link></div>
+        <div className="flex items-center gap-2 sm:gap-3"><div className="hidden sm:block"><ThemeToggle /></div>
+        <Link to={B.login} data-testid="nav-sign-in-btn" className="h-10 px-5 rounded-full bg-slate-900 text-white text-sm whitespace-nowrap inline-flex items-center hover:bg-slate-700 transition-colors">Sign in</Link></div>
       </header>
       <Hero />
       <AreasSection />

@@ -48,7 +48,7 @@ export const HelpContent = ({ r }) => {
       </div>
       <div data-testid="get-help-today" className="mt-8 rounded-2xl ft-bg p-5 flex gap-4">
         <Phone className="h-5 w-5 ft-alert shrink-0 mt-0.5" />
-        {isME(r) ? <p className="text-sm leading-relaxed"><b className="ft-alert">GET HELP TODAY IF:</b> you have thoughts of harming yourself, or you feel really unsafe — tell a parent, teacher or adult physically near you right now. You can also call <b>Childline 1098</b> (free, 24/7 for young people), <b>Tele-MANAS 14416</b> or <b>1800-891-4416</b> (24/7, confidential), or <b>112</b> in an emergency.</p> :
+        {isME(r) ? <p className="text-sm leading-relaxed"><b className="ft-alert">GET HELP TODAY IF:</b> you have thoughts of harming yourself, or you feel really unsafe — tell a parent, teacher or adult physically near you right now. You can also call <b>Childline 1098</b> (free, 24/7 for young people), <b>Tele-MANAS 14416</b> or <b>1800-891-4416</b> (24/7, confidential), or <b>112</b> in an emergency, or go to your school counsellor.</p> :
         <p className="text-sm leading-relaxed"><b className="ft-alert">GET HELP TODAY IF:</b> you have thoughts of harming yourself or of not wanting to be alive, or you feel unsafe. Call <b>Tele-MANAS 14416</b> or <b>1800-891-4416</b> (24/7, toll-free, confidential), or <b>112</b> in an emergency, or go to {brandOf(r).school ? "your school counsellor" : "campus health"}. Tell someone physically near you.</p>}
       </div>
     </>

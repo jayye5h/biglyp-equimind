@@ -13,6 +13,7 @@ AUDIENCE = "Indian secondary-school students in Grades 9-10 (14-15 years)"
 SCALE = EQ.SCALE
 BODY_AREA, EMO_AREA = "F", "E"
 BREAKUP_SUBTHEME = None
+SKIP_READS = {"f1", "f3"}  # career / money reads belong to MindMellow
 # MindEdge area -> closest EquiMind area, used to reuse the shared exercise / reads / games libraries
 WELLNESS_MAP = {"A": "A", "B": "F", "C": "D", "D": "E", "E": "C", "F": "B"}
 # EquiMind area -> MindEdge area, used to relabel the shared libraries for MindEdge students

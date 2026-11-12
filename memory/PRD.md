@@ -117,3 +117,11 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 - MindMellow report help copy: "Get help today" and "If something feels urgent" now say "your school counsellor" for MindMellow students; EquiMind keeps "campus health". Verified via screenshot.
 - Resend email key still pending (user chose to keep emails off for now).
 - Product tabs bar (ProductTabs in Shell.jsx) on both homepages and login pages: icon + name per product, auto-lists everything in BRANDS (lib/brand.js) so 2 future products only need a BRANDS entry + icon. Verified via screenshot.
+
+## 2026-11 MindEdge (Grades 9-10) — 3rd programme
+- Backend: content_me.py + data/mindedge_bank.json (180 items, 6 areas x 4 sub-themes from MindEdge Design Doc v4.0), theory, activity library (parent check-in, trusted adult, no-script line, one-friend plan, mute/block, 3-wins log, fairer thought, strength list, social fast), scripts, demo users (me-riya, me-arjun, me-sana, counsellor me-rahul).
+- programmes.py registry now has GROUPS: school programmes (MindMellow + MindEdge) SHARE counsellors (peer_q / peers); EquiMind is isolated.
+- Career/money reads hidden for MindEdge (SKIP_READS); report help page: tier 2 trusted adult (parents), Childline 1098.
+- Frontend: /mindedge + /mindedge/login, product tab, Sailboat icon, palettes ocean/seafoam/palegold, feature tones shoal..abyss; report brand/tones follow report programme (ReportBrandCtx) for shared counsellors; admin switch + product doc support MindEdge.
+- Tested: iteration_21 (backend 41/41; frontend all flows) + fixes self-verified.
+- Adding a 4th product: new content_xx.py + bank JSON, register in programmes.py (+ GROUPS), add to BRANDS (brand.js), palettes in theme.jsx/index.css, TONE_SETS, BRAND_ICONS, routes in App.js, Landing COPY, Admin PROGS.

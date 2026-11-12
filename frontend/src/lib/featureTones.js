@@ -34,7 +34,7 @@ export const savedTone = (brand = brandNow()) => {
   return TONE_SETS[brand].includes(k) ? k : TONE_SETS[brand][2];
 };
 
-export const toneVars = (key) => {
-  const t = FEATURE_TONES[TONE_SETS[brandNow()].includes(key) ? key : savedTone()] || FEATURE_TONES.azure;
+export const toneVars = (key, brand = brandNow()) => {
+  const t = FEATURE_TONES[TONE_SETS[brand].includes(key) ? key : savedTone(brand)] || FEATURE_TONES.azure;
   return { "--ft-bg": t.bg, "--ft-fg": t.fg, "--ft-muted": t.muted, "--ft-faint": t.faint, "--ft-accent": t.accent, "--ft-alert": t.alert, "--ft-glass": t.glass, "--ft-line": t.line };
 };

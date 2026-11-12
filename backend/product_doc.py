@@ -45,12 +45,12 @@ def build(P=EQ) -> str:
       f"A student answers **24 short statements** (drawn from a bank of **{n_items}**) about the last two weeks. It scores six life areas, "
       "writes a warm personal report, and turns the three areas under most pressure into a **14-day plan of five small daily activities**. "
       "A daily check-in, mood tracking, progress pages at Day 7 and Day 14, calming exercises, games, sounds and short reads keep the student engaged, "
-      "while a school / campus counsellor can see who may need support and book sessions.")
+      f"while a {'school' if mm else 'campus'} counsellor can see who may need support and book sessions.")
     w("\n**Design principles**")
     for b in ["**Reflect, don't diagnose** — tentative, student-friendly language; no medical or psychological labels; no risk scores.",
               "**Small steps beat big plans** — every recommendation is a short, concrete activity with a reason it helps.",
               "**Private by default** — the report is the student's; counsellors see records only to offer support and act in severe cases.",
-              "**Safety floor everywhere** — Tele-MANAS 14416 / 1800-891-4416 (24/7), 112 and campus health are always visible.",
+              f"**Safety floor everywhere** — Tele-MANAS 14416 / 1800-891-4416 (24/7), {'Childline 1098, ' if P.PROGRAMME == 'mindedge' else ''}112 and {'the school counsellor' if mm else 'campus health'} are always visible.",
               "**Warm and calm** — soft colours, illustrations, growth-stage avatars and encouraging copy."]:
         w(f"- {b}")
 
@@ -240,7 +240,7 @@ def build(P=EQ) -> str:
     # 16
     w("\n## 16. Safety, privacy & ethics")
     for b in ["Non-diagnostic by design: wording rules + AI blocklist + template fallback.",
-              "Safety floor on the help page, report and About page: Tele-MANAS 14416 / 1800-891-4416 (24/7, toll-free, confidential), 112, campus health.",
+              f"Safety floor on the help page, report and About page: Tele-MANAS 14416 / 1800-891-4416 (24/7, toll-free, confidential), {'Childline 1098, ' if P.PROGRAMME == 'mindedge' else ''}112, {'school counsellor' if mm else 'campus health'}.",
               "Reports are private to the student; counsellors may review records to offer support and act in severe cases (stated on the About page).",
               "No ads or tracking; demo sign-in only in this build."]:
         w(f"- {b}")

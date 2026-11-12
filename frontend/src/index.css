@@ -40,7 +40,7 @@ body {
     --eq-softer: 213 237 230; --eq-bg: 243 251 248; --eq-mid: 128 196 180;
 }
 [data-theme="palegold"] {
-    --eq-p: 184 145 58; --eq-dark: 145 112 38; --eq-soft: 250 245 230;
+    --eq-p: 148 113 42; --eq-dark: 118 89 30; --eq-soft: 250 245 230;
     --eq-softer: 243 233 204; --eq-bg: 253 251 244; --eq-mid: 216 189 128;
 }
 [data-theme="teal"] {
@@ -82,7 +82,7 @@ body {
         --muted: 162 30% 93%; --accent: 162 42% 93%; --border: 162 25% 86%; --input: 162 25% 86%;
     }
     [data-theme="palegold"] {
-        --background: 45 70% 97%; --primary: 41 52% 47%; --ring: 41 52% 47%; --secondary: 44 65% 93%;
+        --background: 45 70% 97%; --primary: 40 56% 37%; --ring: 40 56% 37%; --secondary: 44 65% 93%;
         --muted: 44 40% 93%; --accent: 44 65% 93%; --border: 44 35% 85%; --input: 44 35% 85%;
     }
     [data-theme="teal"] {

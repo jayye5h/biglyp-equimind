@@ -1,0 +1,41 @@
+{
+  "summary": "Iteration 21: tested the MindEdge programme (Grades 9-10) end to end, plus a light regression pass on EquiMind and MindMellow. Backend: 41 of 41 tests pass across the new tests/test_mindedge.py (14 tests) and the existing test_mindmellow.py and test_iter20_programme_scope.py. Two old MindMellow asserts expected Neha to see only MindMellow students and only her own slots. These broke because counsellors are now shared by design, so I updated them. Frontend: everything in the request works. /mindedge landing shows the brand, the 'Class 9-10' badge, area-card-A..F with MindEdge names, the 3 product tabs and the 3 theme swatches (ocean/seafoam/palegold each change --primary and the background). Tabs move between /, /mindmellow and /mindedge, and between the /login variants. /mindedge/login lists only adm-platform, me-riya, me-arjun, me-sana and me-rahul. Riya's dashboard is MindEdge-branded with no EquiMind words. Her report has 13 pages: EquiMind and MindMellow reports also have 13, so the brief's '11 pages' is outdated. It shows MindEdge area names and theory, the 3 MindEdge scripts, tier 2 'A trusted adult', the Childline 1098 Get-help box, and tones Shoal/Lagoon/Ocean/Deep sea/Abyss. The PDF downloads as MindEdge-Report-Riya-Sharma.pdf (5.5 MB). Check-in as me-sana: 24 unique items from the MindEdge bank, 4 per area and 1 per sub-theme; the report saved with programme=mindedge and version 'MindEdge v4.0'. I then deleted that report and assessment by id, so Sana's seed state is restored. Counsellors: mm-neha and me-rahul each list all 6 school students and can open detail and report for both programmes. cou-kavya sees only stu-* students and gets 'Report not found' on Riya's report (API 404). Admin: the MindEdge switch works; stats show 6 MindEdge areas; the question bank has 180 items; activities number 24 and include the e-* MindEdge items; the Product Document 'MindEdge — Product Document' loads. Regression: the MindMellow help box says 'your school counsellor', EquiMind's says 'campus health', and their tone sets are correct.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/admin/product-doc?programme=mindedge", "issue": "The MindEdge doc still says 'campus' in 3 places: 'school / campus counsellor', 'Safety floor ... 112 and campus health are always visible', and 'About page: ... 112, campus health'. For a school programme these should say school counsellor / Childline."},
+      {"endpoint": "/api/wellness/reads (MindEdge student)", "issue": "The shared read 'When the Future Feels Too Big' (career, money) is relabelled under 'Parental & Family Context' for Grade 9-10 students. The content fit is weak, and the MindEdge doc says career and financial themes are 'deliberately left to MindMellow'."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Report PageShell footer + feature-tone picker on cross-programme reports", "issue": "Shared counsellors open the other school programme's reports. When me-rahul opens Aarav's MindMellow report, the cover title says 'MindMellow' but all 13 page footers say 'MINDEDGE · BIGLYP'. The tone picker also shows MindEdge tones (Shoal..Abyss) instead of MindMellow's (Lilac..Dusk). The same happens in reverse for mm-neha opening a MindEdge report. Cause: PageShell.jsx uses useBrand() (the viewer's theme brand), and ReportView TONE_SETS uses brandNow(). The report's own programme (brandOf(r)) should be used. The PDF filename already uses r.programme, so it is correct.", "selector": "[data-testid=report-page-*] footer, [data-testid=feature-tone-picker]", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "MindEdge report help page", "issues": ["The 'GET HELP TODAY IF' strip names Childline 1098 and 'a parent, teacher or adult' but not the school counsellor. The About page does say 'your school counsellor'. Consider adding 'or your school counsellor' to the strip for consistency with MindMellow."]},
+      {"screen": "/mindedge landing on mobile (390px)", "issues": ["The header is cramped. The 'MindEdge' logo text butts against the theme toggle, and the 'Sign in' button wraps onto 2 lines."]},
+      {"screen": "/admin", "issues": ["The helper text says 'Media, Games and Notifications are shared by both programmes'. There are now three programmes."]},
+      {"screen": "Login pages", "issues": ["The counsellor card (Mr. Rahul Iyer) uses the GraduationCap student icon. This is a pre-existing issue that affects all programmes."]},
+      {"screen": "MindEdge palegold theme", "issues": ["White text on the gold primary button (hsl 41 52% 47%) has borderline contrast, about 3:1."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_mindedge.py", "/app/backend/tests/test_mindmellow.py", "/app/backend/tests/test_iter20_programme_scope.py", "/app/test_reports/pytest/pytest_iter21.xml"],
+  "action_items": [
+    "In PageShell.jsx (report footer) and the ReportView tone picker, use the report's programme (brandOf(r) / r.programme) instead of the viewer's theme brand. Shared school counsellors currently see a MINDEDGE footer on MindMellow reports, and the reverse.",
+    "Remove the 'campus' wording from the MindEdge (and MindMellow) Product Document safety-floor and overview lines.",
+    "Optional: add 'your school counsellor' to the MindEdge GET HELP strip; fix the mobile header crowding on /mindedge; change the admin helper text from 'both programmes' to 'all programmes'."
+  ],
+  "critical_code_review_comments": [
+    "programmes.peer_q() and peers() correctly scope students, reports, sessions, bookings and slots: the school group is [mindmellow, mindedge], and EquiMind includes legacy None.",
+    "admin_stats/items/activities fall back to EquiMind silently when the programme value is unknown. Consider returning 422 for an invalid programme.",
+    "counsellor /students loads all bookings, unfiltered, on every call (db.bookings.find({})). It works, but it does not scale."
+  ],
+  "updated_files": ["/app/backend/tests/test_mindedge.py (new)", "/app/backend/tests/test_mindmellow.py (test_neha_students and test_mm_slots_only_neha updated for shared school counsellors)"],
+  "success_rate": {"backend": "100% (41/41)", "frontend": "~95% (all requested flows pass; one medium cross-brand footer/tone bug)"},
+  "seed_data_creation": "None kept. The me-sana check-in (report 2946aef7-..., assessment 0decde56-...) was deleted by id after verification.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run with -n0 and REACT_APP_BACKEND_URL set: tests/test_mindedge.py, tests/test_mindmellow.py, tests/test_iter20_programme_scope.py. test_mindedge::test_checkin_start_me_bank calls POST /assessments/start for me-sana. That leaves an in-progress assessment, which is harmless and gets reused on the next run. The Riya report id is 699718d5-8527-4482-adfb-4e842191cf5b. Every report has 13 pages. Do not run the mutating suites.",
+  "test_credentials": "Taken from /app/memory/test_credentials.md (demo login, no passwords)."
+}

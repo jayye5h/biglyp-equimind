@@ -294,11 +294,17 @@ def pick_game(pri, day, disabled=()):
     return g, area
 
 
-def pick_reads(pri, mood, day):
+def _articles(report):
+    import programmes
+    skip = getattr(programmes.get((report or {}).get("programme")), "SKIP_READS", ())
+    return [a for a in ARTICLES if a["id"] not in skip]
+
+
+def pick_reads(pri, mood, day, arts=ARTICLES):
     tone = _tone_for(mood)
     out = []
     for i, area in enumerate(pri[:3]):
-        pool = [a for a in ARTICLES if a["area"] == area]
+        pool = [a for a in arts if a["area"] == area]
         if i == 0 and tone:
             pool.sort(key=lambda a: a["tone"] != tone)
             out.append(pool[0])
@@ -320,7 +326,7 @@ def today_plan(report, disabled_games=()):
     day, mood, pri = _ctx(report)
     ex = pick_exercise(pri, mood, day)
     game, garea = pick_game(pri, day, disabled_games)
-    reads = pick_reads(pri, mood, day)
+    reads = pick_reads(pri, mood, day, _articles(report))
     title, text = MOOD_NUDGE[mood] if mood is not None else NEUTRAL_NUDGE
     return {
         "personalised": bool(report),
@@ -336,5 +342,5 @@ def today_plan(report, disabled_games=()):
 def all_reads(report):
     _, mood, pri = _ctx(report)
     order = {k: i for i, k in enumerate(pri)}
-    rows = sorted(ARTICLES, key=lambda a: (order.get(a["area"], 9), a["id"]))
+    rows = sorted(_articles(report), key=lambda a: (order.get(a["area"], 9), a["id"]))
     return [{**a, "area_name": AREA_NAMES[a["area"]], "for_you": a["area"] in pri[:3]} for a in rows]
