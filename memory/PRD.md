@@ -140,3 +140,9 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 - Stage now = 1 + floor(completed plan activities ("Yes, I did" ticks) / 5), max 14; never goes back; logging a day with no "Yes" keeps the stage (lib/stages.js PER_STAGE, doneUpTo, stageAt, toNextStage).
 - Journey card header is data-driven (days logged, activities done, stage, progress bar "k more activities to reach Stage n"); title says Focus Journey for FocusEdge. Day card shows per-day activity chips, done count, "New stage" chip, not-logged copy; future days are locked (lock icon, no avatar preview) in side cards, main card and strip.
 - Daily check-in dialog previews the stage live as answers change; Calm Streak copy/tooltip updated. Tested iteration_23: all passed.
+
+## 2026-11-12 Biglyp hub + image refresh
+- "/" = BiglypHome (pages/BiglypHome.jsx): common Biglyp hero (public/how/biglyp_hero.webp) + 4-card product switcher (FocusEdge, MindEdge, MindMellow, EquiMind; ?p=<key>) that themes and renders the chosen product's hero/areas/how/privacy below. EquiMind landing moved to /equimind (brand.home).
+- How-it-works image per product: public/how/<brand>.webp (AI illustrations, gender-neutral).
+- FocusEdge 3D image set (from user's avatar, lighter skin, gender-neutral): avatars/fe/stage1-14 (stageSrc in lib/stages.js; Student uses brand), report-art/fe/* (d1-d10, snapshot, narrative, help_*, body_*, plan_head, week*, next_*, ic_*). Report components use RImg/useArtSrc (PageShell) to map /report-art/X -> /report-art/fe/X for FocusEdge reports.
+- Shared set made gender-neutral: area_d, area_f, help_trusted, help_pro, help_head, stage9/10/13/14 friend.

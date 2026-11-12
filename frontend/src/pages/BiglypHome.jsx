@@ -93,8 +93,10 @@ export default function BiglypHome() {
   const q = params.get("p");
   const sel = BRANDS[q] ? q : B.key;
   useEffect(() => { setBrand(sel); }, [sel]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { document.title = "Biglyp — Student wellbeing check-ins"; }, [B.key]);
-  const pick = (k) => setParams({ p: k }, { replace: true });
+  const pick = (k) => {
+    setParams({ p: k }, { replace: true });
+    if (window.innerWidth < 1024) setTimeout(() => document.getElementById("hub-product-panel")?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+  };
   return (
     <div data-testid="biglyp-home" className="bg-gradient-to-b from-white via-[#f7f8fc] to-white">
       <header className="max-w-6xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
@@ -109,7 +111,7 @@ export default function BiglypHome() {
       <CommonHero />
       <ProductSwitcher sel={sel} pick={pick} />
       {B.key === sel && (
-        <div data-testid={`hub-product-panel-${sel}`} key={sel} className="eq-rise border-t border-slate-200/70 bg-eq-bg/40">
+        <div id="hub-product-panel" data-testid={`hub-product-panel-${sel}`} key={sel} className="eq-rise border-t border-slate-200/70 bg-eq-bg/40">
           <div className="max-w-6xl mx-auto px-4 sm:px-8 pt-6 flex flex-wrap items-center justify-between gap-3">
             <span className="font-mono text-xs uppercase tracking-[0.25em] text-eq">{B.name} · {GRADES[sel]}</span>
             <div className="flex items-center gap-3"><ThemeToggle /><Link to={B.home} data-testid="hub-open-product-page" className="text-sm font-medium text-eq-dark hover:underline">Open {B.name} page →</Link></div>

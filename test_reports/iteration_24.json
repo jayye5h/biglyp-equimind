@@ -1,0 +1,31 @@
+{
+  "summary": "Frontend-only test of the Biglyp home hub, product switcher, product pages, How-it-works art, FocusEdge 3D avatars and FocusEdge report art (student and counsellor views), plus regressions (PDF, saving a mood). All requested features work. 2 minor issues found: the home tab title is wrong on first load, and on mobile, picking a product doesn't scroll to its panel. The daily check-in dialog could not be opened: every FocusEdge demo student has already logged today, so the dialog avatar was checked in code only.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "BiglypHome document.title", "issue": "On first load of '/' the tab title reads 'EquiMind — Student stress check-in' instead of 'Biglyp — Student wellbeing check-ins'. Also with ?p=mindedge it reads the MindEdge title. Cause: ThemeProvider's effect in lib/theme.jsx (line 49, sets document.title from the brand) runs after the child BiglypHome effect and overwrites it. Child effects run before parent effects, and BiglypHome's effect depends only on [B.key].", "selector": "title", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Biglyp home on mobile (390px)", "issues": ["The 4 product cards are stacked and very tall (about 240px each). After tapping a card the user stays at the switcher, and the panel that changed is about 1000px further down with no visual cue. Consider scrollIntoView on the panel when picking on small screens, or a compact horizontal card layout."]},
+      {"screen": "FocusEdge report after Download PDF", "issues": ["The 'Report downloaded' sonner toast (top-center) covers the theme-toggle dots in the header for a few seconds (cosmetic, pre-existing)."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "LOW: fix the Biglyp home document.title. It is overwritten by ThemeProvider (lib/theme.jsx:49). For example, skip the brand title on '/' or set the title after the provider's effect.",
+    "LOW (UX): on mobile, scroll to hub-product-panel-<key> after picking a product."
+  ],
+  "critical_code_review_comments": [
+    "BiglypHome: the default selection is B.key (the brand saved from the last visit), so a first-time visitor sees EquiMind and a returning visitor sees the last brand used. This is acceptable but differs from the card order (FocusEdge first). Confirm this is intended.",
+    "BiglypHome renders the panel only when B.key === sel, so there is one empty render while setBrand runs. No visible flash was seen.",
+    "useArtSrc regex /^\\/report-art\\/(fe_)?/ maps both '/report-art/x' and '/report-art/fe_x' to '/report-art/fe/x'. It works for every asset used now (28 on fe-vihaan's report). A future report-art file with no copy in /fe/ would show as a broken image for FocusEdge reports only."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (not requested)", "frontend": "95%"},
+  "seed_data_creation": "None created. Side effect: re-clicked the already-selected 'Steady' mood on fe-aarav's journey card (same value, PATCH /api/reports/51bb3056.../progress returned 200). No real change to the data.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Verified: '/' biglyp-home; hero art /how/biglyp_hero.webp loads (naturalWidth 964); CTA scrolls to #programmes; cards appear in order focusedge, mindedge, mindmellow, equimind. Clicking a card sets aria-selected, changes the URL to ?p=key, switches --eq-p colours and updates Sign in (sign-in href -> that product's login) and hub-open-product-page (-> /focusedge|/mindedge|/mindmellow|/equimind). Area cards: 10 for FocusEdge, 6 for the others. Reload with ?p=mindedge keeps MindEdge. /equimind, /mindmellow, /mindedge and /focusedge each load their own /how/<key>.webp (720px, no unsplash); product-tab links are correct and brand-logo-link points to each product's own page. Mobile 390px: no horizontal overflow for any product. FocusEdge dashboard (fe-vihaan, fe-meher, fe-aarav): all journey and streak avatars are /avatars/fe/stageN.webp. Reports for fe-vihaan (13 pages, 28 images) and fe-meher (19 images) use only /report-art/fe/ images, none broken. me-rahul (counsellor) viewing fe-vihaan's report also sees only /report-art/fe/ images. PDF download works (FocusEdge-Report-Vihaan-Reddy.pdf, 5.9MB). All /report-art/fe, /avatars/fe and /how assets return HTTP 200 image/webp. Daily check-in dialog (daily-log-avatar) NOT tested in the UI: all FE demo students show 'You're all caught up for today'. Retest tomorrow or with a student who hasn't logged today. Visual check: FocusEdge 3D images show one curly-haired child with white headphones and a light-blue hoodie, light skin tone, and look gender-neutral; nothing clearly gender-specific was seen.",
+  "test_credentials": "Demo logins from /app/memory/test_credentials.md: fe-vihaan, fe-meher, fe-aarav, me-rahul"
+}
