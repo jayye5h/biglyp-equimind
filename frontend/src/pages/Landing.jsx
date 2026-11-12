@@ -22,16 +22,35 @@ const AREAS_MM = [
   { k: "E", icon: HeartPulse, name: "Emotional Overload & Coping", d: "Overwhelm, restlessness, low mood and escape habits." },
   { k: "F", icon: Moon, name: "Sleep, Lifestyle & Digital Pressure", d: "Late nights, rest quality, meals, energy and screen time." },
 ];
+const AREAS_ME = [
+  { k: "A", icon: BookOpen, name: "Academic Stress & Study Habits", d: "Homework pile-up, board-pattern tests, putting off study and marks pressure." },
+  { k: "B", icon: Wallet, name: "Parental & Family Context", d: "Expectations, comparison with siblings or cousins, and tension at home." },
+  { k: "C", icon: Users, name: "Peer Pressure & Social Acceptance", d: "Fitting in, saying no, feeling left out and teasing or bullying." },
+  { k: "D", icon: Fingerprint, name: "Self-Esteem & Confidence", d: "The inner critic, body image and puberty, and who you're becoming." },
+  { k: "E", icon: HeartPulse, name: "Emotional Regulation", d: "Overwhelm, worry, low mood and switching off feelings." },
+  { k: "F", icon: Moon, name: "Digital & Social Media Stress", d: "Screen time, comparison feeds, online hurt and FOMO." },
+];
 const COPY = {
   equimind: {
     areas: AREAS_EQ,
+    badge: "Stress check-in for UG & PG students",
+    chips: [["Body & Sleep", 28, "#f07167"], ["Academic", 36, "#f59e0b"], ["Family", 55, "rgb(var(--eq-p))"]],
     desc: "EquiMind is a private, two-week stress check-in for university students. 24 questions across six areas of student life turn into a calm, honest report and a 14-day plan of tiny, doable steps.",
     privacy: "Your responses and report are never shared with faculty, parents, recruiters or peers without your explicit consent. EquiMind is a self-reflection and action tool — not a diagnosis, and not an evaluation of your ability.",
   },
   mindmellow: {
     areas: AREAS_MM,
+    badge: "Wellbeing check-in for Class 11–12 students",
+    chips: [["Sleep", 28, "#f07167"], ["Exams", 36, "#f59e0b"], ["Family", 55, "rgb(var(--eq-p))"]],
     desc: "MindMellow is a private, two-week stress check-in for Class 11–12 students. 24 questions across six areas — boards and entrance exams, career, family, relationships, feelings and sleep — turn into a calm, honest report and a 14-day plan of tiny, doable steps.",
     privacy: "Your responses and report are private to you. Nothing is shared with teachers, parents or peers without your consent — except as required by your school's safeguarding policy. MindMellow is a self-reflection and action tool — not a diagnosis, and not a prediction of your results.",
+  },
+  mindedge: {
+    areas: AREAS_ME,
+    badge: "Wellbeing check-in for Class 9–10 students",
+    chips: [["Phone", 30, "#f07167"], ["Studies", 38, "#f59e0b"], ["Friends", 55, "rgb(var(--eq-p))"]],
+    desc: "MindEdge is a private, two-week stress check-in for Class 9–10 students. 24 questions across six areas — studies, family, friends, self-esteem, feelings and screens — turn into a calm, honest report and a 14-day plan of tiny, doable steps.",
+    privacy: "Your responses and report are private to you. Nothing is shared with teachers or peers without your consent, and parents are involved only under your school's policy and parental consent. MindEdge is a self-reflection and action tool — not a diagnosis, and not a prediction of your results.",
   },
 };
 
@@ -56,7 +75,7 @@ const HeroCard = () => (
         </div>
       </div>
       <div className="grid grid-cols-3 gap-2 pt-2">
-        {(useBrand().key === "mindmellow" ? [["Sleep", 28, "#f07167"], ["Exams", 36, "#f59e0b"], ["Family", 55, "rgb(var(--eq-p))"]] : [["Body & Sleep", 28, "#f07167"], ["Academic", 36, "#f59e0b"], ["Family", 55, "rgb(var(--eq-p))"]]).map(([n, s, c]) => (
+        {COPY[useBrand().key].chips.map(([n, s, c]) => (
           <div key={n} className="rounded-xl bg-eq-bg p-3">
             <div className="font-mono text-lg font-semibold" style={{ color: c }}>{s}</div>
             <div className="text-[11px] text-slate-500">{n}</div>
@@ -73,7 +92,7 @@ const Hero = () => (
     <div className="relative max-w-6xl mx-auto px-4 sm:px-8 pt-12 pb-20 lg:pt-20 lg:pb-28 grid lg:grid-cols-[1.1fr_0.9fr] gap-14 items-center">
       <div>
         <span className="eq-rise inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm text-eq shadow-sm border border-eq/10">
-          <Sparkles className="h-4 w-4" /> {useBrand().key === "mindmellow" ? "Wellbeing check-in for Class 11–12 students" : "Stress check-in for UG & PG students"}
+          <Sparkles className="h-4 w-4" /> {COPY[useBrand().key].badge}
         </span>
         <h1 className="eq-rise eq-d1 mt-7 font-serif text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight text-slate-900">
           Understand it.<br />Act on it. Feel <em className="text-eq">balanced.</em>

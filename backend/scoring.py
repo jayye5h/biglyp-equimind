@@ -49,8 +49,9 @@ def priority_pages(result: dict, item_ids: list, responses: dict, C=EQ) -> list:
     pages = []
     for k in result["priorities"]:
         acts = C.ACTIVITIES[k][:2]
-        if k == "D":
-            breakup = any(responses[i] >= 3 for i in item_ids if C.ITEMS[i]["subtheme"] == "D3")
+        bs = getattr(C, "BREAKUP_SUBTHEME", "D3")
+        if k == "D" and bs:
+            breakup = any(responses[i] >= 3 for i in item_ids if C.ITEMS[i]["subtheme"] == bs)
             acts = [C.ACTIVITIES["D"][0], C.ACTIVITIES["D"][1] if breakup else C.ACTIVITIES["D"][2]]
         pages.append({"area": k, "name": C.AREA_BY_KEY[k]["name"], "score": by[k]["score"],
                       "level": by[k]["level"], "theory": C.THEORY[k], "activities": acts})

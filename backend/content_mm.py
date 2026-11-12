@@ -14,6 +14,7 @@ SCALE = EQ.SCALE
 BODY_AREA, EMO_AREA = "F", "E"
 # MindMellow area -> closest EquiMind area, used to reuse the shared exercise / reads / games libraries
 WELLNESS_MAP = {"A": "A", "B": "F", "C": "F", "D": "D", "E": "C", "F": "B"}
+LABEL_MAP = {"A": "A", "F": "B", "D": "D", "C": "E", "B": "F", "E": "D"}  # EquiMind area -> MindMellow area label
 
 with open(os.path.join(os.path.dirname(__file__), "data", "mindmellow_bank.json"), encoding="utf-8") as fh:
     _RAW = json.load(fh)

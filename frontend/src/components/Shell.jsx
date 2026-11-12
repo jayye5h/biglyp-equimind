@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Heart, Flower2, LogOut, UserCog } from "lucide-react";
+import { Heart, Flower2, Sailboat, LogOut, UserCog } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useTheme, useBrand, ALL_PALETTES } from "@/lib/theme";
 import { BRANDS } from "@/lib/brand";
@@ -21,7 +21,7 @@ export const ThemeToggle = () => {
   );
 };
 
-const BRAND_ICONS = { equimind: Heart, mindmellow: Flower2 };
+const BRAND_ICONS = { equimind: Heart, mindmellow: Flower2, mindedge: Sailboat };
 
 /* Product switcher; new products appear automatically once added to BRANDS. */
 export const ProductTabs = ({ target = "home" }) => {

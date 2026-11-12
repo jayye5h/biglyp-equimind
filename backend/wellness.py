@@ -260,8 +260,9 @@ def _ctx(report):
     elapsed = (today - datetime.fromisoformat(report["created_at"])).days
     mood = (report.get("moods") or {}).get(str(min(max(elapsed, 0), 13)))
     pri = report.get("priorities") or DEFAULT_PRI
-    if report.get("programme") == "mindmellow":  # map MindMellow areas onto the shared libraries' areas
-        from content_mm import WELLNESS_MAP
+    if report.get("programme") in ("mindmellow", "mindedge"):  # map school-programme areas onto the shared libraries' areas
+        import programmes
+        WELLNESS_MAP = programmes.get(report["programme"]).WELLNESS_MAP
         pri = list(dict.fromkeys(WELLNESS_MAP[k] for k in pri)) + [k for k in DEFAULT_PRI if k not in {WELLNESS_MAP[x] for x in pri}]
     return max(elapsed, 0), mood, pri
 

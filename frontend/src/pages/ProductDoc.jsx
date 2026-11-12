@@ -1,3 +1,4 @@
+import { BRANDS } from "@/lib/brand";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
@@ -30,8 +31,8 @@ export default function ProductDoc() {
   const [doc, setDoc] = useState(null);
   const [err, setErr] = useState(false);
   const [sp] = useSearchParams();
-  const prog = sp.get("programme") === "mindmellow" ? "mindmellow" : "equimind";
-  const pName = prog === "mindmellow" ? "MindMellow" : "EquiMind";
+  const prog = BRANDS[sp.get("programme")] ? sp.get("programme") : "equimind";
+  const pName = BRANDS[prog].name;
   useEffect(() => {
     api.get(`/admin/product-doc?programme=${prog}`).then((r) => setDoc(r.data)).catch(() => setErr(true));
   }, [prog]);

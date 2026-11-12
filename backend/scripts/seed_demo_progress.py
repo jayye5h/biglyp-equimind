@@ -81,7 +81,8 @@ async def main():
     db = AsyncIOMotorClient(os.environ["MONGO_URL"])[os.environ["DB_NAME"]]
     now = datetime.now(timezone.utc)
     for uid, rows, age in (("stu-ananya", ANANYA, 8), ("stu-rohan", ROHAN, 14), ("stu-meera", MEERA, 5),
-                           ("mm-diya", ANANYA, 8), ("mm-aarav", ROHAN, 14), ("mm-kabir", MEERA, 5)):  # EquiMind + MindMellow
+                           ("mm-diya", ANANYA, 8), ("mm-aarav", ROHAN, 14), ("mm-kabir", MEERA, 5),
+                           ("me-arjun", ANANYA, 8), ("me-riya", ROHAN, 14), ("me-sana", MEERA, 5)):  # EquiMind + MindMellow + MindEdge
         r = await db.reports.find_one({"user_id": uid}, {"_id": 0, "id": 1, "plan": 1}, sort=[("created_at", -1)])
         if not r:
             print(f"{uid}: no report found - take a check-in first")

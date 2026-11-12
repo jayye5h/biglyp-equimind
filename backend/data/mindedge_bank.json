@@ -1,0 +1,368 @@
+[
+ {
+  "key": "A",
+  "name": "Academic Stress & Study Habits",
+  "short": "Academic",
+  "subthemes": [
+   {
+    "key": "A1",
+    "name": "Workload & boards pressure",
+    "items": [
+     "The syllabus for my class feels too much to handle.",
+     "I worry about boards (or board-pattern tests) a lot.",
+     "I feel tests and submissions keep piling up together.",
+     "I can't tell how I'll finish what I have pending.",
+     "I feel I need to study longer than I actually can.",
+     "There is more homework than hours in my day.",
+     "I feel pressured to cover tuition work on top of school work.",
+     "I feel I'll never catch up to where I should be."
+    ]
+   },
+   {
+    "key": "A2",
+    "name": "Study avoidance & procrastination",
+    "items": [
+     "I keep putting off starting my study for the day.",
+     "I open my books and end up on my phone instead.",
+     "I avoid the subject I find hardest.",
+     "I feel stuck when I look at my pending list.",
+     "I feel scared to start work I don't know how to do.",
+     "I pretend to study but drift on social media.",
+     "I start late on tasks I know are important.",
+     "I feel the thought of starting is harder than doing."
+    ]
+   },
+   {
+    "key": "A3",
+    "name": "Concentration & study habits",
+    "items": [
+     "I find it hard to concentrate while studying.",
+     "I re-read the same page without understanding.",
+     "My mind wanders when I try to focus.",
+     "I feel mentally tired by the time I finish school.",
+     "I forget what I just read or revised.",
+     "I need more breaks than I used to to get through study.",
+     "I feel I don't have a good way to study."
+    ]
+   },
+   {
+    "key": "A4",
+    "name": "Marks pressure & academic self-worth",
+    "items": [
+     "I worry about my marks even on ordinary days.",
+     "One bad mark can ruin my mood for days.",
+     "I feel scared of being scolded for poor results.",
+     "I feel my marks decide how my parents see me.",
+     "I compare my marks with classmates and feel behind.",
+     "I feel I have to be a top scorer to feel okay.",
+     "Even after doing well, I immediately worry about the next test."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "B",
+  "name": "Parental & Family Context",
+  "short": "Family",
+  "subthemes": [
+   {
+    "key": "B1",
+    "name": "Parental expectations & pressure",
+    "items": [
+     "My parents expect more from me than I can give.",
+     "I feel my parents only care about my marks.",
+     "I feel scared of disappointing my parents.",
+     "I feel my parents' mood depends on my results.",
+     "I feel my parents keep pushing me harder.",
+     "I feel my parents don't ask how I'm feeling, only how I did.",
+     "I feel I'm living someone else's plan more than my own.",
+     "I feel my worth at home depends on how I perform."
+    ]
+   },
+   {
+    "key": "B2",
+    "name": "Comparison with siblings, cousins, peers",
+    "items": [
+     "My parents compare me with my sibling or cousins.",
+     "I feel my sibling gets treated better than me.",
+     "Relatives say things that make me feel smaller.",
+     "I'm compared with the 'topper' in my class at home.",
+     "I feel I'm never as good as the person my parents hold up as an example.",
+     "I feel I have to catch up with someone I shouldn't be measured against.",
+     "I feel invisible when a sibling does well."
+    ]
+   },
+   {
+    "key": "B3",
+    "name": "Home environment & tension",
+    "items": [
+     "My home feels tense right now.",
+     "My parents argue, and it bothers me.",
+     "I feel caught between family members.",
+     "I avoid being at home when I can.",
+     "Someone at home is going through a tough time and it affects me.",
+     "I feel lonely at home even with people around.",
+     "I don't feel I can relax at home.",
+     "I feel I have to behave carefully at home."
+    ]
+   },
+   {
+    "key": "B4",
+    "name": "Avoiding family conversations",
+    "items": [
+     "I don't tell my parents when something is upsetting me.",
+     "I hide my real feelings so I don't worry them.",
+     "I avoid conversations about my future with my parents.",
+     "I feel I can't tell my parents what I actually want.",
+     "I say 'I'm fine' at home when I'm not.",
+     "I avoid family dinners when I'm low.",
+     "I feel I need to look okay all the time at home."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "C",
+  "name": "Peer Pressure & Social Acceptance",
+  "short": "Peers",
+  "subthemes": [
+   {
+    "key": "C1",
+    "name": "Fitting in with peers",
+    "items": [
+     "I feel I have to act a certain way to fit in.",
+     "I feel I can't be the real me around my friends.",
+     "I worry about being judged by my classmates.",
+     "I feel left behind when my friends talk about things I don't know.",
+     "I feel I don't belong in my current friend circle.",
+     "I feel I have to change how I dress or speak to be liked.",
+     "I feel invisible in my class group.",
+     "I feel I don't match up with the popular kids."
+    ]
+   },
+   {
+    "key": "C2",
+    "name": "Peer pressure around choices & behaviour",
+    "items": [
+     "I feel pressured to do things I don't want to (smoking, drinking, pranks).",
+     "I feel scared to say no to my friends.",
+     "I go along with things that make me uncomfortable.",
+     "I feel my friends decide what I should like or do.",
+     "I'm nervous about my friends' reaction if I act differently.",
+     "I feel I can't tell adults about pressure from friends.",
+     "I've done things I regret because of friends."
+    ]
+   },
+   {
+    "key": "C3",
+    "name": "Group belonging & inclusion",
+    "items": [
+     "I feel left out of my class WhatsApp or online group.",
+     "I don't have one friend I can count on.",
+     "I spend breaks or lunch alone sometimes when I don't want to.",
+     "I feel I'm losing a friendship that mattered to me.",
+     "I miss friends I used to be close to.",
+     "I feel no one would notice if I didn't show up.",
+     "I feel I have to earn my place in a group every day.",
+     "I feel my friends have moved on without me."
+    ]
+   },
+   {
+    "key": "C4",
+    "name": "Teasing, bullying & exclusion",
+    "items": [
+     "Some kids tease or make fun of me.",
+     "I feel picked on at school or online.",
+     "Someone close said something that really hurt me.",
+     "I had a fight with a classmate that is not resolved.",
+     "I feel scared of going to school because of someone.",
+     "I feel I'm often the butt of jokes in my group.",
+     "Someone is spreading things about me behind my back."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "D",
+  "name": "Self-Esteem & Confidence",
+  "short": "Self-Esteem",
+  "subthemes": [
+   {
+    "key": "D1",
+    "name": "Self-worth & 'not good enough'",
+    "items": [
+     "I feel I'm not good enough even when I'm doing well.",
+     "I'm really hard on myself when I make a mistake.",
+     "I replay my mistakes in my head for days.",
+     "I notice my flaws more than my strengths.",
+     "I feel I disappoint myself regularly.",
+     "I expect myself to be perfect at things.",
+     "One bad result feels like proof I'm not capable.",
+     "I feel I don't deserve good things that happen to me."
+    ]
+   },
+   {
+    "key": "D2",
+    "name": "Body image & puberty",
+    "items": [
+     "I feel uncomfortable with how my body looks.",
+     "I compare my body with classmates and feel bad.",
+     "I feel embarrassed about changes in my body.",
+     "I avoid photos because I don't like how I look.",
+     "I feel my face / skin / weight isn't okay.",
+     "I feel I don't look the way I 'should' at my age.",
+     "I avoid certain clothes because of how I feel about my body."
+    ]
+   },
+   {
+    "key": "D3",
+    "name": "Confidence in my abilities",
+    "items": [
+     "I doubt I can handle what is ahead of me.",
+     "I feel smaller or less confident than I used to.",
+     "I second-guess decisions I have already made.",
+     "I avoid speaking up in class because I feel I'll be wrong.",
+     "I don't try new things because I'm scared of failing.",
+     "I feel other students are more capable than me.",
+     "I feel I can't trust my own choices.",
+     "I feel I don't know what I'm actually good at."
+    ]
+   },
+   {
+    "key": "D4",
+    "name": "Self-identity & who I'm becoming",
+    "items": [
+     "I feel confused about who I really am right now.",
+     "I feel I've changed and I'm not sure who I am.",
+     "I feel I'm acting a role I don't fully believe in.",
+     "I feel lost about what I actually like or want.",
+     "I feel pulled in different directions by school, friends and family.",
+     "I feel I have to hide parts of who I am.",
+     "I feel I don't recognise myself lately."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "E",
+  "name": "Emotional Regulation",
+  "short": "Emotional",
+  "subthemes": [
+   {
+    "key": "E1",
+    "name": "Overwhelm & distress",
+    "items": [
+     "I feel overwhelmed and can't shake it off.",
+     "Small problems feel much bigger than they should.",
+     "I feel I'm on the edge of tears often.",
+     "I feel angry or snappy with people.",
+     "Stress symptoms spill into my sleep or appetite.",
+     "I feel I can barely keep up with everyday things.",
+     "I feel I'm about to burst sometimes.",
+     "Even small changes to my plan feel like too much."
+    ]
+   },
+   {
+    "key": "E2",
+    "name": "Anxiety & worry",
+    "items": [
+     "I feel on edge or anxious without a clear reason.",
+     "My heart races when I'm not doing anything active.",
+     "I worry about things that haven't happened yet.",
+     "I imagine bad things happening.",
+     "I feel restless and can't sit still.",
+     "I replay things that went wrong at school.",
+     "I feel scared of making mistakes in front of others."
+    ]
+   },
+   {
+    "key": "E3",
+    "name": "Low mood & motivation",
+    "items": [
+     "I feel low or unmotivated even when nothing specific is wrong.",
+     "Things I usually enjoy feel flat.",
+     "I feel heavy when I wake up.",
+     "I cry more easily than usual, or feel like crying.",
+     "I feel disconnected from my day as it passes.",
+     "Small decisions feel harder than they used to.",
+     "I feel like I'm just going through the motions.",
+     "I feel less interested in things I was looking forward to."
+    ]
+   },
+   {
+    "key": "E4",
+    "name": "Avoidant / escape coping",
+    "items": [
+     "I use scrolling, gaming or snacks to switch off feelings.",
+     "I binge-watch content late into the night to avoid thinking.",
+     "I overeat or lose interest in food when I'm stressed.",
+     "I distract myself rather than deal with what's bothering me.",
+     "I hide in my room when I'm sad.",
+     "I avoid people when I'm low.",
+     "I get grumpy with my family instead of saying what's wrong."
+    ]
+   }
+  ]
+ },
+ {
+  "key": "F",
+  "name": "Digital & Social Media Stress",
+  "short": "Digital",
+  "subthemes": [
+   {
+    "key": "F1",
+    "name": "Screen time & overuse",
+    "items": [
+     "I spend more time on screens than I'd like to.",
+     "I lose track of time on my phone.",
+     "I feel bad after long phone sessions, but I keep going.",
+     "I can't put my phone away when I know I should.",
+     "I use my phone the first thing in the morning and last thing at night.",
+     "I feel restless without my phone.",
+     "I check my phone during class / study, even when I shouldn't.",
+     "I pick up my phone without even realising I did."
+    ]
+   },
+   {
+    "key": "F2",
+    "name": "Social media comparison",
+    "items": [
+     "Social media makes me feel I'm not doing enough.",
+     "I compare my life to what I see online.",
+     "I feel other people's lives look better than mine.",
+     "I feel my body / looks / lifestyle isn't 'Instagram-worthy'.",
+     "I feel pressure to look / behave like influencers I follow.",
+     "I stop posting because of how I think it will be judged.",
+     "I compare likes and follower counts with friends.",
+     "I feel my friends have more fun than I do, based on their posts."
+    ]
+   },
+   {
+    "key": "F3",
+    "name": "Online conflicts & hurtful content",
+    "items": [
+     "I've had an online argument that still bothers me.",
+     "Someone screenshotted or shared something I said, and it hurt me.",
+     "I've seen hurtful messages or comments about me online.",
+     "I feel my online presence is being watched or judged.",
+     "I've been removed from a group or blocked by someone close.",
+     "I come across content online that upsets me (fights, scary news, trolls).",
+     "I feel pressure to respond quickly to messages."
+    ]
+   },
+   {
+    "key": "F4",
+    "name": "FOMO & online social pressure",
+    "items": [
+     "I feel left out when I see friends hanging out online.",
+     "I check my phone to make sure I'm not missing anything.",
+     "I feel I have to be available online all the time.",
+     "I feel I'll miss something important if I log off for a day.",
+     "I feel pressure to post stories or updates regularly.",
+     "I feel my online identity has to match a certain image.",
+     "I feel bad after a day without social media, like I missed things."
+    ]
+   }
+  ]
+ }
+]

@@ -95,7 +95,7 @@ const Library = ({ prog }) => {
   );
 };
 
-const PROGS = [["equimind", "EquiMind", "University (UG / PG)"], ["mindmellow", "MindMellow", "Grades 11–12"]];
+const PROGS = [["equimind", "EquiMind", "University (UG / PG)"], ["mindmellow", "MindMellow", "Grades 11–12"], ["mindedge", "MindEdge", "Grades 9–10"]];
 
 export default function Admin() {
   const [prog, setProg] = useState(() => localStorage.getItem("eq_admin_prog") || "equimind");

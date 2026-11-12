@@ -16,7 +16,7 @@ export default function Login({ brand = "equimind" }) {
   const nav = useNavigate();
 
   useEffect(() => {
-    // MindMellow login lists MindMellow students + school counsellor; the shared platform admin appears on both
+    // each programme login lists its own students + counsellor; the shared platform admin appears on all
     api.get("/auth/demo-users").then((r) => setUsers(r.data.filter((u) => u.role === "admin" || (u.programme || "equimind") === brand)));
   }, [brand]);
 
@@ -41,7 +41,7 @@ export default function Login({ brand = "equimind" }) {
         <div className="flex items-center justify-between gap-4"><Logo /><ThemeToggle /></div>
         <div className="mt-16 eq-rise">
           <h1 className="font-serif text-4xl sm:text-5xl font-bold text-slate-900">Welcome <em className="text-eq">back.</em></h1>
-          <p className="mt-4 text-slate-600">Choose a demo account to continue{B.key === "mindmellow" ? " — MindMellow for Class 11–12 students" : ""}.</p>
+          <p className="mt-4 text-slate-600">Choose a demo account to continue{B.school ? ` — ${B.name} for ${B.audience}` : ""}.</p>
           <p data-testid="mock-login-notice" className="mt-3 inline-block rounded-full bg-[#fef3c7] px-4 py-1.5 text-xs font-mono uppercase tracking-wider text-[#92400e]">Demo login — mocked, no password needed</p>
         </div>
         <div className="mt-10 grid gap-4">

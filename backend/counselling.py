@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 
 from plan_theory import enrich_plan, next_activities
 import notify
+import programmes
 
 IST = ZoneInfo("Asia/Kolkata")
 MOOD = ["Struggling", "Rough", "Mixed", "Steady", "Strong"]
@@ -116,7 +117,7 @@ def build_router(db, current_user, student_user):
     @r.get("/counselling/slots")
     async def open_slots(user: dict = Depends(student_user)):
         rows = await db.slots.find({"booked_by": None, "removed": {"$ne": True}, "start": {"$gt": _now().isoformat()}}, {"_id": 0}).sort("start", 1).to_list(200)
-        names = {u["id"]: u["name"] for u in await db.users.find({"role": "counsellor", "programme": user.get("programme", "equimind")}, {"_id": 0, "id": 1, "name": 1}).to_list(50)}
+        names = {u["id"]: u["name"] for u in await db.users.find({"role": "counsellor", "programme": programmes.peer_q(user)}, {"_id": 0, "id": 1, "name": 1}).to_list(50)}
         return [{**s, "counsellor_name": names[s["counsellor_id"]]} for s in rows if s["counsellor_id"] in names]
 
     @r.get("/counselling/my")
@@ -132,14 +133,14 @@ def build_router(db, current_user, student_user):
         bid = str(uuid.uuid4())
         counsellor_id = None
         if body.slot_id:
-            allowed = [c["id"] for c in await db.users.find({"role": "counsellor", "programme": user.get("programme", "equimind")}, {"_id": 0, "id": 1}).to_list(50)]
+            allowed = [c["id"] for c in await db.users.find({"role": "counsellor", "programme": programmes.peer_q(user)}, {"_id": 0, "id": 1}).to_list(50)]
             slot = await db.slots.find_one_and_update({"id": body.slot_id, "counsellor_id": {"$in": allowed}, "booked_by": None, "removed": {"$ne": True}, "start": {"$gt": _now().isoformat()}},
                                                       {"$set": {"booked_by": user["id"], "booking_id": bid}}, projection={"_id": 0})
             if not slot:
                 raise HTTPException(409, "Sorry, that slot was just taken. Please pick another time.")
             counsellor_id = slot["counsellor_id"]
         else:
-            c = await db.users.find_one({"role": "counsellor", "programme": user.get("programme", "equimind")}, {"_id": 0, "id": 1})
+            c = await db.users.find_one({"role": "counsellor", "programme": programmes.peer_q(user)}, {"_id": 0, "id": 1})
             counsellor_id = (c or {}).get("id")
         rep = await latest(user["id"])
         doc = {"id": bid, "student_id": user["id"], "counsellor_id": counsellor_id, "slot_id": body.slot_id,
@@ -207,7 +208,7 @@ def build_router(db, current_user, student_user):
 
     @r.get("/counsellor/students")
     async def students(user: dict = Depends(counsellor_user)):
-        us = await db.users.find({"role": "student", "programme": user.get("programme", "equimind")}, {"_id": 0}).to_list(1000)
+        us = await db.users.find({"role": "student", "programme": programmes.peer_q(user)}, {"_id": 0}).to_list(1000)
         bookings_by = {}
         for b in await db.bookings.find({}, {"_id": 0, "student_id": 1, "status": 1}).to_list(5000):
             bookings_by.setdefault(b["student_id"], []).append(b)
@@ -217,7 +218,7 @@ def build_router(db, current_user, student_user):
 
     @r.get("/counsellor/sessions")
     async def sessions(user: dict = Depends(counsellor_user)):
-        mine = [u["id"] for u in await db.users.find({"role": "student", "programme": user.get("programme", "equimind")}, {"_id": 0, "id": 1}).to_list(5000)]
+        mine = [u["id"] for u in await db.users.find({"role": "student", "programme": programmes.peer_q(user)}, {"_id": 0, "id": 1}).to_list(5000)]
         rows = await db.bookings.find({"student_id": {"$in": mine}}, {"_id": 0}).sort("created_at", -1).to_list(500)
         out = []
         for b in rows:
@@ -231,7 +232,7 @@ def build_router(db, current_user, student_user):
     async def update_booking(bid: str, body: BookingUpdate, user: dict = Depends(counsellor_user)):
         b = await db.bookings.find_one({"id": bid}, {"_id": 0})
         stu = await db.users.find_one({"id": (b or {}).get("student_id")}, {"_id": 0, "programme": 1}) if b else None
-        if not b or (stu or {}).get("programme", "equimind") != user.get("programme", "equimind"):
+        if not b or (stu or {}).get("programme", "equimind") not in programmes.peers(user.get("programme")):
             raise HTTPException(404, "Booking not found")
         upd = {}
         if body.counsellor_note is not None:
@@ -264,13 +265,12 @@ def build_router(db, current_user, student_user):
 
     @r.get("/counsellor/students/{uid}")
     async def student_detail(uid: str, user: dict = Depends(counsellor_user)):
-        u = await db.users.find_one({"id": uid, "role": "student", "programme": user.get("programme", "equimind")}, {"_id": 0})
+        u = await db.users.find_one({"id": uid, "role": "student", "programme": programmes.peer_q(user)}, {"_id": 0})
         if not u:
             raise HTTPException(404, "Student not found")
         rep = await latest(uid)
         sev, flags = attention_flags(rep)
         if rep:
-            import programmes
             C = programmes.get(rep.get("programme"))
             rep["plan"] = enrich_plan(rep.get("plan", []), C)
             rep["next_activities"] = next_activities(rep, C=C)

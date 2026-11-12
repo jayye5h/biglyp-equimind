@@ -35,6 +35,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/mindmellow" element={<Landing brand="mindmellow" />} />
             <Route path="/mindmellow/login" element={<Login brand="mindmellow" />} />
+            <Route path="/mindedge" element={<Landing brand="mindedge" />} />
+            <Route path="/mindedge/login" element={<Login brand="mindedge" />} />
             <Route path="/dashboard" element={<Guard role="student"><StudentHome /></Guard>} />
             <Route path="/check-in" element={<Guard role="student"><Assessment /></Guard>} />
             <Route path="/report/:id" element={<Guard role={["student", "counsellor"]}><ReportView /></Guard>} />

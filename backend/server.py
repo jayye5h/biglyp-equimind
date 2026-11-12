@@ -28,7 +28,6 @@ from media_seed import SEED_MEDIA  # noqa: E402
 from wellness import today_plan, all_reads  # noqa: E402
 import games as games_lib  # noqa: E402
 import programmes  # noqa: E402
-import content_mm  # noqa: E402
 from plan_theory import enrich_plan, next_activities  # noqa: E402
 import counselling  # noqa: E402
 import push_notify  # noqa: E402
@@ -126,7 +125,7 @@ async def root():
 
 @api.get("/auth/demo-users")
 async def demo_users():
-    return [{k: u.get(k, "") for k in ("id", "role", "name", "program", "year", "level", "programme")} for u in DEMO_USERS + content_mm.DEMO_USERS]
+    return [{k: u.get(k, "") for k in ("id", "role", "name", "program", "year", "level", "programme")} for u in programmes.DEMO_USERS]
 
 
 @api.post("/auth/demo-login")
@@ -231,8 +230,8 @@ async def get_report(rid: str, user: dict = Depends(current_user)):
         raise HTTPException(403, "Not allowed")
     q = {"id": rid} if user["role"] == "counsellor" else {"id": rid, "user_id": user["id"]}
     r = await db.reports.find_one(q, {"_id": 0})
-    if r and user["role"] == "counsellor" and r.get("programme", "equimind") != user.get("programme", "equimind"):
-        r = None  # counsellors only see reports from their own programme
+    if r and user["role"] == "counsellor" and r.get("programme", "equimind") not in programmes.peers(user.get("programme")):
+        r = None  # counsellors only see reports from their own counselling group
     if not r:
         raise HTTPException(404, "Report not found")
     C = programmes.get(r.get("programme"))
@@ -275,19 +274,18 @@ async def _latest_report(user_id: str):
     return await db.reports.find_one({"user_id": user_id}, {"_id": 0, "created_at": 1, "moods": 1, "priorities": 1, "programme": 1}, sort=[("created_at", -1)])
 
 
-_EQ_TO_MM = {"A": "A", "F": "B", "D": "D", "C": "E", "B": "F", "E": "D"}  # shared-library area -> MindMellow area label
-
-
 def _brand_labels(user, data):
-    """MindMellow students see their own area names on the shared wellness libraries."""
-    if user.get("programme") != "mindmellow":
+    """School-programme students see their own area names on the shared wellness libraries."""
+    C = programmes.of_user(user)
+    M = getattr(C, "LABEL_MAP", None)
+    if not M:
         return data
     txt = json.dumps(data)
     for k, a in AREA_BY_KEY.items():
-        txt = txt.replace(json.dumps(a["name"])[1:-1], content_mm.AREA_BY_KEY[_EQ_TO_MM[k]]["name"])
+        txt = txt.replace(json.dumps(a["name"])[1:-1], C.AREA_BY_KEY[M[k]]["name"])
     out = json.loads(txt)
     if isinstance(out, dict) and isinstance(out.get("focus_areas"), list):
-        out["focus_areas"] = [{**f, "key": _EQ_TO_MM.get(f.get("key"), f.get("key"))} for f in out["focus_areas"]]
+        out["focus_areas"] = [{**f, "key": M.get(f.get("key"), f.get("key"))} for f in out["focus_areas"]]
     return out
 
 
@@ -353,7 +351,7 @@ async def delete_media(mid: str, _: dict = Depends(admin_user)):
 async def admin_stats(programme: str = "equimind", _: dict = Depends(admin_user)):
     C = programmes.get(programme)
     prog_areas = C.AREAS
-    q = {"programme": "mindmellow"} if C.PROGRAMME == "mindmellow" else {"programme": {"$in": [None, "equimind"]}}
+    q = {"programme": {"$in": [None, "equimind"]}} if C.PROGRAMME == "equimind" else {"programme": C.PROGRAMME}
     rows = await db.reports.find(q, {"_id": 0, "areas": 1, "overall": 1, "path": 1, "user_id": 1, "priorities": 1}).sort("created_at", -1).to_list(5000)
     total = len(rows)
     latest = {}
@@ -409,9 +407,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 
 
 async def seed_users():
-    for u in DEMO_USERS + content_mm.DEMO_USERS:
+    for u in programmes.DEMO_USERS:
         await db.users.update_one({"id": u["id"]}, {"$set": u}, upsert=True)
-    for u in DEMO_USERS + content_mm.DEMO_USERS:
+    for u in programmes.DEMO_USERS:
         if u["role"] == "counsellor":
             await counselling.seed_slots(db, u["id"])
     await notify.seed_contacts(db)

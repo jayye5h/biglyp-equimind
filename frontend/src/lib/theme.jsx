@@ -1,20 +1,24 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { BRANDS } from "@/lib/brand";
 
-/* All palettes; each brand offers its own subset (EquiMind: blue / mint, MindMellow: lavender / peach / teal). */
+/* All palettes; each brand offers its own subset (EquiMind: blue / mint, MindMellow: lavender / peach / teal, MindEdge: ocean / seafoam / pale gold). */
 export const ALL_PALETTES = {
   sky: { label: "Light blue", p: "#3a86c8", grid: "#cfe0f0" },
   mint: { label: "Mint green", p: "#2d8a7c", grid: "#cfe7e2" },
   lavender: { label: "Soft lavender", p: "#8b6fd1", grid: "#e2d9f5" },
   peach: { label: "Warm peach", p: "#e07a5f", grid: "#f7dcd2" },
   teal: { label: "Calm teal", p: "#2a9d8f", grid: "#cdeae6" },
+  ocean: { label: "Ocean blue", p: "#2f7bab", grid: "#cfe3ef" },
+  seafoam: { label: "Seafoam", p: "#3e9e8a", grid: "#d2ebe4" },
+  palegold: { label: "Pale gold", p: "#b8913a", grid: "#f1e6c8" },
 };
 const pick = (brand) => Object.fromEntries(BRANDS[brand].palettes.map((k) => [k, ALL_PALETTES[k]]));
 // Back-compat export (EquiMind palettes)
 export const PALETTES = pick("equimind");
 
 const initialBrand = () => {
-  if (window.location.pathname.startsWith("/mindmellow")) return "mindmellow";
+  const byPath = Object.values(BRANDS).find((b) => b.home !== "/" && window.location.pathname.startsWith(b.home));
+  if (byPath) return byPath.key;
   const b = localStorage.getItem("eq_brand");
   return BRANDS[b] ? b : "equimind";
 };

@@ -28,7 +28,7 @@ def build(P=EQ) -> str:
     n_acts = sum(len(v) for v in P.ACTIVITIES.values())
     today = datetime.now(timezone.utc).strftime("%d %B %Y")
 
-    mm = P.PROGRAMME == "mindmellow"
+    mm = P.PROGRAMME != "equimind"
     w(f"# {P.NAME} — Product Document")
     w(f"*By Biglyp · Student stress & wellbeing platform for {P.AUDIENCE} · Generated {today} from the live platform*")
     w("")
@@ -61,7 +61,10 @@ def build(P=EQ) -> str:
     w("| Counsellor | Sees sessions & requests, a ‘Needs attention’ list, every student's record and progress; manages availability slots |")
     w("| Admin | Views cohort numbers, the question bank, activity library, media, games, notifications and this document |")
     w("\nDemo sign-in (no password): " + ", ".join(f"{u['name']} ({u['role']})" for u in P.DEMO_USERS) + (", Platform Admin (admin, shared with EquiMind)" if mm else "") + ".")
-    if mm:
+    if P.PROGRAMME == "mindedge":
+        w("\nMindEdge has its own landing page and sign-in (/mindedge). It shares its school counselling team with MindMellow (school counsellors see both Grade 9-10 and Grade 11-12 students) and shares the engine, report format, games, sounds, videos and notifications with EquiMind; only the theory, stress areas, question bank, activities and scripts differ. "
+          "It focuses on the six stressors of the 9-10 age window — academics & study habits, parents & family, peer pressure, self-esteem (puberty-linked), emotional regulation and digital / social-media stress — and deliberately leaves career, breakup and financial themes to MindMellow. Parents are the primary trusted-adult tier and Childline 1098 is added to the safety floor.")
+    elif mm:
         w("\nMindMellow has its own landing page and sign-in (/mindmellow) and its own school counsellor. It shares the engine, report format, games, sounds, videos and notifications with EquiMind; only the theory, stress areas, question bank, activities and scripts differ. "
           "It keeps dedicated coverage for competitive-exam anxiety (JEE / NEET / CUET), career + financial worry, and breakup / close-relationship conflict.")
 
