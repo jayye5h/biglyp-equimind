@@ -9,6 +9,7 @@ import StudentHome from "@/pages/StudentHome";
 import Assessment from "@/pages/Assessment";
 import ReportView from "@/pages/ReportView";
 import Admin from "@/pages/Admin";
+import ProductDoc from "@/pages/ProductDoc";
 import Counsellor from "@/pages/Counsellor";
 import CounsellorStudent from "@/pages/CounsellorStudent";
 
@@ -37,6 +38,7 @@ function App() {
             <Route path="/counsellor" element={<Guard role="counsellor"><Counsellor /></Guard>} />
             <Route path="/counsellor/student/:uid" element={<Guard role="counsellor"><CounsellorStudent /></Guard>} />
             <Route path="/admin" element={<Guard role="admin"><Admin /></Guard>} />
+            <Route path="/admin/product-doc" element={<Guard role="admin"><ProductDoc /></Guard>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>

@@ -357,6 +357,12 @@ api.include_router(_cou_router)
 api.include_router(push_notify.build_router(db, current_user, student_user))
 api.include_router(games_lib.build_router(db, admin_user, current_user))
 api.include_router(notify.build_router(db, current_user, admin_user))
+
+
+@api.get("/admin/product-doc")
+async def product_document(_: dict = Depends(admin_user)):
+    import product_doc
+    return {"markdown": product_doc.build(), "generated_at": datetime.now(timezone.utc).isoformat()}
 app.include_router(api)
 
 app.add_middleware(

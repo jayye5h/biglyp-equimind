@@ -3,7 +3,7 @@ with an admin on/off switch stored in `game_settings` ({id, enabled})."""
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-# moods: 0 Struggling · 1 Rough · 2 Mixed · 3 Strong · 4 Bright  (which daily moods a game suits)
+# moods: 0 Struggling · 1 Rough · 2 Mixed · 3 Steady · 4 Strong (same labels as wellness.MOODS)  (which daily moods a game suits)
 CALM, FOCUS, LIFT, PLAY = "Calm", "Focus", "Mood lift", "Playful"
 ALL = [0, 1, 2, 3, 4]
 LOW = [0, 1, 2]

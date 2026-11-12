@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
-import { Search, Lock, Clock } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Search, Lock, Clock, FileText, ArrowRight } from "lucide-react";
 import { AppHeader } from "@/components/Shell";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { api, AREA_COLORS } from "@/lib/api";
@@ -98,6 +99,14 @@ export default function Admin() {
       <main className="max-w-6xl mx-auto px-4 sm:px-8 py-10">
         <p className="font-mono text-xs uppercase tracking-[0.25em] text-eq">Platform admin</p>
         <h1 className="mt-2 font-serif text-4xl font-bold text-slate-900">Content &amp; <em className="text-eq">cohort view</em></h1>
+        <Link to="/admin/product-doc" data-testid="product-doc-link" className="mt-6 flex items-center gap-4 rounded-2xl bg-white border border-eq/15 p-4 sm:p-5 hover:border-eq/40 hover:shadow-sm transition">
+          <span className="h-11 w-11 rounded-xl bg-eq-soft text-eq-dark grid place-items-center shrink-0"><FileText className="h-5 w-5" /></span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-semibold text-slate-900">EquiMind Product Document</span>
+            <span className="block text-xs text-slate-500">Theory, full question bank, scoring rules, report structure, activities, games, notifications and features. Always up to date.</span>
+          </span>
+          <span className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-eq-dark">Open <ArrowRight className="h-4 w-4" /></span>
+        </Link>
         <Tabs defaultValue="overview" className="mt-8">
           <TabsList className="bg-white border border-eq/10 rounded-3xl sm:rounded-full p-1 h-auto flex flex-wrap justify-start max-w-full">
             <TabsTrigger data-testid="admin-tab-overview" value="overview" className="rounded-full data-[state=active]:bg-eq data-[state=active]:text-white px-4">Overview</TabsTrigger>

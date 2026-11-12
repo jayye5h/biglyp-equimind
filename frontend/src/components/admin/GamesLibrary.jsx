@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { GAME_COMPONENTS } from "@/components/games/registry";
 
 const AREAS = { A: "Academic & Workload", B: "Body & Sleep", C: "Emotional Load & Coping", D: "Social & Belonging", E: "Identity & Self-worth", F: "Family, Money & Future" };
-const MOODS = ["Struggling", "Rough", "Mixed", "Strong", "Bright"];
+const MOODS = ["Struggling", "Rough", "Mixed", "Steady", "Strong"];
 const TYPES = ["All", "Calm", "Focus", "Mood lift", "Playful"];
 const TYPE_STYLE = { Calm: "bg-sky-50 text-sky-700", Focus: "bg-indigo-50 text-indigo-700", "Mood lift": "bg-amber-50 text-amber-700", Playful: "bg-rose-50 text-rose-700" };
 
