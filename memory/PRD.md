@@ -135,3 +135,8 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 - Demo: fe-aarav (8 days), fe-vihaan (14 days), fe-meher (5 low days) — real AI reports + seed_demo_progress.py.
 - Tested iteration_22 (backend 13/13 FE tests; frontend all flows). Fixes after: FE Toolkit shows Audiobooks + Videos (FE videos reachable); media PUT keeps library when programme omitted; product-doc FE wording; DailyLog "Yes" button no longer looks pre-selected; product tabs scroll active tab into view on mobile.
 - Known/accepted: shared counsellors keep their own product header (MindMellow/MindEdge) when viewing FE reports; journey phase names (avatar stages) shared across products.
+
+## 2026-11-12 Journey card / avatar stage fix
+- Stage now = 1 + floor(completed plan activities ("Yes, I did" ticks) / 5), max 14; never goes back; logging a day with no "Yes" keeps the stage (lib/stages.js PER_STAGE, doneUpTo, stageAt, toNextStage).
+- Journey card header is data-driven (days logged, activities done, stage, progress bar "k more activities to reach Stage n"); title says Focus Journey for FocusEdge. Day card shows per-day activity chips, done count, "New stage" chip, not-logged copy; future days are locked (lock icon, no avatar preview) in side cards, main card and strip.
+- Daily check-in dialog previews the stage live as answers change; Calm Streak copy/tooltip updated. Tested iteration_23: all passed.

@@ -1,0 +1,35 @@
+{
+  "summary": "Frontend-only test of the FocusEdge Journey card / avatar-stage bug fix (desktop 1920x1080). Checked against GET /api/reports/<id> for fe-aarav, fe-meher and fe-vihaan. All 6 requested features passed. Header and summary are calculated from the student's data. Stage = 1 + floor(ticks/5). The avatar grows only when the 'Yes' total crosses a multiple of 5, and never on logging alone. Future days are locked and show no avatar. Calm Streak matches the stage. Check-in saves (PATCH 200), shows a toast and closes the dialog.",
+  "verified_details": {
+    "fe-aarav_before": "Summary '8 of 14 days logged · 24 activities done · Stage 5 of 14'; next-stage text '1 more activity to reach Stage 6'; Day 9 of 14. Day-by-day stages 1,1,2,3,3,4,5,5. 'New stage' chip shown only on Days 3, 4, 6 and 7, which matches cumulative ticks 2,4,7,10,12,16,20,24. Activity chips (data-done) match the ticks for each day. Day 10 onward: data-locked=true, 0 images, 'Unlocks tomorrow' / 'Locked'. Day 10 main card says 'Locked · Not unlocked yet · unlocks on Nov 13'.",
+    "fe-aarav_all_No": "Daily-log-next-stage stayed at 'Stage 5 · 1 more \"Yes\" answer…' through all 5 'No' answers. PATCH 200, 'Saved to your plan' toast, dialog closed. Summary became '9 of 14 days logged · 24 activities done · Stage 5 of 14'. streak-earned 5/14, day streak 9, no 'New stage' chip. Description: 'checked in but no plan activities… avatar stayed where it was'. Same values after reload.",
+    "fe-meher_Yes": "Before: 5 logged, 5 activities, Stage 2, '5 more…'. Stages by day were correct (grew on Day 5). The live line counted down 5→4→(No) 5→(Yes) 4→3→2→1, then 'Stage 3 · 5 more…' after the 5th Yes, and the dialog avatar src changed stage2→stage3 at that point. After submit: '6 of 14 days logged · 10 activities done · Stage 3 of 14', streak-earned 3/14, 3 badges earned, today's card shows a 'New stage' chip with stage3.webp, previous day shows stage2.webp.",
+    "fe-vihaan": "Title 'Your 14-Day Focus Journey — complete', badge 'Journey complete', '14 of 14 days logged · 58 activities done · Stage 12 of 14', '2 more activities to reach Stage 13', 12/14 badges. Per-day stages all correct.",
+    "calm_streak_footer": "'Every 5 plan activities you complete unlock your next growth stage — you only ever move forward.' is present."
+  },
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Journey main card mood buttons (journey-mood-3 'Steady' selected)", "issues": ["The selected 'Steady' pill uses a light lavender background with white text, so contrast is low (seen on fe-aarav after check-in). 'Strong' (darker) reads fine."]},
+      {"screen": "Stage-unlock toast", "issues": ["The toast reads 'New stage unlocked: Balanced — … 6-day streak!'. It mixes streak wording into stage growth, which now depends on activities. Consider dropping the streak mention to avoid confusion."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Optional: raise the contrast of the selected light mood pill (Steady) on the journey card.",
+    "Optional: remove the 'N-day streak' wording from the stage-unlock toast, since stages now depend on activities."
+  ],
+  "critical_code_review_comments": [
+    "stages.js: doneUpTo parses the day from the tick string. Ticks with a malformed format would give NaN and be silently excluded. Acceptable.",
+    "Not covered by the seeded data: a past day that was not logged ('Not logged', same stage as the day before). I could not exercise it in the UI. The code path (dayInfo returns label 'Not logged', stageAt carries the previous stage when there are no ticks) looks correct.",
+    "JourneyCard keeps sel state from the first render. After saving a check-in while browsing another day, the card stays on that day instead of jumping to today. This is minor and expected."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend only)", "frontend": "100%"},
+  "seed_data_creation": "None created. The test used up today's (Nov 12) check-ins for fe-aarav (Day 9, all No → 9 logged, 24 ticks, Stage 5) and fe-meher (Day 6, all 5 Yes + mood Strong → 6 logged, 10 ticks, Stage 3), as instructed.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Server date is Nov 2026. fe-aarav and fe-meher now have today's check-in done. To re-test the dialog you need a new day or a reseed by the main agent. fe-vihaan has 2 FocusEdge reports (same data, duplicate seed record at 16:54). Navigate days with journey-prev-btn/journey-next-btn: the strip shows only 5 days, so journey-day-<d> exists only for visible days."
+}

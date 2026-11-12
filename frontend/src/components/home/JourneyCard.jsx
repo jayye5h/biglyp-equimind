@@ -129,7 +129,7 @@ const MainCard = ({ r, d, today, onSave, pending, onOpenDaily }) => {
           {BANDS.map((b) => (
             <button key={b.v} data-testid={`journey-mood-${b.v}`} onClick={() => onSave({ moods: { ...moods, [d]: b.v } })}
               className={`h-9 px-3.5 rounded-full text-sm border transition-colors ${moods[d] === b.v ? "text-white border-transparent" : "bg-white text-slate-700 border-slate-200 hover:border-slate-400"}`}
-              style={moods[d] === b.v ? { background: b.c } : {}}>{b.l}</button>
+              style={moods[d] === b.v ? { background: b.c, color: b.v === 4 ? "#fff" : "#1e293b" } : {}}>{b.l}</button>
           ))}
         </div>
       )}
