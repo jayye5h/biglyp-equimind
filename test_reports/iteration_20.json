@@ -1,0 +1,20 @@
+{
+  "summary": "Iteration 20: re-tested the iteration_19 fixes. Backend: tests/test_mindmellow.py passes 19/19 (-n0). New read-only file tests/test_iter20_programme_scope.py passes 8/8. (1) GET /api/counsellor/sessions is now scoped: mm-neha gets 0 bookings, and cou-kavya gets only stu-* (EquiMind) bookings. (2) GET /api/reports/{rid} is scoped: kavya->Aarav 404, neha->Aarav 200, neha->Rohan 404, kavya->Rohan 200. (3) PATCH /api/counsellor/bookings/{EquiMind bid} with the mm-neha token returns 404, and the booking was not changed. (4) POST /api/counselling/bookings with a free future EquiMind slot as mm-kabir returns 409 'slot was just taken'. Kabir has 0 active bookings, so the 409 comes from the programme filter and not from the 2-booking limit. No booking was created. Kabir's /counselling/slots lists only Neha's slots. UI: Neha's 'Sessions & requests' tab shows 'No bookings or requests yet' (no Ananya/Meera). Kabir's Activity of the Day reads 'focused on Career, Future & Financial'. The Toolkit has no EquiMind names (Body & Sleep, Social & Belonging, Emotional Load & Coping), and /wellness/reads returns MindMellow area_names. Kabir's Home counsellor note reads 'Your school counsellor can see your report...'. The CounsellorCard is shown on Home and Journey, not on the Support tab. Aarav's report: tier 2 'breakup fallout, money / future worry', tier 3 'School counsellor', 'within MindMellow's safe-wording rules', and no 'homesickness'. Rohan's report still shows homesickness, Campus counsellor and EquiMind's safe-wording rules. Regression: /mindmellow and / landings load. Both demo logins work. The admin switch changes the Product Document card and link for both programmes. The EquiMind doc contains '10. Activity library (26 activities)', and the MindMellow doc title is 'MindMellow Product Document'. One copy leftover remains: the HelpBodyAbout 'GET HELP TODAY IF' strip still says 'go to campus health' on MindMellow (Aarav's report and Kabir's Support tab).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "MindMellow report Who Can Help + Support tab", "issues": ["HelpBodyAbout.jsx line 49 hardcodes '...or 112 in an emergency, or go to campus health.' Make it brand-aware ('go to your school health room / tell a trusted adult at school') like lines 74/85/86 already are."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_iter20_programme_scope.py", "/app/backend/tests/test_mindmellow.py", "/app/test_reports/pytest/pytest_iter20.xml", "/app/test_reports/pytest/pytest_mm20.xml"],
+  "action_items": ["Brand-aware copy for 'go to campus health' in HelpBodyAbout.jsx GET HELP TODAY strip (line 49)"],
+  "critical_code_review_comments": ["counselling.py update_booking now checks the student's programme. Optionally also require b.counsellor_id == user.id when a programme has more than one counsellor.", "The MindMellow WELLNESS_MAP maps two EquiMind areas (D, E) to the same MindMellow label 'Identity, Relationships & Breakup'. This is fine, but some reads will show duplicate tags."],
+  "updated_files": ["/app/backend/tests/test_iter20_programme_scope.py"],
+  "success_rate": {"backend": "100%", "frontend": "98% (1 copy leftover)"},
+  "seed_data_creation": "None. No assessments, check-ins or bookings were created or modified.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run tests/test_iter20_programme_scope.py and tests/test_mindmellow.py with -n0 and REACT_APP_BACKEND_URL set. Both are read-only. The cross-programme booking test auto-cancels if a booking is ever created by mistake. Do not run the mutating suites (test_equimind_api, test_wellness_api, test_counselling_push, test_notifications)."
+}

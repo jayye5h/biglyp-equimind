@@ -112,3 +112,7 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 - Same engine, separate content: backend/content_mm.py + data/mindmellow_bank.json (180 items, 6 areas A-F: Academic & Exam, Career/Future/Financial, Parental & Family, Identity/Relationships/Breakup, Emotional, Sleep/Lifestyle/Digital), theory, 28-slot activity library (reuses EquiMind activities + 2-subject rule, shortlist of 5, fairer-thought, social-media fast), scripts, demo users (programme="mindmellow"). programmes.py registry; scoring/narrative/plan_theory take a content module C. Users/assessments/reports carry `programme`.
 - Wellness libraries/games/sounds/media/notifications shared (MM areas mapped via WELLNESS_MAP). Counsellors/slots/low-mood alerts scoped by programme.
 - Frontend: lib/brand.js + theme.jsx (brand-aware palettes: EquiMind sky/mint, MindMellow lavender/peach/teal; report highlight tones lilac→dusk). Routes /mindmellow, /mindmellow/login. Admin programme switch (overview, question bank, activities, product doc ?programme=). Static docs/MindMellow_Product_Document.md.
+
+## 2026-06 Update
+- MindMellow report help copy: "Get help today" and "If something feels urgent" now say "your school counsellor" for MindMellow students; EquiMind keeps "campus health". Verified via screenshot.
+- Resend email key still pending (user chose to keep emails off for now).
