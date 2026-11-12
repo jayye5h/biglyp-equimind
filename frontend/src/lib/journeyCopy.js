@@ -34,7 +34,7 @@ const MM = {
   title: "Your 14-Day Exam-Season Journey",
   intro: "Boards, entrance prep and big decisions — start with today's check-in. Every activity you complete helps your avatar grow.",
   streak: "Steady Streak",
-  phases: [["Settling In", "Settling In"], ["Finding Your Study Rhythm", "Study Rhythm"], ["Balancing Prep & Rest", "Prep & Rest"], ["Ready & Resilient", "Ready & Resilient"]],
+  phases: [["Settling In", "Settling In"], ["Finding Your Study Rhythm", "Study Rhythm"], ["Balancing Prep & Rest", "Prep & Rest"], ["Ready & Resilient", "Resilient"]],
   captions: [
     "Feeling the exam pressure", "A little calmer about prep", "Breathing easier between study blocks", "Focused on one subject at a time",
     "More positive about the syllabus", "Energy back for revision", "Confident about the plan", "Lighter and back on track",
@@ -62,7 +62,7 @@ const ME = {
   title: "Your 14-Day Balance Journey",
   intro: "School, friends, sleep and screens — start with today's check-in. Every activity you complete helps your avatar grow.",
   streak: "Wave Streak",
-  phases: [["Calm Waters", "Calm Waters"], ["Building Better Habits", "Better Habits"], ["Sailing Steady", "Sailing Steady"], ["Confident Captain", "Confident Captain"]],
+  phases: [["Calm Waters", "Calm Waters"], ["Building Better Habits", "Better Habits"], ["Sailing Steady", "Sailing Steady"], ["Confident Captain", "Captain"]],
   captions: [
     "Things feel a bit much", "A little calmer today", "Finding your balance", "Focusing in class",
     "More positive about school", "More energy after school", "Feeling good about yourself", "Lighter and more active",
@@ -90,7 +90,7 @@ const FE = {
   title: "Your 14-Day Focus Journey",
   intro: "Your focus adventure starts with today's check-in. Every tiny mission you finish helps your avatar grow!",
   streak: "Focus Streak", streakUnit: "days in a row",
-  phases: [["Noticing", "Noticing"], ["Starting Small", "Starting Small"], ["Building Focus", "Building Focus"], ["Focused & Confident", "Focused & Confident"]],
+  phases: [["Noticing", "Noticing"], ["Starting Small", "Starting Small"], ["Building Focus", "Building Focus"], ["Focused & Confident", "Confident"]],
   captions: [
     "Brain feels busy and tired", "A little calmer today", "Relaxed and ready to try", "Eyes on one task",
     "Smiling at small wins", "Energy for homework", "Proud of finishing", "Cheering for yourself",
@@ -114,6 +114,7 @@ const FE = {
 };
 
 EQ.ask = "How are you today?"; MM.ask = "How's prep feeling today?"; ME.ask = "How's your day going?"; FE.ask = "How's your brain feeling today?";
+MM.cheer = "Steady progress — your prep habits are paying off."; ME.cheer = "Nice one — your balance is growing, wave by wave."; FE.cheer = "Another mission win — your focus is getting stronger!";
 EQ.grade = "University"; MM.grade = "Class 11–12"; ME.grade = "Class 9–10"; FE.grade = "Class 6–8";
 EQ.focusLine = "Wellbeing habits for college life"; MM.focusLine = "Calm habits for boards & entrance prep"; ME.focusLine = "Balance for school, friends, sleep & screens"; FE.focusLine = "Tiny focus missions for study time";
 

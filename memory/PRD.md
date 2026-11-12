@@ -146,3 +146,9 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 - How-it-works image per product: public/how/<brand>.webp (AI illustrations, gender-neutral).
 - FocusEdge 3D image set (from user's avatar, lighter skin, gender-neutral): avatars/fe/stage1-14 (stageSrc in lib/stages.js; Student uses brand), report-art/fe/* (d1-d10, snapshot, narrative, help_*, body_*, plan_head, week*, next_*, ic_*). Report components use RImg/useArtSrc (PageShell) to map /report-art/X -> /report-art/fe/X for FocusEdge reports.
 - Shared set made gender-neutral: area_d, area_f, help_trusted, help_pro, help_head, stage9/10/13/14 friend.
+
+## 2026-11-12 Per-programme 14-day journey cards
+- lib/journeyCopy.js: per-programme voice (title, grade chip + focus line, today prompt, mood labels/titles/descriptions, stage captions, phase names, badge names, streak name/unit, quotes, next-up label, cheer). Used by JourneyCard, CalmStreak (badgeFor), DailyLog, StudentHome toast.
+- EquiMind "Wellness Journey"/Calm Streak; MindMellow "Exam-Season Journey"/Steady Streak; MindEdge "Balance Journey"/Wave Streak; FocusEdge "Focus Journey"/Focus Streak (missions wording).
+- Journey card shows the student's own remaining plan activities for today ("next up"). Tested iteration_25 all passed; follow-up fixes (dialog mood labels/heading per programme, badge message duplication, phase-4 short names, mobile header stacking) verified by screenshot.
+- Demo reports added for stu-ananya, mm-diya, me-riya (seed_demo_progress.py).

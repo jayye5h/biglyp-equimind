@@ -170,7 +170,7 @@ export const JourneyCard = ({ r, onSave, pending, onOpenDaily }) => {
     : `${logged} of 14 days logged · ${done} ${done === 1 ? "activity" : "activities"} done · Stage ${stage} of 14`;
   return (
     <section data-testid="journey-card" className="rounded-[2rem] bg-gradient-to-b from-white to-eq-bg border border-eq/10 p-5 sm:p-7">
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex flex-col-reverse sm:flex-row items-start justify-between gap-3">
         <div>
           <h2 data-testid="journey-title" className="font-serif text-2xl sm:text-3xl font-bold text-slate-900">{e > 13 ? `${C.title} — complete` : C.title}</h2>
           <div className="mt-1.5 flex flex-wrap items-center gap-2"><span data-testid="journey-grade" className="rounded-full bg-white border border-eq/15 text-eq-dark text-[11px] font-semibold px-2.5 py-0.5">{C.grade}</span><span className="text-xs text-slate-500">{C.focusLine}</span></div>

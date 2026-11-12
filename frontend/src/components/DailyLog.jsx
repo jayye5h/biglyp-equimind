@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { Student } from "@/components/Avatar";
 import { elapsedDays } from "@/lib/progress";
 import { currentStage, toNextStage } from "@/lib/stages";
-import { phaseFor, captionFor } from "@/lib/journeyCopy";
+import { phaseFor, captionFor, journeyCopy } from "@/lib/journeyCopy";
 
 const MOODS = [
   { v: 0, l: "Struggling", icon: Frown }, { v: 1, l: "Rough", icon: Annoyed }, { v: 2, l: "Mixed", icon: Meh },
@@ -80,13 +80,13 @@ const MoodStep = ({ todayNo, mood, glow, stage, programme, setMood, onNext, onLa
       <div className="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden"><motion.div className="h-full bg-eq rounded-full" animate={{ width: `${glow * 100}%` }} /></div>
       <Sprout className="h-4 w-4 text-emerald-500" /> {partOfDay()}
     </div>
-    <h3 className="mt-6 font-serif text-xl font-bold text-slate-900">How are you feeling today?</h3>
+    <h3 data-testid="daily-log-ask" className="mt-6 font-serif text-xl font-bold text-slate-900">{journeyCopy(programme).ask}</h3>
     <p className="text-sm text-slate-500">Tap the one that feels closest to you right now.</p>
     <div className="mt-4 grid grid-cols-5 gap-2">
       {MOODS.map((m) => (
         <button key={m.v} data-testid={`daily-mood-${m.v}`} onClick={() => setMood(m.v)}
           className={`rounded-2xl border py-3 flex flex-col items-center gap-1.5 text-[11px] sm:text-xs transition-colors ${mood === m.v ? "border-eq bg-eq-soft text-eq-dark font-semibold" : "border-slate-200 bg-white text-slate-600 hover:border-eq/40"}`}>
-          <m.icon className="h-6 w-6" strokeWidth={1.6} />{m.l}
+          <m.icon className="h-6 w-6" strokeWidth={1.6} />{journeyCopy(programme).moodShort[m.v]}
         </button>
       ))}
     </div>

@@ -1,0 +1,33 @@
+{
+  "summary": "Frontend-only test of the per-programme journey card, streak card and daily check-in for 6 demo students (stu-ananya, mm-diya, me-riya, fe-aarav, fe-meher, fe-vihaan), plus regression checks. Everything requested works. Each programme shows its own journey title, grade chip and focus line, today prompt, mood labels, stage captions, phase names, next-up label, quote, streak title, phase bar and badge names. The journey summary, stage, next-stage count and streak stage all matched the report API data (logged_days, ticks, stage = 1 + floor(ticks/5)). Past-day activity chips matched the ticks exactly. Future days are locked. Check-ins: stu-ananya answered 'Not this time' to all → stage stayed at 5 and the toast read 'Saved to your plan'. mm-diya answered 1 Yes → went from 19 to 20 activities and Stage 4 to Stage 5, with the toast 'New stage unlocked: Positive Prep'. Both results persisted after reload. Found only minor copy and design issues.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Daily check-in dialog (DailyLog.jsx MoodStep)", "issues": ["Mood buttons are hard-coded to Struggling/Rough/Mixed/Steady/Strong and the heading 'How are you feeling today?' is the same for every programme. The journey card on the same screen shows programme-specific labels (e.g. FocusEdge Tough/Wobbly/Okay/Good/Great, MindMellow Pressured/.../Ready), so the two use different words for the same 0-4 value. Consider using journeyCopy(programme).moodShort and .ask in the dialog. The 'Good to see you again!' / leaf decor wording is also shared."]},
+      {"screen": "Streak card badge tooltip (CalmStreak.jsx badgeFor)", "issues": ["For MindMellow, MindEdge and FocusEdge, the earned-badge tooltip shows the caption twice: line 2 is the caption and line 3 is '<caption> — you earned this, one step at a time.' Example: 'Calm Start / A little calmer today / A little calmer today — you earned this…'. The same repeated text appears in the stage-unlocked toast description. Give each programme its own short messages, or drop the caption line."]},
+      {"screen": "Streak phase bar (lg screens)", "issues": ["Phase 4 spans only 2 columns, so longer programme names are cut off, e.g. MindMellow shows 'Phase 4 · Ready ...' (Ready & Resilient). 'Focused & Confident' (FocusEdge) and 'Confident Captain' (MindEdge) likely get cut off too. The full name is only in the title attribute."]},
+      {"screen": "Journey card header on mobile 390px (completed journey: me-riya, fe-vihaan)", "issues": ["The 'Journey complete' badge is whitespace-nowrap and sits beside the title block. This squeezes the title, grade chip, focus line and summary into a narrow column that wraps over 4–5 lines. Stack the badge under the title on small screens."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "LOW: Use programme copy (moodShort and ask) in the DailyLog mood step so its labels match the journey card.",
+    "LOW: Remove the repeated caption from the non-EquiMind badge tooltip and stage-unlocked toast message.",
+    "LOW: Stop Phase 4 labels being cut off in the streak phase bar (shorter 'short' names or allow wrapping).",
+    "LOW: On mobile, put the journey-day-badge below the title."
+  ],
+  "critical_code_review_comments": [
+    "journeyCopy.js mutates EQ/MM/ME/FE after the objects are created (EQ.ask = ... etc. on line 116-118). It works because the spread copies were taken before these assignments, but it is fragile. Put ask, grade and focusLine inside each object.",
+    "The EquiMind mood chip labels on the journey card ('Struggling/Rough day/Settling/Calmer/More Open') also differ from the DailyLog dialog labels. This is the same inconsistency as above.",
+    "StudentHome.save fires the stage-unlocked toast only after the PATCH succeeds, which is correct. The optimistic setLatest is not rolled back if the PATCH fails."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (not requested)", "frontend": "100% of requested checks passed (4 minor design/copy issues)"},
+  "seed_data_creation": "No new records. Expected data changes from the requested check-ins: stu-ananya Day 9 (index 8) logged with mood 2 and no ticks. mm-diya Day 9 logged with mood 2 and 1 tick (activity 0, 'Wake'), now Stage 5 with 20 activities. Feedback was skipped for both.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Verified values before this run's check-ins. stu-ananya: 23 ticks, Stage 5, EquiMind copy. mm-diya: 19 ticks, Stage 4. me-riya: 58 ticks, Stage 12, complete. fe-aarav: 24 ticks, Stage 5, Day 9 pending. fe-meher: 5 ticks, Stage 2, Day 6 pending. fe-vihaan: 58 ticks, Stage 12, complete. stu-ananya and mm-diya have now logged Day 9; fe-aarav and fe-meher still have today pending (fe-aarav needs 1 Yes for Stage 6, badge 'Homework Energy'). Login trick used: POST /api/auth/demo-login in page context, then localStorage.eq_token. Report pages for fe-aarav and me-riya load with no broken images; the Biglyp home loads; no horizontal overflow on mobile.",
+  "test_credentials": "Demo logins from /app/memory/test_credentials.md (no passwords)."
+}

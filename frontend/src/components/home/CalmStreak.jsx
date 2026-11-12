@@ -7,7 +7,7 @@ import { journeyCopy } from "@/lib/journeyCopy";
 /** Stage badge (name + message) worded for the student's programme. */
 export const badgeFor = (n, programme) => {
   const C = journeyCopy(programme);
-  return { name: C.badges[n - 1], caption: C.captions[n - 1], msg: programme === "equimind" || !programme ? BADGES[n - 1].msg : `${C.captions[n - 1]} — you earned this, one step at a time.` };
+  return { name: C.badges[n - 1], caption: C.captions[n - 1], msg: programme === "equimind" || !programme ? BADGES[n - 1].msg : C.cheer };
 };
 
 export const BADGES = [
