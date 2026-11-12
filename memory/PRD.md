@@ -95,3 +95,8 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 ## 2026-11-11 (iteration 17)
 - Report Week 2 + Your Next Steps restyled to user mockups (art cropped from mockups → public/report-art/week2_hero, week2_clip, next_head, next_same/three/new, next_study .webp); web + PDF.
 - Admin Games library (backend/games.py: 26 games = 3 student-live + 23 admin-preview, tagged type/area/mood; `game_settings` on/off; GET/PATCH /api/admin/games, GET /api/games/enabled). Frontend: components/games/pack/* (23 new games), games/registry.js, admin/GamesLibrary.jsx (filters, play dialog, toggles). Disabled student games are skipped in wellness pick + Toolkit.
+
+## 2026-11-12 (iteration 18) — Notification module
+- backend/notify.py: 7 notifications (checkin_reminder, session_booked, session_cancelled, session_reminder, week1_unlocked, week2_unlocked, low_mood_alert) x 3 channels (email=Resend BYOK — RESEND_API_KEY/RESEND_FROM not set yet → "not_connected"; sms=DEMO log only; app=in-app inbox + web push). Admin switches in `notification_settings`; every attempt in `notification_log`. Routes: /api/admin/notifications (GET, PUT /{id}, POST /{id}/test, GET /log), /api/me/contact (GET/PUT), /api/notifications/read-all, /api/cron/notify-sweep (every 15 min: 1h session reminders + week unlocks).
+- Hooks: push_notify reminders, counselling book/cancel/update, report progress moods → low-mood alert.
+- Frontend: admin Notifications tab, header bell inbox (NotificationBell), ContactDialog (profile menu / header icon). Sample contacts seeded for demo users.

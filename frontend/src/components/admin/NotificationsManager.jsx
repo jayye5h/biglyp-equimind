@@ -82,14 +82,14 @@ export const NotificationsManager = () => {
         </div>
         <div className="divide-y divide-eq/10">
           {data.events.map((e) => (
-            <div key={e.id} data-testid={`notif-row-${e.id}`} className="px-5 py-4 grid lg:grid-cols-[1fr_auto_auto] gap-4 items-center">
+            <div key={e.id} data-testid={`notif-row-${e.id}`} className="px-5 py-4 grid lg:grid-cols-[1fr_auto_auto] gap-4 items-center [&>*]:min-w-0">
               <div className="min-w-0">
                 <p className="font-semibold text-slate-900">{e.name}</p>
                 <p className="text-xs text-slate-500 mt-0.5">{e.when}</p>
                 <p className="text-[11px] text-slate-400 mt-1 flex flex-wrap gap-x-3"><span className="inline-flex items-center gap-1"><Users className="h-3 w-3" /> {e.audience}</span>
                   <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {e.last_sent ? `Last sent ${when(e.last_sent)}` : "Not sent yet"}</span></p>
               </div>
-              <div className="flex gap-2 sm:gap-3">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
                 {CH.map((c) => (
                   <label key={c.k} className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium ${e.channels[c.k] ? "border-eq/30 bg-eq-soft text-eq-dark" : "border-slate-200 text-slate-400"}`}>
                     <c.icon className="h-3.5 w-3.5" />{c.label}
