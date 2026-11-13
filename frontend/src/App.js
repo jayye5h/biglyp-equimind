@@ -2,7 +2,8 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider, useAuth } from "@/lib/auth";
-import { ThemeProvider, useBrand } from "@/lib/theme";
+import { useEffect } from "react";
+import { ThemeProvider, useTheme } from "@/lib/theme";
 import BiglypHome from "@/pages/BiglypHome";
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
@@ -18,10 +19,14 @@ export const homeFor = (role) => (role === "admin" ? "/admin" : role === "counse
 
 const Guard = ({ role, children }) => {
   const { user, ready } = useAuth();
-  const B = useBrand();
+  const { B, setBrand } = useTheme();
+  // Signed-in pages always wear the user's own programme brand (admins: EquiMind), whatever product was browsed last
+  const own = user ? (user.role === "admin" ? "equimind" : user.programme || "equimind") : null;
+  useEffect(() => { if (own && B.key !== own) setBrand(own); }, [own, B.key]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!ready) return null;
   if (!user) return <Navigate to={B.login} replace />;
   if (role && ![].concat(role).includes(user.role)) return <Navigate to={homeFor(user.role)} replace />;
+  if (B.key !== own) return null;
   return children;
 };
 

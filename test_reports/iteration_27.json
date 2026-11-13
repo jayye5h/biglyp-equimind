@@ -1,0 +1,39 @@
+{
+  "summary": "Frontend-only retest of iteration_26. FIXED: when a signed-in user loads a product URL directly (goto, refresh or new tab), the landing page and the '/?p=<key>' hub panel now render correctly (13/13). Clicking hub cards and product tabs works signed in and signed out (20/20). The hub header button, login pages, counsellor pages, admin page, logo sub 'Wellbeing', title and hero image all work. NEW CRITICAL REGRESSION: the student /dashboard no longer switches to the student's own brand. After browsing another product, /dashboard shows that product's name and colours, even after a full refresh. Cause: StudentHome uses HomeLayout, not AppHeader, so nothing calls setBrand(user.programme) any more now that the auth.jsx effect has been removed.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "StudentHome / HomeLayout (/dashboard)", "issue": "fe-aarav browses /?p=mindedge, then clicks 'Go to my dashboard': /dashboard shows brand-name 'MindEdge' and data-theme ocean. After browsing /mindmellow, a direct goto /dashboard and a refresh both show 'MindMellow' in lavender. me-riya after browsing /focusedge: /dashboard shows 'FocusEdge' in indigo. The student's dashboard takes on whichever product was last viewed. This is stored in localStorage eq_brand, so it stays after a refresh.", "selector": "[data-testid='brand-name']", "priority": "CRITICAL"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Admin (/admin)", "issues": ["The header logo/brand still follows the last browsed product (known since iteration_26, minor)."]}
+    ]
+  },
+  "rca of the issue": "Before this change, auth.jsx's effect forced the brand for every signed-in page. Now only AppHeader (components/Shell.jsx) re-applies user.programme. The /dashboard route renders StudentHome, which uses components/home/HomeLayout.jsx with its own header (Logo, ThemeToggle, NotificationBell) and never mounts AppHeader. ThemeProvider's initialBrand() for /dashboard falls back to localStorage eq_brand, which the landing or hub page just wrote, so the brand stays wrong. Counsellor, admin, check-in and report pages use AppHeader, so they are fine. To reproduce: sign in as fe-aarav, open /mindmellow, then open /dashboard. It shows MindMellow in lavender. Fix: in HomeLayout add `const { setBrand } = useTheme(); useEffect(() => { if (user?.programme) setBrand(user.programme); }, [user?.programme]);`. A more robust option is to do this once in App.js Guard for all signed-in, non-admin routes. Also check B.key !== user.programme, so the page does not briefly show the wrong brand.",
+  "test_report_links": [],
+  "action_items": [
+    "CRITICAL: re-apply the user's programme brand on the student /dashboard (HomeLayout.jsx, or centrally in the App.js Guard for non-admin roles). After the fix, retest that fe-aarav's /dashboard shows FocusEdge in indigo after browsing other products: via the hub button, a direct goto and a refresh. Also retest me-riya (MindEdge, ocean).",
+    "Optional: the admin header brand follows the last browsed product."
+  ],
+  "critical_code_review_comments": [
+    "Keeping the brand on signed-in pages depends on each page shell remembering to call setBrand. HomeLayout was missed. Putting it in Guard (App.js) covers every signed-in route in one place.",
+    "Landing.jsx and BiglypHome.jsx now use [brand, B.key] / [sel, B.key] deps with a guard that re-applies when the brand differs. This is correct and fixes the iteration_26 blank page."
+  ],
+  "passed_checks": [
+    "fe-aarav DIRECT goto /mindedge (ocean, 6 areas), /mindmellow (lavender, 6), /equimind (sky, 6), /focusedge (indigo, 10); reload of /mindmellow; new tab /equimind",
+    "fe-aarav direct '/?p=mindmellow|equimind|mindedge|focusedge': aria-selected card + hub-product-panel-<key> + correct theme; reload keeps panel",
+    "mm-diya direct /focusedge and '/?p=focusedge' OK; me-rahul direct /mindmellow OK",
+    "Hub card clicks in mixed order + product tab bar: signed out and fe-aarav (20/20)",
+    "Hub button: signed out 'Sign in to MindEdge' -> /mindedge/login; signed in 'Go to my dashboard' -> /dashboard (fe-aarav), /counsellor (me-rahul, MindEdge ocean), /admin (adm-platform)",
+    "/mindedge/login demo-login-me-riya -> /dashboard MindEdge ocean (fresh login works because Login sets the brand); /focusedge/login demo-login-mm-neha -> /counsellor MindMellow lavender",
+    "biglyp-logo-sub 'Wellbeing'; title 'Biglyp Wellbeing'; hero /how/biglyp_hero.webp?v=4 loads (naturalWidth 1264), calm illustration on white",
+    "No page errors"
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "93% (38/42 checks; 4 failures with one root cause: student dashboard brand)"},
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Sign in via page.evaluate: fetch POST /api/auth/demo-login {user_id}, then localStorage.setItem('eq_token', token). Theme families: equimind sky/mint, mindmellow lavender/peach/teal, mindedge ocean/seafoam/palegold, focusedge indigo/coral/mintleaf (html dataset.theme). Retest /dashboard brand after browsing other products, and make sure direct landing loads still pass."
+}
