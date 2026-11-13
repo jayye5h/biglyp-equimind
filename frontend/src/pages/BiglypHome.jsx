@@ -31,8 +31,6 @@ const BiglypMark = () => (
 
 const CommonHero = () => (
   <section data-testid="biglyp-hero" className="relative overflow-hidden">
-    <div aria-hidden className="absolute -top-40 -left-32 h-[28rem] w-[28rem] rounded-full bg-[#dedff8] blur-3xl opacity-70" />
-    <div aria-hidden className="absolute -bottom-40 right-0 h-[26rem] w-[26rem] rounded-full bg-[#d6eee4] blur-3xl opacity-70" />
     <div className="relative max-w-6xl mx-auto px-4 sm:px-8 pt-10 pb-16 lg:pt-16 lg:pb-20 grid lg:grid-cols-[1.05fr_1fr] gap-10 items-center">
       <div>
         <span className="inline-flex items-center gap-2 rounded-full bg-white/80 border border-slate-200 px-4 py-1.5 text-xs font-medium text-slate-600"><ShieldCheck className="h-3.5 w-3.5 text-[#2d8a7c]" /> Private · Non-diagnostic · Made in India</span>
@@ -49,7 +47,7 @@ const CommonHero = () => (
         </div>
       </div>
       <div className="relative">
-        <img src="/how/biglyp_hero.webp?v=3" alt="Students of different ages relaxing together with books, a tablet and a laptop" data-testid="biglyp-hero-art" draggable={false} className="w-full h-auto select-none mix-blend-multiply" />
+        <img src="/how/biglyp_hero.webp?v=4" alt="Students of different ages relaxing together with books, a tablet and a laptop" data-testid="biglyp-hero-art" draggable={false} className="w-full h-auto select-none mix-blend-multiply" />
         <div className="absolute bottom-4 left-2 sm:left-6 rounded-2xl bg-white/90 backdrop-blur shadow-lg border border-slate-100 px-4 py-3 flex items-center gap-3">
           <CalendarCheck className="h-5 w-5 text-[#2d8a7c]" />
           <div className="text-xs"><div className="font-semibold text-slate-800">One check-in, one plan</div><div className="text-slate-500">Tiny steps, tracked daily</div></div>
@@ -98,7 +96,7 @@ export default function BiglypHome() {
     if (window.innerWidth < 1024) setTimeout(() => document.getElementById("hub-product-panel")?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
   };
   return (
-    <div data-testid="biglyp-home" className="bg-gradient-to-b from-white via-[#f7f8fc] to-white">
+    <div data-testid="biglyp-home" className="bg-white">
       <header className="max-w-6xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
         <BiglypMark />
         <nav className="hidden md:flex gap-8 text-sm text-slate-600">
