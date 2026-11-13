@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { BiglypLogo } from "@/components/BiglypLogo";
 
-/** Slim navigation strip on every page except the Biglyp home page: "Previous page" + "Back to home page". */
+/** Slim navigation strip on every page except the Biglyp home page: Biglyp Wellbeing logo (→ home) + "Back". */
 export const PageNav = () => {
   const { pathname } = useLocation();
   const nav = useNavigate();

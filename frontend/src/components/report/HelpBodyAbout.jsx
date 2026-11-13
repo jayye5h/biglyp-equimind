@@ -58,7 +58,7 @@ export const HelpContent = ({ r }) => {
       {r.context?.away && (
         <div data-testid="family-distance-card" className="mt-8 rounded-2xl border border-eq/20 bg-eq-bg p-5">
           <h4 className="font-semibold text-eq-dark">Staying close while you&apos;re away from home</h4>
-          <p className="mt-1.5 text-sm text-slate-700">You told us you&apos;re {r.context.labels?.living?.toLowerCase() || "living away from your parents"}{r.context.low_contact ? ` and talk to family ${r.context.labels.contact.toLowerCase()}` : ""}{r.context.feels_lonely ? ", and you often feel lonely" : ""}. Distance from the people you grew up with can quietly add to everything else — that&apos;s common, and it&apos;s not a weakness.</p>
+          <p className="mt-1.5 text-sm text-slate-700">You told us you&apos;re {r.context.you?.living || "living away from your parents"}{r.context.low_contact && r.context.you?.contact ? `, you ${r.context.you.contact}` : ""}{r.context.feels_lonely ? ", and you often feel lonely" : ""}. Distance from the people you grew up with can quietly add to everything else — that&apos;s common, and it&apos;s not a weakness.</p>
           <ul className="mt-3 grid sm:grid-cols-3 gap-2 text-sm text-slate-700">
             <li className="rounded-xl bg-white p-3"><b>Fix a call time.</b> A 10-minute call with a parent or sibling on the same days each week.</li>
             <li className="rounded-xl bg-white p-3"><b>One old friend.</b> Message one childhood friend this week — just &ldquo;thinking of you&rdquo;.</li>

@@ -49,7 +49,7 @@ const AboutYou = ({ qs, ctx, setCtx, onDone }) => {
             <div className="mt-2.5 flex flex-wrap gap-2">
               {q.options.map((o) => (
                 <button key={o.value} type="button" data-testid={`about-${q.key}-${o.value}`} onClick={() => setCtx({ ...ctx, [q.key]: o.value })}
-                  className={`rounded-full px-4 py-2 text-sm border transition-colors ${ctx[q.key] === o.value ? "bg-eq border-eq text-white" : "bg-eq-bg border-transparent text-slate-700 hover:border-eq/40"}`}>{o.label}</button>
+                  className={`rounded-full px-4 py-2 text-sm border transition-colors ${ctx[q.key] === o.value ? "bg-eq-dark border-eq-dark text-white ring-2 ring-offset-1 ring-eq font-medium" : "bg-eq-bg border-transparent text-slate-700 hover:border-eq/40"}`}>{o.label}</button>
               ))}
             </div>
           </fieldset>

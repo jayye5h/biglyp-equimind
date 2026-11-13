@@ -470,6 +470,11 @@ CONTEXT_QUESTIONS = [
         ("never", "Never"), ("rarely", "Rarely"), ("sometimes", "Sometimes"), ("often", "Often"), ("always", "Almost always"), ("na", "Prefer not to say")]},
 ]
 AWAY = {"hostel", "alone", "relatives"}
+YOU = {"living": {"hostel": "living in a hostel or PG, away from your parents", "alone": "living alone in a rented room or flat",
+                  "relatives": "living with relatives or friends, away from your parents"},
+       "contact": {"rarely": "talk to family less than once a week", "hardly": "hardly ever talk to family"}}
+SHORT = {"living": {"hostel": "Hostel/PG", "alone": "Lives alone", "relatives": "With relatives/friends"},
+         "contact": {"rarely": "family contact < weekly", "hardly": "hardly any family contact"}}
 
 
 def context_summary(ctx, areas):
@@ -483,4 +488,5 @@ def context_summary(ctx, areas):
     social = next((a["score"] for a in areas if a["key"] == "D"), 100)
     detachment = away and (low_contact or lonely or social < 50)
     return {**{k: ctx.get(k) for k in labels}, "labels": {k: labels[k].get(ctx.get(k), "") for k in labels},
+            "you": {k: YOU[k].get(ctx.get(k), "") for k in YOU}, "short": {k: SHORT[k].get(ctx.get(k), "") for k in SHORT},
             "away": away, "low_contact": low_contact, "feels_lonely": lonely, "detachment": detachment}
