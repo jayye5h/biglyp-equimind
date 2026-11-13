@@ -1,0 +1,27 @@
+{
+  "summary": "Frontend-only retest of the iteration_27 critical issue, plus its regression checks. FIXED: signed-in routes now use the user's own programme brand, whatever product was browsed last. This now happens in the App.js Guard. Results: brand checks 22/22, regression checks 36/36. No page errors, no console errors, and no data-theme flicker on /dashboard, /counsellor or /admin.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "passed_checks": [
+    "fe-aarav browses /?p=mindedge, then clicks biglyp-sign-in-btn: /dashboard shows FocusEdge in indigo, journey-title 'Your 14-Day Focus Journey'",
+    "fe-aarav after /mindmellow: a direct goto /dashboard and a refresh both show FocusEdge in indigo. /check-in after /mindedge and /report/<id> after /mindmellow are also FocusEdge in indigo",
+    "me-riya: /dashboard after /focusedge is MindEdge in ocean. mm-diya: MindMellow in lavender. Both also correct via the hub button",
+    "me-rahul: /counsellor after /focusedge is MindEdge in ocean, and the content renders. mm-neha: /counsellor after /mindedge is MindMellow in lavender",
+    "adm-platform: /admin after /focusedge shows the EquiMind header in sky (the iteration_27 minor admin issue is also fixed)",
+    "A MutationObserver on html data-theme counted 0 changes over 2.5s on /dashboard, /counsellor and /admin, so there is no flicker loop",
+    "Signed out and signed in (fe-aarav): direct /mindedge, /mindmellow, /equimind, /focusedge and /?p=<key> each render their own landing page or panel with the right theme and aria-selected",
+    "Clicking hub cards in mixed order works signed out and signed in. Hub button reads 'Sign in to <product>' and goes to /mindedge/login when signed out; it reads 'Go to my dashboard' when signed in",
+    "Title 'Biglyp Wellbeing'; biglyp-logo-sub 'Wellbeing'; hero image loads (naturalWidth 1264)"
+  ],
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Guard returns null while B.key !== own. This is fine because the effect fixes it in the next render. Guard and Shell.jsx AppHeader now both call setBrand. They agree (AppHeader skips admins), so it is harmless but redundant: the AppHeader call could be removed."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100% (58/58 checks)"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Sign in via page.evaluate: fetch POST /api/auth/demo-login {user_id}, then localStorage eq_token. Theme families: equimind sky/mint, mindmellow lavender/peach/teal, mindedge ocean/seafoam/palegold, focusedge indigo/coral/mintleaf. Brand on signed-in routes is set in the App.js Guard."
+}

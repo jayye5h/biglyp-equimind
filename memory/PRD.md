@@ -152,3 +152,7 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 - EquiMind "Wellness Journey"/Calm Streak; MindMellow "Exam-Season Journey"/Steady Streak; MindEdge "Balance Journey"/Wave Streak; FocusEdge "Focus Journey"/Focus Streak (missions wording).
 - Journey card shows the student's own remaining plan activities for today ("next up"). Tested iteration_25 all passed; follow-up fixes (dialog mood labels/heading per programme, badge message duplication, phase-4 short names, mobile header stacking) verified by screenshot.
 - Demo reports added for stu-ananya, mm-diya, me-riya (seed_demo_progress.py).
+
+## 2026-11-13 Hub fixes
+- Bug: signed-in users couldn't switch hub products / product tabs (auth.jsx forced the user's brand on every render). Fix: brand forcing removed from auth; App.js Guard applies the user's own brand (admin = EquiMind) on signed-in routes and waits for it; Landing/BiglypHome re-apply their own brand when it differs. Verified iteration_28: 58/58.
+- Hub: logo sub-line "Wellbeing", title "Biglyp Wellbeing", clean calm hero image (/how/biglyp_hero.webp?v=4, no blurred colour blobs, plain white page), header button "Go to my dashboard" when signed in.
