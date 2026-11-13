@@ -1,0 +1,42 @@
+{
+  "summary": "Frontend-only test of the new PageNav strip ('Previous page' / 'Back to home page'). Every requested flow works: '/' has no strip; all 4 product pages and their login pages; student dashboard, report and check-in; counsellor dashboard, student detail and report; admin and product-doc; the direct-open fallback; 390px mobile; the daily check-in dialog; and report PDF download. No page errors. One minor UX issue: React Router does not reset scroll on navigation. So when the user scrolls down on the hub (the programme cards sit below the fold) and clicks 'Open <product> page', or picks a demo card on a login page, the next page opens about 45px down. The 45px strip is then scrolled out of view until the user scrolls up.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "PageNav / router scroll", "issue": "There is no scroll-to-top on route change. Reproduce: on '/', scroll to the programme cards (scrollY 667) and click hub-open-product-page. The product page opens at scrollY 45 and page-nav's bounding bottom is 0, so the strip is not visible. Login: the page also inherits scrollY 45, and after a demo login the dashboard opens at scrollY 45 with the strip hidden. A direct load is at scrollY 0 and fine. Likely cause: the scroll offset carries over, then Shell.jsx product-tab scrollIntoView({block:'nearest'}) settles it just below the strip.", "selector": "[data-testid=page-nav]", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Signed-in Shell pages (dashboard)", "issues": ["The strip content uses max-w-6xl px-8, but the dashboard Shell container is wider. 'Previous page' starts about 60px to the right of the FocusEdge logo, so the left edges do not line up (on /counsellor, /admin and the landing pages they line up)."]},
+      {"screen": "/admin/product-doc", "issues": ["The page already has its own '← Admin' back link right under the header, so it now has two back controls (strip 'Previous page' plus 'Admin'). This is harmless and the main agent can decide whether to keep both."]}
+    ]
+  },
+  "passed_checks": [
+    "'/' has 0 page-nav elements, both signed out and signed in",
+    "Hub -> hub-product-{focusedge,mindedge,mindmellow,equimind} -> hub-open-product-page: the strip is present. Previous returns to /?p=<key> with the same card selected. Home goes to '/'",
+    "Product page -> nav-sign-in-btn -> /<product>/login (EquiMind: /login): the strip is present and Previous returns to the product page, for all 4 products",
+    "Direct open of /focusedge in a new tab -> Previous goes to '/' (fallback). Same for a direct goto of /mindedge/login",
+    "fe-vihaan and me-riya sign in through the UI and reach /dashboard with the strip. journey-open-plan-btn -> /report/<id>#plan shows the strip and Previous returns to /dashboard. start-checkin-btn -> /check-in shows the strip and Previous returns to /dashboard (nothing submitted). Home goes to '/', eq_token is kept, and the hub button reads 'Go to my dashboard'",
+    "Report PDF download works (MindEdge-Report-Riya-Sharma.pdf). page-nav computes display:none under print media",
+    "me-rahul: /counsellor shows the strip. All students -> /counsellor/student/fe-aarav shows the strip. open-student-report -> /report shows the strip. Previous goes report -> student detail -> /counsellor. Previous on /counsellor right after login goes to '/' (the login used replace:true, so history idx is 0)",
+    "adm-platform: /admin shows the strip. product-doc-link -> /admin/product-doc shows the strip and Previous returns to /admin. Home goes to '/'",
+    "390px: no horizontal overflow on /focusedge, /focusedge/login, /dashboard or /check-in. The strip is 390x45 and both buttons fit",
+    "The daily check-in dialog (fe-aarav, mobile) sits above the strip: elementFromPoint at the dialog top belongs to the dialog, and 'Remind me later' closes it",
+    "Regression: hub cards switch (aria-selected=true and the panel renders) for all 4 products"
+  ],
+  "test_report_links": [],
+  "action_items": [
+    "Add a ScrollToTop on pathname change in App.js, e.g. useEffect(() => window.scrollTo(0,0), [pathname]), skipping when there is a hash so /report#plan still works. Without it, the page-nav strip opens scrolled out of view after hub -> product page and login -> dashboard",
+    "Optional: line up the PageNav inner container width with the Shell container on signed-in student pages"
+  ],
+  "critical_code_review_comments": [
+    "PageNav reads window.history.state.idx during render. This works because PageNav re-renders on every location change, but it depends on react-router's internal history state shape. It is acceptable for BrowserRouter v6.",
+    "Because Login navigates with replace:true, 'Previous page' on a dashboard reached by a direct goto of the login page falls back to '/'. In the normal hub flow it goes back to the product page. This is acceptable."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "~95% (all functional checks pass; 1 medium scroll/visibility UX issue)"},
+  "seed_data_creation": "None (no check-in submitted)",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "PageNav is rendered in App.js above Routes, with testids page-nav, page-nav-previous and page-nav-home. Demo login is through demo-login-<id> on the login pages. Login uses nav(..., {replace:true}). Counsellor student links are anchors a[href^='/counsellor/student/'] under tab-students. To verify the scroll issue, check scrollY right after hub-open-product-page while the hub is scrolled to the cards."
+}

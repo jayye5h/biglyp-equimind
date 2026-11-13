@@ -35,7 +35,7 @@ export const ProductTabs = ({ target = "home" }) => {
           const c = ALL_PALETTES[b.palettes[0]].p;
           const on = b.key === B.key;
           return (
-            <Link key={b.key} to={b[target]} role="tab" aria-selected={on} data-testid={`product-tab-${b.key}`} ref={on ? (el) => el?.scrollIntoView({ block: "nearest", inline: "nearest" }) : undefined}
+            <Link key={b.key} to={b[target]} role="tab" aria-selected={on} data-testid={`product-tab-${b.key}`} ref={on ? (el) => { const box = el?.parentElement; if (box && box.scrollWidth > box.clientWidth) box.scrollLeft = Math.max(0, el.offsetLeft - 16); } : undefined}
               className={`relative h-12 px-3 inline-flex items-center gap-2 text-sm font-medium whitespace-nowrap transition-colors ${on ? "text-slate-900" : "text-slate-500 hover:text-slate-800"}`}>
               <span className="h-6 w-6 rounded-lg grid place-items-center transition-transform duration-200 hover:scale-110" style={{ background: c }}><Icon className="h-3.5 w-3.5 text-white" strokeWidth={2.4} /></span>
               {b.name}
