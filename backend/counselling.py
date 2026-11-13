@@ -39,6 +39,11 @@ def attention_flags(r):
     if r.get("overall", 100) < 50:
         flags.append(f"Low overall score ({r['overall']})")
         sev = max(sev, 1)
+    ctx = r.get("context") or {}
+    if ctx.get("detachment"):
+        bits = [ctx["labels"].get("living", "")] + ([f"talks to family {ctx['labels']['contact'].lower()}"] if ctx.get("low_contact") else []) + (["often feels lonely"] if ctx.get("feels_lonely") else [])
+        flags.append("Away from family — possible loneliness / detachment (" + ", ".join(b for b in bits if b) + ")")
+        sev = max(sev, 1)
     watch = [a for a in r.get("areas", []) if 35 <= a["score"] < 50]
     if len(watch) >= 2:
         flags.append(f"{len(watch)} areas on watch")

@@ -55,6 +55,18 @@ export const HelpContent = ({ r }) => {
           </div>
         ))}
       </div>
+      {r.context?.away && (
+        <div data-testid="family-distance-card" className="mt-8 rounded-2xl border border-eq/20 bg-eq-bg p-5">
+          <h4 className="font-semibold text-eq-dark">Staying close while you&apos;re away from home</h4>
+          <p className="mt-1.5 text-sm text-slate-700">You told us you&apos;re {r.context.labels?.living?.toLowerCase() || "living away from your parents"}{r.context.low_contact ? ` and talk to family ${r.context.labels.contact.toLowerCase()}` : ""}{r.context.feels_lonely ? ", and you often feel lonely" : ""}. Distance from the people you grew up with can quietly add to everything else — that&apos;s common, and it&apos;s not a weakness.</p>
+          <ul className="mt-3 grid sm:grid-cols-3 gap-2 text-sm text-slate-700">
+            <li className="rounded-xl bg-white p-3"><b>Fix a call time.</b> A 10-minute call with a parent or sibling on the same days each week.</li>
+            <li className="rounded-xl bg-white p-3"><b>One old friend.</b> Message one childhood friend this week — just &ldquo;thinking of you&rdquo;.</li>
+            <li className="rounded-xl bg-white p-3"><b>One person here.</b> Share one meal or walk a week with someone nearby.</li>
+          </ul>
+          {r.context.detachment && <p className="mt-3 text-xs text-slate-600">If missing home is weighing on you most days, your campus counsellor can help — it&apos;s one of the most common things they hear.</p>}
+        </div>
+      )}
       <div data-testid="get-help-today" className="mt-8 rounded-2xl ft-bg p-5 flex gap-4">
         <Phone className="h-5 w-5 ft-alert shrink-0 mt-0.5" />
         {isFE(r) ? <p className="text-sm leading-relaxed"><b className="ft-alert">GET HELP TODAY IF:</b> you feel very overwhelmed, you can&apos;t sleep, or you feel like you can&apos;t cope — tell a parent or teacher today. You can also call <b>Childline 1098</b> (free, 24/7, for young people), <b>Tele-MANAS 14416</b> or <b>1800-891-4416</b> (24/7, confidential), or <b>112</b> in an emergency.</p> :

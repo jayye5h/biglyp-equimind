@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowRight, ArrowDown, ShieldCheck, Sparkles, CalendarCheck, Heart, Flower2, Sailboat, Sunrise } from "lucide-react";
+import { ArrowRight, ArrowDown, ShieldCheck, CalendarCheck, Heart, Flower2, Sailboat, Sunrise } from "lucide-react";
 import { useTheme, ALL_PALETTES } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { BRANDS } from "@/lib/brand";
 import { ThemeToggle } from "@/components/Shell";
+import { BiglypLogo } from "@/components/BiglypLogo";
 import { Hero, AreasSection, HowSection, PrivacySection, Footer } from "@/pages/Landing";
 
 /** Order requested for the product switcher: youngest learners first. */
@@ -17,18 +18,6 @@ const BLURB = {
   mindmellow: "Board exams, entrance tests and big decisions — gentle support for the final school years.",
   equimind: "Academic, money, sleep and relationship stress for college and university students.",
 };
-
-const BiglypMark = () => (
-  <Link to="/" data-testid="biglyp-logo-link" className="flex items-center gap-2.5">
-    <span className="h-11 w-11 rounded-2xl grid place-items-center shadow-sm bg-gradient-to-br from-[#5a5fc8] via-[#2f6fa3] to-[#2d8a7c]">
-      <Sparkles className="h-5 w-5 text-white" strokeWidth={2.2} />
-    </span>
-    <span className="leading-none">
-      <span className="font-serif text-2xl font-semibold text-slate-900">Biglyp</span>
-      <span data-testid="biglyp-logo-sub" className="block font-mono text-[9px] uppercase tracking-[0.25em] text-slate-500 mt-1">Wellbeing</span>
-    </span>
-  </Link>
-);
 
 const CommonHero = () => (
   <section data-testid="biglyp-hero" className="relative overflow-hidden">
@@ -101,7 +90,7 @@ export default function BiglypHome() {
   return (
     <div data-testid="biglyp-home" className="bg-white">
       <header className="max-w-6xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
-        <BiglypMark />
+        <BiglypLogo />
         <nav className="hidden md:flex gap-8 text-sm text-slate-600">
           <a href="#programmes" className="hover:text-slate-900">Programmes</a>
           <a href="#how" className="hover:text-slate-900">How it works</a>

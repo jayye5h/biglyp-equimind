@@ -34,6 +34,32 @@ const Question = ({ item, idx, total, scale, value, onPick }) => (
   </div>
 );
 
+/** EquiMind "About you" step: living situation, family contact and loneliness (shown before the 24 statements). */
+const AboutYou = ({ qs, ctx, setCtx, onDone }) => {
+  const done = qs.every((q) => ctx[q.key]);
+  return (
+    <div data-testid="about-you-step" className="eq-rise max-w-2xl mx-auto rounded-[2rem] bg-white border border-eq/10 shadow-[0_30px_80px_-40px_rgb(var(--eq-p)/0.4)] p-7 sm:p-10">
+      <span className="font-mono text-[11px] uppercase tracking-widest rounded-full px-3 py-1 bg-eq-soft text-eq-dark">About you</span>
+      <h2 className="mt-3 font-serif text-2xl sm:text-3xl font-semibold text-slate-900 leading-snug">First, a little about where you are right now</h2>
+      <p className="mt-2 text-sm text-slate-500">Being away from family can quietly add to stress. Your answers stay private and help us suggest the right support.</p>
+      <div className="mt-6 space-y-6">
+        {qs.map((q) => (
+          <fieldset key={q.key} data-testid={`about-${q.key}`}>
+            <legend className="font-medium text-slate-800">{q.text}</legend>
+            <div className="mt-2.5 flex flex-wrap gap-2">
+              {q.options.map((o) => (
+                <button key={o.value} type="button" data-testid={`about-${q.key}-${o.value}`} onClick={() => setCtx({ ...ctx, [q.key]: o.value })}
+                  className={`rounded-full px-4 py-2 text-sm border transition-colors ${ctx[q.key] === o.value ? "bg-eq border-eq text-white" : "bg-eq-bg border-transparent text-slate-700 hover:border-eq/40"}`}>{o.label}</button>
+              ))}
+            </div>
+          </fieldset>
+        ))}
+      </div>
+      <button data-testid="about-you-continue" disabled={!done} onClick={onDone} className="mt-8 h-12 px-6 rounded-2xl bg-eq text-white font-medium inline-flex items-center gap-2 hover:bg-eq-dark transition-colors disabled:opacity-40">Continue to the questions <ArrowRight className="h-4 w-4" /></button>
+    </div>
+  );
+};
+
 const ZEN = [
   "Breathe in for 4, hold for 7, out for 8.",
   "Drop your shoulders away from your ears. Notice how much lighter they feel.",
@@ -78,6 +104,8 @@ const Writing = () => {
 export default function Assessment() {
   const [a, setA] = useState(null);
   const [started, setStarted] = useState(false);
+  const [ctx, setCtx] = useState({});
+  const [aboutDone, setAboutDone] = useState(false);
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -104,18 +132,18 @@ export default function Assessment() {
 
   useEffect(() => {
     const onKey = (e) => {
-      if (!started || submitting) return;
+      if (!started || submitting || (a?.context_questions?.length > 0 && !aboutDone)) return;
       const n = Number(e.key);
       if (n >= 1 && n <= 5) pick(n - 1);
     };
     window.addEventListener("keydown", onKey);
     return () => { window.removeEventListener("keydown", onKey); };
-  }, [pick, started, submitting]);
+  }, [pick, started, submitting, a, aboutDone]);
 
   const submit = async () => {
     setSubmitting(true);
     try {
-      const r = await api.post(`/assessments/${a.id}/submit`, { responses: answers });
+      const r = await api.post(`/assessments/${a.id}/submit`, { responses: answers, ...(a.context_questions?.length ? { context: ctx } : {}) });
       localStorage.removeItem(`eq-ans-${a.id}`);
       nav(`/report/${r.data.id}`, { replace: true });
     } catch (e) {
@@ -131,7 +159,7 @@ export default function Assessment() {
   return (
     <div data-testid="assessment-page" className="min-h-screen">
       <AppHeader />
-      {started && !submitting && (
+      {started && !submitting && (aboutDone || !a?.context_questions?.length) && (
         <div className="sticky top-16 z-20 bg-eq-bg/90 backdrop-blur">
           <div className="max-w-2xl mx-auto px-4 py-3">
             <div className="flex justify-between text-xs font-mono text-slate-500"><span data-testid="progress-label">Question {idx + 1} of {total}</span><span>{answered}/{total} answered</span></div>
@@ -140,7 +168,7 @@ export default function Assessment() {
         </div>
       )}
       <main className="px-4 sm:px-8 py-10 sm:py-14">
-        {!a ? <div className="max-w-2xl mx-auto h-80 rounded-[2rem] bg-white/60 animate-pulse" /> : submitting ? <Writing /> : !started ? <Intro kind={a.kind} n={a.items.length} onBegin={() => setStarted(true)} /> : (
+        {!a ? <div className="max-w-2xl mx-auto h-80 rounded-[2rem] bg-white/60 animate-pulse" /> : submitting ? <Writing /> : !started ? <Intro kind={a.kind} n={a.items.length} onBegin={() => setStarted(true)} /> : a.context_questions?.length > 0 && !aboutDone ? <AboutYou qs={a.context_questions} ctx={ctx} setCtx={setCtx} onDone={() => setAboutDone(true)} /> : (
           <>
             <Question item={a.items[idx]} idx={idx} total={total} scale={a.scale} value={answers[a.items[idx].id]} onPick={pick} />
             <div className="max-w-2xl mx-auto mt-6 flex justify-between">

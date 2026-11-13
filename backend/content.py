@@ -137,6 +137,8 @@ _BANK = {
             "I feel I have lost touch with people I used to be close to.",
             "My conversations stay surface-level even when I want more.",
             "I feel invisible in the groups I'm part of.",
+            "I often feel lonely, even when I'm busy with classes and work.",
+            "I wish my near and dear ones were around me.",
         ]),
         "D2": ("Hiding distress & shame about help-seeking", [
             "I keep my distress to myself and feel ashamed of needing help.",
@@ -157,8 +159,12 @@ _BANK = {
             "Seeing a person or their updates still hurts.",
             "I had to end a connection that was hurting me, and it still weighs on me.",
         ]),
-        "D4": ("Belonging, homesickness & social fit", [
+        "D4": ("Belonging, homesickness & distance from family", [
             "I miss home or familiar people in a way that affects daily life.",
+            "Living away from my parents and family makes everyday stress feel heavier.",
+            "I don't talk to my parents, siblings or childhood friends as often as I'd like.",
+            "I feel detached from my family since moving away for my studies.",
+            "I feel no one here knows me the way the people back home do.",
             "I feel I don't fit in with the people around me.",
             "I struggle to make new friends in my current environment.",
             "I feel out of place in my hostel, class or workplace.",
@@ -447,3 +453,34 @@ for _u in DEMO_USERS:
 
 def act(aid):
     return _ACT_BY_ID[aid]
+
+
+# ---------------------------------------------------------------- "About you" context (EquiMind only, asked before the 24 items)
+CONTEXT_QUESTIONS = [
+    {"key": "living", "text": "Where are you staying right now?", "options": [
+        ("family", "At home with my parents / family"),
+        ("hostel", "In a hostel or PG, away from my parents"),
+        ("alone", "Alone in a rented room or flat"),
+        ("relatives", "With relatives or friends, away from my parents"),
+        ("na", "Prefer not to say")]},
+    {"key": "contact", "text": "How often do you talk or video-call with your parents, siblings or childhood friends?", "options": [
+        ("daily", "Every day"), ("weekly_few", "A few times a week"), ("weekly", "About once a week"),
+        ("rarely", "Rarely — less than once a week"), ("hardly", "Hardly ever"), ("na", "Prefer not to say")]},
+    {"key": "lonely", "text": "In the last two weeks, how often have you felt lonely or missed having your near and dear ones around you?", "options": [
+        ("never", "Never"), ("rarely", "Rarely"), ("sometimes", "Sometimes"), ("often", "Often"), ("always", "Almost always"), ("na", "Prefer not to say")]},
+]
+AWAY = {"hostel", "alone", "relatives"}
+
+
+def context_summary(ctx, areas):
+    """Turn the 'About you' answers into a gentle signal: living away from family + little contact or frequent loneliness."""
+    if not ctx:
+        return None
+    labels = {q["key"]: dict(q["options"]) for q in CONTEXT_QUESTIONS}
+    away = ctx.get("living") in AWAY
+    low_contact = ctx.get("contact") in ("rarely", "hardly")
+    lonely = ctx.get("lonely") in ("often", "always")
+    social = next((a["score"] for a in areas if a["key"] == "D"), 100)
+    detachment = away and (low_contact or lonely or social < 50)
+    return {**{k: ctx.get(k) for k in labels}, "labels": {k: labels[k].get(ctx.get(k), "") for k in labels},
+            "away": away, "low_contact": low_contact, "feels_lonely": lonely, "detachment": detachment}

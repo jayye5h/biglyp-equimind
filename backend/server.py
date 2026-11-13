@@ -106,6 +106,7 @@ class LoginIn(BaseModel):
 
 class SubmitIn(BaseModel):
     responses: Dict[str, int]
+    context: Optional[Dict[str, str]] = None  # EquiMind "About you" answers (living situation, family contact, loneliness)
 
 
 class ProgressIn(BaseModel):
@@ -154,7 +155,9 @@ def _public_assessment(a: dict) -> dict:
     C = programmes.get(a.get("programme"))
     return {"id": a["id"], "kind": a["kind"], "scale": C.SCALE,
             "items": [{"id": i, "text": C.ITEMS[i]["text"], "area": C.ITEMS[i]["area"],
-                       "area_name": C.AREA_BY_KEY[C.ITEMS[i]["area"]]["name"]} for i in a["items"]]}
+                       "area_name": C.AREA_BY_KEY[C.ITEMS[i]["area"]]["name"]} for i in a["items"]],
+            "context_questions": [{"key": q["key"], "text": q["text"], "options": [{"value": v, "label": lab} for v, lab in q["options"]]}
+                                  for q in getattr(C, "CONTEXT_QUESTIONS", [])]}
 
 
 @api.post("/assessments/start")
@@ -203,7 +206,16 @@ async def submit_assessment(aid: str, body: SubmitIn, user: dict = Depends(stude
     result = score_responses(a["items"], resp, C)
     pages = priority_pages(result, a["items"], resp, C)
     first = user["name"].split()[0]
-    narr = await write_narrative(first, result, C)
+    ctx = None
+    if getattr(C, "CONTEXT_QUESTIONS", None) and body.context:
+        valid = {q["key"]: {o[0] for o in q["options"]} for q in C.CONTEXT_QUESTIONS}
+        ctx = C.context_summary({k: v for k, v in body.context.items() if v in valid.get(k, ())}, result["areas"])
+    note = ""
+    if ctx and ctx["away"]:
+        note = (f"Context: the student lives away from their parents ({ctx['labels']['living']}); talks to family/childhood friends: "
+                f"{ctx['labels']['contact'] or 'not said'}; felt lonely: {ctx['labels']['lonely'] or 'not said'}. "
+                + ("Gently acknowledge that distance from family can add to stress and loneliness." if ctx["detachment"] else ""))
+    narr = await write_narrative(first, result, C, note)
     prev = await db.reports.find_one({"user_id": user["id"]}, {"_id": 0, "areas": 1, "overall": 1, "created_at": 1}, sort=[("created_at", -1)])
     report = {
         "id": str(uuid.uuid4()), "assessment_id": aid, "user_id": user["id"], "created_at": now().isoformat(),
@@ -211,7 +223,7 @@ async def submit_assessment(aid: str, body: SubmitIn, user: dict = Depends(stude
         "student": {k: user[k] for k in ("name", "program", "level", "year", "institution", "student_code")},
         **result, "narrative": narr, "priority_pages": pages, "plan": build_plan(pages, C),
         "body_pattern": body_pattern(result, C), "previous": prev,
-        "ticks": [], "moods": {}, "tracker": {}, "reflections": {},
+        "ticks": [], "moods": {}, "tracker": {}, "reflections": {}, "context": ctx,
     }
     await db.reports.insert_one(report)
     await db.assessments.update_one({"id": aid}, {"$set": {"status": "completed", "completed_at": now().isoformat(), "responses": resp}})

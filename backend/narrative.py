@@ -51,13 +51,14 @@ def _valid(d: dict) -> bool:
     return not FORBIDDEN.search(blob) and not FORBIDDEN_CS.search(blob)
 
 
-async def _generate(first_name: str, result: dict, C=EQ) -> str:
+async def _generate(first_name: str, result: dict, C=EQ, note: str = "") -> str:
     AREA_BY_KEY = C.AREA_BY_KEY
     areas = "; ".join(f"{a['name']}: {a['score']}/100 ({a['level']})" for a in result["areas"])
     pri = ", ".join(AREA_BY_KEY[k]["name"] for k in result["priorities"])
     items = "\n".join(f"- {t}" for t in result["high_items"]) or "- (none rated Often or Almost always)"
     prompt = (f"Student first name: {first_name}\nArea scores ({getattr(C, 'SCORE_MEANING', 'higher = less stress')}): {areas}\nOverall: {result['overall']}/100\n"
-              f"Three priority areas: {pri}\nStatements the student said happen Often or Almost always:\n{items}\n\nWrite the JSON now.")
+              f"Three priority areas: {pri}\nStatements the student said happen Often or Almost always:\n{items}\n"
+              f"{note + chr(10) if note else ''}\nWrite the JSON now.")
     chat = LlmChat(api_key=os.environ["EMERGENT_LLM_KEY"], session_id=f"narr-{uuid.uuid4()}",
                    system_message=SYSTEM.format(name=C.NAME, audience=C.AUDIENCE, loopword=getattr(C, "LOOP_WORD", "stress cycle"))).with_model("anthropic", "claude-sonnet-5-5")
     out = []
@@ -69,9 +70,9 @@ async def _generate(first_name: str, result: dict, C=EQ) -> str:
     return "".join(out)
 
 
-async def write_narrative(first_name: str, result: dict, C=EQ) -> dict:
+async def write_narrative(first_name: str, result: dict, C=EQ, note: str = "") -> dict:
     try:
-        text = await asyncio.wait_for(_generate(first_name, result, C), timeout=75)
+        text = await asyncio.wait_for(_generate(first_name, result, C, note), timeout=75)
         m = re.search(r"\{.*\}", text, re.S)
         data = json.loads(m.group(0)) if m else None
         if _valid(data):

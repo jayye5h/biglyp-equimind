@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, Home } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { BiglypLogo } from "@/components/BiglypLogo";
 
 /** Slim navigation strip on every page except the Biglyp home page: "Previous page" + "Back to home page". */
 export const PageNav = () => {
@@ -15,13 +16,10 @@ export const PageNav = () => {
   const btn = "h-8 px-3 rounded-full text-xs font-medium inline-flex items-center gap-1.5 transition-colors";
   return (
     <div data-testid="page-nav" className="print:hidden relative z-30 border-b border-slate-200/70 bg-white/85 backdrop-blur">
-      <div className={`${pathname === "/dashboard" ? "max-w-7xl" : "max-w-6xl"} mx-auto px-4 sm:px-8 h-11 flex items-center gap-2`}>
-        <button type="button" data-testid="page-nav-previous" onClick={back} className={`${btn} text-slate-700 hover:bg-slate-100`}>
-          <ArrowLeft className="h-3.5 w-3.5" /> Previous page
-        </button>
-        <span className="h-4 w-px bg-slate-200" aria-hidden />
-        <button type="button" data-testid="page-nav-home" onClick={() => nav("/")} className={`${btn} text-slate-700 hover:bg-slate-100`}>
-          <Home className="h-3.5 w-3.5" /> Back to home page
+      <div className={`${pathname === "/dashboard" ? "max-w-7xl" : "max-w-6xl"} mx-auto px-4 sm:px-8 h-14 flex items-center justify-between gap-3`}>
+        <BiglypLogo size="sm" testid="page-nav-home" />
+        <button type="button" data-testid="page-nav-previous" onClick={back} className={`${btn} text-slate-700 border border-slate-200 hover:bg-slate-100`}>
+          <ArrowLeft className="h-3.5 w-3.5" /> Back
         </button>
       </div>
     </div>
