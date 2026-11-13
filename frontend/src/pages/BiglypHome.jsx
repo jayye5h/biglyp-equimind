@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowRight, ArrowDown, ShieldCheck, Sparkles, CalendarCheck, Heart, Flower2, Sailboat, Sunrise } from "lucide-react";
 import { useTheme, ALL_PALETTES } from "@/lib/theme";
+import { useAuth } from "@/lib/auth";
 import { BRANDS } from "@/lib/brand";
 import { ThemeToggle } from "@/components/Shell";
 import { Hero, AreasSection, HowSection, PrivacySection, Footer } from "@/pages/Landing";
@@ -87,10 +88,12 @@ const ProductSwitcher = ({ sel, pick }) => (
 
 export default function BiglypHome() {
   const { setBrand, B } = useTheme();
+  const { user } = useAuth();
+  const myHome = user ? (user.role === "admin" ? "/admin" : user.role === "counsellor" ? "/counsellor" : "/dashboard") : null;
   const [params, setParams] = useSearchParams();
   const q = params.get("p");
   const sel = BRANDS[q] ? q : B.key;
-  useEffect(() => { setBrand(sel); }, [sel]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (B.key !== sel) setBrand(sel); }, [sel, B.key]); // eslint-disable-line react-hooks/exhaustive-deps
   const pick = (k) => {
     setParams({ p: k }, { replace: true });
     if (window.innerWidth < 1024) setTimeout(() => document.getElementById("hub-product-panel")?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
@@ -104,7 +107,7 @@ export default function BiglypHome() {
           <a href="#how" className="hover:text-slate-900">How it works</a>
           <a href="#privacy" className="hover:text-slate-900">Privacy</a>
         </nav>
-        <Link to={B.login} data-testid="biglyp-sign-in-btn" className="h-10 px-5 rounded-full bg-slate-900 text-white text-sm whitespace-nowrap inline-flex items-center hover:bg-slate-700 transition-colors">Sign in to {B.name}</Link>
+        <Link to={myHome || B.login} data-testid="biglyp-sign-in-btn" className="h-10 px-5 rounded-full bg-slate-900 text-white text-sm whitespace-nowrap inline-flex items-center hover:bg-slate-700 transition-colors">{myHome ? "Go to my dashboard" : `Sign in to ${B.name}`}</Link>
       </header>
       <CommonHero />
       <ProductSwitcher sel={sel} pick={pick} />

@@ -1,18 +1,13 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api";
-import { useTheme } from "@/lib/theme";
 
 const AuthCtx = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
-  const { setBrand } = useTheme();
-  // Apply the student's/counsellor's programme brand once when they sign in (not on every render —
-  // that used to override public pages like the Biglyp product switcher and product landing tabs).
-  useEffect(() => {
-    if (user?.programme && user.role !== "admin") setBrand(user.programme);
-  }, [user?.id, user?.programme]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Brand is NOT forced here: public pages (Biglyp hub, product landings, logins) choose their own brand,
+  // and signed-in app pages re-apply the user's programme brand in AppHeader (components/Shell.jsx).
 
   useEffect(() => {
     if (!localStorage.getItem("eq_token")) {

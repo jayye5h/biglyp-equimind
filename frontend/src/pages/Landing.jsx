@@ -213,7 +213,7 @@ export const Footer = () => (
 
 export default function Landing({ brand = "equimind" }) {
   const { setBrand, B } = useTheme();
-  useEffect(() => { setBrand(brand); }, [brand]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (B.key !== brand) setBrand(brand); }, [brand, B.key]); // eslint-disable-line react-hooks/exhaustive-deps
   if (B.key !== brand) return null;
   return (
     <div data-testid="landing-page">
