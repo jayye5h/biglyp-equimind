@@ -32,7 +32,7 @@ const BiglypMark = () => (
 
 const CommonHero = () => (
   <section data-testid="biglyp-hero" className="relative overflow-hidden">
-    <div className="relative max-w-6xl mx-auto px-4 sm:px-8 pt-10 pb-16 lg:pt-16 lg:pb-20 grid lg:grid-cols-[1.05fr_1fr] gap-10 items-center">
+    <div className="relative max-w-6xl mx-auto px-4 sm:px-8 pt-10 pb-16 lg:pt-16 lg:pb-20 grid lg:grid-cols-[1fr_1.15fr] gap-10 items-center">
       <div>
         <span className="inline-flex items-center gap-2 rounded-full bg-white/80 border border-slate-200 px-4 py-1.5 text-xs font-medium text-slate-600"><ShieldCheck className="h-3.5 w-3.5 text-[#2d8a7c]" /> Private · Non-diagnostic · Made in India</span>
         <h1 data-testid="biglyp-hero-title" className="mt-6 font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-[1.05]">Small, honest steps to a <em className="text-[#5a5fc8]">calmer, more focused</em> you.</h1>
@@ -48,8 +48,8 @@ const CommonHero = () => (
         </div>
       </div>
       <div className="relative">
-        <img src="/how/biglyp_hero.webp?v=4" alt="Students of different ages relaxing together with books, a tablet and a laptop" data-testid="biglyp-hero-art" draggable={false} className="w-full h-auto select-none mix-blend-multiply" />
-        <div className="absolute bottom-4 left-2 sm:left-6 rounded-2xl bg-white/90 backdrop-blur shadow-lg border border-slate-100 px-4 py-3 flex items-center gap-3">
+        <img src="/how/biglyp_hero.webp?v=5" alt="Four students sitting together calmly, with bubbles for Manage Stress, Build Confidence, Improve Focus and Attention, and Feel Happier" data-testid="biglyp-hero-art" draggable={false} className="w-full h-auto select-none rounded-[2rem] shadow-[0_30px_70px_-45px_rgba(37,99,235,0.45)]" />
+        <div className="absolute -bottom-6 left-4 sm:left-8 rounded-2xl bg-white/95 backdrop-blur shadow-lg border border-slate-100 px-4 py-3 flex items-center gap-3">
           <CalendarCheck className="h-5 w-5 text-[#2d8a7c]" />
           <div className="text-xs"><div className="font-semibold text-slate-800">One check-in, one plan</div><div className="text-slate-500">Tiny steps, tracked daily</div></div>
         </div>

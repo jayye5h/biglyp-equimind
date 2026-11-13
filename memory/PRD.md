@@ -156,3 +156,4 @@ User choices: mocked login (3 students + admin), Student role, AI-written narrat
 ## 2026-11-13 Hub fixes
 - Bug: signed-in users couldn't switch hub products / product tabs (auth.jsx forced the user's brand on every render). Fix: brand forcing removed from auth; App.js Guard applies the user's own brand (admin = EquiMind) on signed-in routes and waits for it; Landing/BiglypHome re-apply their own brand when it differs. Verified iteration_28: 58/58.
 - Hub: logo sub-line "Wellbeing", title "Biglyp Wellbeing", clean calm hero image (/how/biglyp_hero.webp?v=4, no blurred colour blobs, plain white page), header button "Go to my dashboard" when signed in.
+- 2026-11-13: Hub hero image replaced with a user-reference-inspired blue 'wellness circle' illustration (4 gender-neutral students + bubbles Manage Stress / Build Confidence / Improve Focus & Attention / Feel Happier), /how/biglyp_hero.webp?v=5, rounded with soft shadow; hero grid 1fr/1.15fr.
