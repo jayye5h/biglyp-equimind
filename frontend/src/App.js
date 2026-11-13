@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from "@/lib/auth";
 import { useEffect } from "react";
 import { ThemeProvider, useTheme } from "@/lib/theme";
 import BiglypHome from "@/pages/BiglypHome";
+import { PageNav } from "@/components/PageNav";
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import StudentHome from "@/pages/StudentHome";
@@ -36,6 +37,7 @@ function App() {
       <ThemeProvider>
       <AuthProvider>
         <BrowserRouter>
+          <PageNav />
           <Routes>
             <Route path="/" element={<BiglypHome />} />
             <Route path="/equimind" element={<Landing brand="equimind" />} />
