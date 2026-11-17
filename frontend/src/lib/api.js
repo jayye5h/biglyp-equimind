@@ -1,6 +1,11 @@
 import axios from "axios";
 
-export const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
+// Clean any trailing slashes or accidental '/api' suffix added in environment variables
+const rawBackendUrl = (process.env.REACT_APP_BACKEND_URL || "").trim().replace(/\/+$/, "").replace(/\/api$/, "");
+
+export const api = axios.create({
+  baseURL: rawBackendUrl ? `${rawBackendUrl}/api` : "/api",
+});
 
 api.interceptors.request.use((config) => {
   const t = localStorage.getItem("eq_token");

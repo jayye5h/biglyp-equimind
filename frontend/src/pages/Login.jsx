@@ -19,7 +19,32 @@ export default function Login({ brand = "equimind" }) {
 
   useEffect(() => {
     // each programme login lists its own students + counsellor; the shared platform admin appears on all
-    api.get("/auth/demo-users").then((r) => setUsers(r.data.filter((u) => u.role === "admin" || (u.programme || "equimind") === brand || (brand === "focusedge" && u.role === "counsellor" && ["mindmellow", "mindedge"].includes(u.programme))).sort((a, b) => (brand === "focusedge" ? ROLE_ORDER[a.role] - ROLE_ORDER[b.role] : 0))));
+    api.get("/auth/demo-users")
+      .then((r) => {
+        if (Array.isArray(r.data)) {
+          setUsers(
+            r.data
+              .filter(
+                (u) =>
+                  u.role === "admin" ||
+                  (u.programme || "equimind") === brand ||
+                  (brand === "focusedge" &&
+                    u.role === "counsellor" &&
+                    ["mindmellow", "mindedge"].includes(u.programme))
+              )
+              .sort((a, b) =>
+                brand === "focusedge" ? ROLE_ORDER[a.role] - ROLE_ORDER[b.role] : 0
+              )
+          );
+        } else {
+          console.error("Expected array from /auth/demo-users but received:", r.data);
+          toast.error("Could not load demo accounts. Please check your backend connection.");
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch demo users:", err);
+        toast.error("Could not reach backend server. Please verify backend status and URL.");
+      });
   }, [brand]);
 
   useEffect(() => {

@@ -422,10 +422,14 @@ async def product_document(programme: str = "equimind", _: dict = Depends(admin_
     return {"markdown": product_doc.build(programmes.get(programme)), "generated_at": datetime.now(timezone.utc).isoformat()}
 app.include_router(api)
 
+cors_origins_env = os.environ.get('CORS_ORIGINS', '*')
+cors_origins = [o.strip() for o in cors_origins_env.split(',') if o.strip()] if cors_origins_env != '*' else ['*']
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=cors_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_methods=["*"],
     allow_headers=["*"],
 )
