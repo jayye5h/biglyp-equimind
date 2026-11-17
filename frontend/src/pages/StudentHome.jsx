@@ -64,6 +64,7 @@ export default function StudentHome() {
   useEffect(() => {
     if (reports === null || (reports.length && !latest)) return;
     api.get("/wellness/today").then((r) => setPlan(r.data)).catch(() => setPlan(null));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reports, latest?.id, planTick]);
 
   useEffect(() => {
