@@ -15,7 +15,11 @@ import resend
 import programmes
 from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, Request
 from pydantic import BaseModel
-from pywebpush import WebPushException
+try:
+    from pywebpush import WebPushException
+except ImportError:
+    class WebPushException(Exception):
+        pass
 
 log = logging.getLogger("notify")
 CHANNELS = ("email", "sms", "app")

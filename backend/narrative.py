@@ -4,7 +4,13 @@ import re
 import uuid
 import asyncio
 import logging
-from emergentintegrations.llm.chat import LlmChat, UserMessage, TextDelta, StreamDone
+try:
+    from emergentintegrations.llm.chat import LlmChat, UserMessage, TextDelta, StreamDone
+except ImportError:
+    LlmChat = None
+    UserMessage = None
+    TextDelta = None
+    StreamDone = None
 import content as EQ
 
 logger = logging.getLogger(__name__)
@@ -59,6 +65,8 @@ async def _generate(first_name: str, result: dict, C=EQ, note: str = "") -> str:
     prompt = (f"Student first name: {first_name}\nArea scores ({getattr(C, 'SCORE_MEANING', 'higher = less stress')}): {areas}\nOverall: {result['overall']}/100\n"
               f"Three priority areas: {pri}\nStatements the student said happen Often or Almost always:\n{items}\n"
               f"{note + chr(10) if note else ''}\nWrite the JSON now.")
+    if not LlmChat or not os.environ.get("EMERGENT_LLM_KEY") or os.environ.get("EMERGENT_LLM_KEY") == "dummy_key":
+        return json.dumps(fallback(first_name, result, C))
     chat = LlmChat(api_key=os.environ["EMERGENT_LLM_KEY"], session_id=f"narr-{uuid.uuid4()}",
                    system_message=SYSTEM.format(name=C.NAME, audience=C.AUDIENCE, loopword=getattr(C, "LOOP_WORD", "stress cycle"))).with_model("anthropic", "claude-sonnet-5-5")
     out = []

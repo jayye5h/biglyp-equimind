@@ -20,6 +20,7 @@ from pydantic import BaseModel
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+load_dotenv(ROOT_DIR / '.env.local', override=True)
 
 from content import SCALE, AREAS, SUBTHEMES, ITEMS, ACTIVITIES, ITEMS as BANK, DEMO_USERS, BODY_TABLE, SCRIPTS, AREA_BY_KEY  # noqa: E402
 from scoring import pick_items, score_responses, priority_pages, build_plan, body_pattern  # noqa: E402

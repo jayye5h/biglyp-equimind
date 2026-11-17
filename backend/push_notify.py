@@ -10,7 +10,13 @@ from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, Request
 from pydantic import BaseModel
-from pywebpush import WebPushException, webpush
+try:
+    from pywebpush import WebPushException, webpush
+except ImportError:
+    class WebPushException(Exception):
+        pass
+    def webpush(*args, **kwargs):
+        pass
 
 import notify
 
