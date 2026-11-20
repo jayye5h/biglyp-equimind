@@ -121,8 +121,8 @@ SCRIPTS = [
     {"to": "To a teacher (deadline)", "text": "Two submissions / mocks fall in the same week. Could we agree which to prioritise, or could I get a short extension on one?"},
 ]
 DEMO_USERS = [
-    {"id": "mm-aarav", "role": "student", "programme": "mindmellow", "name": "Aarav Shah", "program": "Class 12 · Science", "level": "Senior secondary", "year": "", "institution": "Demo Senior Secondary School", "student_code": "MM-12-1042"},
     {"id": "mm-diya", "role": "student", "programme": "mindmellow", "name": "Diya Nair", "program": "Class 11 · Commerce", "level": "Senior secondary", "year": "", "institution": "Demo Senior Secondary School", "student_code": "MM-11-2210"},
+    {"id": "mm-aarav", "role": "student", "programme": "mindmellow", "name": "Aarav Shah", "program": "Class 12 · Science", "level": "Senior secondary", "year": "", "institution": "Demo Senior Secondary School", "student_code": "MM-12-1042"},
     {"id": "mm-kabir", "role": "student", "programme": "mindmellow", "name": "Kabir Singh", "program": "Class 12 · Humanities", "level": "Senior secondary", "year": "", "institution": "Demo Senior Secondary School", "student_code": "MM-12-1177"},
     {"id": "mm-neha", "role": "counsellor", "programme": "mindmellow", "name": "Ms. Neha Kapoor", "program": "School Counsellor · Student Wellbeing", "level": "", "year": "", "institution": "Demo Senior Secondary School", "student_code": ""},
 ]

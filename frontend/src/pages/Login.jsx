@@ -8,6 +8,8 @@ import { useAuth } from "@/lib/auth";
 import { useTheme } from "@/lib/theme";
 
 const ROLE_ORDER = { student: 0, counsellor: 1, admin: 2 };
+const SHOWCASE_14_DAY_USERS = ["stu-ananya", "mm-diya", "me-arjun", "fe-aarav"];
+const SHOWCASE_7_DAY_USERS = ["stu-rohan", "mm-aarav", "me-riya", "fe-meher"];
 
 export default function Login({ brand = "equimind" }) {
   const [users, setUsers] = useState([]);
@@ -32,9 +34,16 @@ export default function Login({ brand = "equimind" }) {
                     u.role === "counsellor" &&
                     ["mindmellow", "mindedge"].includes(u.programme))
               )
-              .sort((a, b) =>
-                brand === "focusedge" ? ROLE_ORDER[a.role] - ROLE_ORDER[b.role] : 0
-              )
+              .sort((a, b) => {
+                // 1. Role priority (students before counsellors before admin)
+                const roleDiff = (ROLE_ORDER[a.role] ?? 9) - (ROLE_ORDER[b.role] ?? 9);
+                if (roleDiff !== 0) return roleDiff;
+
+                // 2. Student priority: 14-day first (#1), 7-day second (#2)
+                const priorityOf = (id) =>
+                  SHOWCASE_14_DAY_USERS.includes(id) ? 0 : SHOWCASE_7_DAY_USERS.includes(id) ? 1 : 2;
+                return priorityOf(a.id) - priorityOf(b.id);
+              })
           );
         } else {
           console.error("Expected array from /auth/demo-users but received:", r.data);
@@ -79,7 +88,19 @@ export default function Login({ brand = "equimind" }) {
                 {u.role === "admin" ? <ShieldCheck className="h-5 w-5 text-[#fbbf24]" /> : u.role === "counsellor" ? <HeartHandshake className="h-5 w-5 text-eq" /> : <GraduationCap className="h-5 w-5 text-eq" />}
               </span>
               <span className="flex-1">
-                <span className="block font-semibold text-slate-800">{u.name}</span>
+                <span className="flex items-center gap-2 font-semibold text-slate-800">
+                  {u.name}
+                  {SHOWCASE_14_DAY_USERS.includes(u.id) && (
+                    <span className="rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70 text-[10px] font-mono px-2 py-0.5 tracking-wide uppercase">
+                      14-Day Journey
+                    </span>
+                  )}
+                  {SHOWCASE_7_DAY_USERS.includes(u.id) && (
+                    <span className="rounded-full bg-sky-50 text-sky-700 border border-sky-200/70 text-[10px] font-mono px-2 py-0.5 tracking-wide uppercase">
+                      7-Day Journey
+                    </span>
+                  )}
+                </span>
                 <span className="block text-sm text-slate-500">{u.role === "admin" ? "Platform admin · question bank & activities" : u.role === "counsellor" ? `${u.program} · sessions & student support` : [u.program, u.year, u.level].filter(Boolean).join(" · ")}</span>
               </span>
               {busy === u.id ? <Loader2 className="h-5 w-5 animate-spin text-eq" /> : <ArrowRight className="h-5 w-5 text-slate-400" />}

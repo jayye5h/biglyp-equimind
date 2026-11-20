@@ -153,8 +153,8 @@ SCRIPTS = [
     {"to": "To one safe classmate", "text": "Can we sit together at lunch this week? I've been feeling a bit alone."},
 ]
 DEMO_USERS = [
-    {"id": "me-riya", "role": "student", "programme": "mindedge", "name": "Riya Sharma", "program": "Grade 10 · Section A", "level": "Secondary", "year": "", "institution": "Demo Secondary School", "student_code": "ME-10-3051"},
     {"id": "me-arjun", "role": "student", "programme": "mindedge", "name": "Arjun Mehta", "program": "Grade 9 · Section B", "level": "Secondary", "year": "", "institution": "Demo Secondary School", "student_code": "ME-09-3124"},
+    {"id": "me-riya", "role": "student", "programme": "mindedge", "name": "Riya Sharma", "program": "Grade 10 · Section A", "level": "Secondary", "year": "", "institution": "Demo Secondary School", "student_code": "ME-10-3051"},
     {"id": "me-sana", "role": "student", "programme": "mindedge", "name": "Sana Khan", "program": "Grade 10 · Section C", "level": "Secondary", "year": "", "institution": "Demo Secondary School", "student_code": "ME-10-3188"},
     {"id": "me-rahul", "role": "counsellor", "programme": "mindedge", "name": "Mr. Rahul Iyer", "program": "School Counsellor · Student Wellbeing", "level": "", "year": "", "institution": "Demo Secondary School", "student_code": ""},
 ]
